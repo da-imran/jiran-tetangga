@@ -5,7 +5,6 @@ const { MongoClient } = mongo;
 
 const uri = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DB_NAME;
-const collection = process.env.MONGO_COLLECTION_NAME;
 
 module.exports = {
 	clientConnect: async () =>
@@ -13,34 +12,34 @@ module.exports = {
 			try {
 				const client = new MongoClient(uri);
 				await client.connect();
-				console.log(`✅ Connected to MongoDB: ${dbName}`);
+				console.log('✅ Connected to MongoDB');
 				resolve(client);
 			} catch (error) {
 				console.error('❌ MongoDB connection failed:', error);
 				reject(error);
 			}
 		}),
-	getCollections: async () =>
+	getCollections: async (collectionName) =>
 		new Promise(async (resolve, reject) => {
 			try {
 				const client = new MongoClient(uri);
 				await client.connect();
 				const db = client.db(db);
-				const collection = db.collection(collection);
-				console.log(`✅ Fetched collection: ${collection}`);
+				const collection = db.collection(collectionName);
+				console.log(`✅ MongoDB Fetched collection: ${collectionName}`);
 				resolve(collection);
 			} catch (error) {
-				console.error(`❌ Failed to get ${collection} collection:`, error);
+				console.error(`❌ MongoDB Failed to get ${collectionName} collection:`, error);
 				reject(error);
 			}
 		}),
 	getObjectId: (str) => {
 		try {
-			const result = new mongo.ObjectId.createFromHexString(str);
-			console.log(`✅ Fetched ObjectId: ${result}`);
+			const result = new mongo.ObjectId(str);
+			console.log(`✅ MongoDB Fetched ObjectId: ${result}`);
 			return result;
 		} catch (error) {
-			console.error('❌ Failed to get ObjectId:', error);
+			console.error('❌ MongoDB Failed to get ObjectId:', error);
 			return 0;
 		}
 	},
@@ -49,7 +48,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOne({ ...parameters }, { projection });
-			console.log(`✅ findOne result: ${result}`);
+			console.log(`✅ MongoDB findOne result: ${result}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOne process failed:', error);
@@ -64,7 +63,7 @@ module.exports = {
 				await collection.createIndex({ [index]: indexType });
 			}
 			const result = await collection.insertOne({ ...insertInput });
-			console.log(`✅ insertOne result: ${result}`);
+			console.log(`✅ MongoDB insertOne result: ${result}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB insertOne process failed:', error);
@@ -76,8 +75,8 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $set: { ...updateInput }, $unset: { ...unsetFields } }, { ...updateOptions, returnDocument: 'after' });
-			console.log(`✅ findOneAndUpdate result: ${result}`);
-			resolve(result.value);
+			console.log(`✅ MongoDB findOneAndUpdate result: ${JSON.stringify(result)}`);
+			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdate process failed:', error);
 			resolve(error);
@@ -89,7 +88,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $inc: { ...updateInput } }, { ...updateOptions, returnDocument: 'after' });
-			console.log(`✅ findOneAndUpdateInc result: ${result}`);
+			console.log(`✅ MongoDB findOneAndUpdateInc result: ${result}`);
 			resolve(result.value);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdateInc process failed:', error);
@@ -102,7 +101,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $inc: { ...updateInput } });
-			console.log(`✅ updateOneInc result: ${result}`);
+			console.log(`✅ MongoDB updateOneInc result: ${result}`);
 			resolve(result.value);
 		} catch (error) {
 			console.error('❌ MongoDB updateOneInc process failed:', error);
@@ -114,7 +113,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $addToSet: { ...updateInput } }, { ...updateOptions, returnDocument: 'after' });
-			console.log(`✅ findOneAndUpdateAddToSet result: ${result}`);
+			console.log(`✅ MongoDB findOneAndUpdateAddToSet result: ${result}`);
 			resolve(result.value);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdateAddToSet process failed:', error);
@@ -126,7 +125,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.updateMany({ ...matchParameters }, { ...updateInput }, { ...updateOptions });
-			console.log(`✅ updateMany result: ${result}`);
+			console.log(`✅ MongoDB updateMany result: ${result}`);
 			resolve(result.modifiedCount);
 		} catch (error) {
 			console.error('❌ MongoDB updateMany process failed:', error);
@@ -138,7 +137,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.deleteOne({ ...matchParameters });
-			console.log(`✅ deleteOne result: ${result}`);
+			console.log(`✅ MongoDB deleteOne result: ${result}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB deleteOne process failed:', error);
@@ -150,7 +149,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.aggregate(pipelines).toArray();
-			console.log(`✅ aggregate result: ${result}`);
+			console.log(`✅ MongoDB aggregate result: ${result}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB aggregate process failed:', error);
@@ -161,11 +160,10 @@ module.exports = {
 		try {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
-
 			const filter = { ...input };
 			if (input._id) filter._id = new mongo.ObjectId.createFromHexString(input._id);
 			const result = await collection.find({ ...filter }).project({ ...projection }).toArray();
-			console.log(`✅ find result: ${result}`);
+			console.log(`✅ MongoDB find result: ${result}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB find process failed:', error);
@@ -189,7 +187,7 @@ module.exports = {
 			}
 			const collection = db.collection(timeseriesName);
 			const sessionUpdate = await collection.insertOne({ ...sessionDetails });
-			console.log(`✅ updateTimeSeries result: ${sessionUpdate}`);
+			console.log(`✅ MongoDB updateTimeSeries result: ${sessionUpdate}`);
 			resolve(sessionUpdate);
 		} catch (error) {
 			console.error('❌ MongoDB updateTimeSeries process failed:', error);

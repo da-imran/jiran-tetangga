@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
-
 dotenv.config();
+
 const mongodb = require('./utilities/mongodb');
 const loadModules = require('./index');
 
@@ -18,14 +18,15 @@ app.use((req, res, next) => {
 	  next();
 });
 
-// MongoDB Init
-const config = {  
-	db: mongodb,
-};
+(async () => {
+	const mongoClient = await mongodb.clientConnect(process.env.MONGODB_URI);
 
-// Load modules
-loadModules(app, config);
+	const config = { mongoClient };
 
-app.get('/', (req, res) => res.send('Neighbourhood Info Backend Running'));
+	// Load routes/modules after MongoDB is ready
+	await loadModules(app, config);
+
+	app.get('/', (req, res) => res.send('Neighbourhood Info Backend Running'));
+})();
 
 module.exports = { app };
