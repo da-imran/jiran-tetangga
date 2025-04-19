@@ -34,7 +34,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 ---
 
-### 📂 Backend Project Structure
+## 📂 Backend Project Structure
 
 neighborhood-system/
 ├── modules/           # All feature-based route controllers
@@ -73,32 +73,32 @@ npm install
 ### 3. Environment Setup
 Create a .env file
 
-PORT=your_port_number
-MONGODB_URI=mongodb_db_connection_uri
-MONGODB_DBNAME=mongodb_name
-MONGODB_COLLECTION=mongodb_collection
-ENCRYPTION_KEY=encryption_secret_key
+PORT=your_port_number </br>
+MONGODB_URI=mongodb_db_connection_uri </br>
+MONGODB_DBNAME=mongodb_name </br>
+MONGODB_COLLECTION=mongodb_collection </br>
+ENCRYPTION_KEY=encryption_secret_key </br>
 
 ### 4. Run Locally
 ```bash
 npm run dev
 ```
 
-📦 Docker Support
+## 📦 Docker Support 
 (Coming soon in Phase 3)
 
-📌 Roadmap
-[x] Admin user creation API
-[x] MongoDB connection setup
-[x] Reversible password encryption
-[x] Modular Express routing
-[] WhatsApp bot notification
-[] CI/CD pipeline with GitLab
-[] Kubernetes orchestration
-[] React frontend dashboard
+## 📌 Roadmap 
+[x] Admin user creation API </br>
+[x] MongoDB connection setup </br>
+[x] Reversible password encryption </br>
+[x] Modular Express routing </br>
+[] WhatsApp bot notification </br>
+[] CI/CD pipeline with GitLab </br>
+[] Kubernetes orchestration </br>
+[] React frontend dashboard </br>
 
-🤝 Contributing
+## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.
 
-📜 License
+## 📜 License
 This project is open-sourced under the MIT License.
