@@ -35,7 +35,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 ---
 
 ## 📂 Backend Project Structure
-
+```bash
 neighborhood-system/
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
@@ -53,6 +53,7 @@ neighborhood-system/
 ├── app.js             # Express app, middleware, routes entry
 ├── server.js          # Separate boot file (optional)
 ├── package.json
+```
 
 ---
 
@@ -72,12 +73,13 @@ npm install
 
 ### 3. Environment Setup
 Create a .env file
-
+```bash
 PORT=your_port_number </br>
 MONGODB_URI=mongodb_db_connection_uri </br>
 MONGODB_DBNAME=mongodb_name </br>
 MONGODB_COLLECTION=mongodb_collection </br>
 ENCRYPTION_KEY=encryption_secret_key </br>
+```
 
 ### 4. Run Locally
 ```bash
