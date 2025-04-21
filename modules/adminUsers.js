@@ -9,7 +9,7 @@ module.exports = (app, config) => {
 	const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 
-	// Get all Administrator user details or filter by the email
+	// Get all Administrator user details or filter by the email API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
 		const { email } = req.query;
 		const apiName = 'Get Admin User API';
@@ -40,14 +40,14 @@ module.exports = (app, config) => {
 			const error = { message: err.message, stack: err.stack };
 			res.status(500).send({
 				status: 500,
-				message: 'Failed to fetch admin user',
+				message: `${apiName} error`,
 				error,
 			});
 		}
 	});
 
 	// Create Administrator user details by the UserId
-	app.post(`/${ROUTE_PREPEND}/v1/adminUsers`, async (req, res) => {
+	app.post(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
 		const {
 			firstName,
 			lastName,
@@ -135,14 +135,14 @@ module.exports = (app, config) => {
 			const error = { message: err.message, stack: err.stack };
 			res.status(500).send({
 				status: 500,
-				message: 'Failed to Create Administrator user',
+				message: `${apiName} error`,
 				error,
 			});
 		}
 	});
 
 	// Update Administrator user by UserId
-	app.patch(`/${ROUTE_PREPEND}/v1/adminUsers/:adminUserId`, async (req, res) => {
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
 		const { adminUserId } = req.params;
 		const { 
 			firstName,
@@ -189,14 +189,14 @@ module.exports = (app, config) => {
 			const error = { message: err.message, stack: err.stack };
 			res.status(500).send({
 				status: 500,
-				message: 'Failed to Update Administrator user',
+				message: `${apiName} error`,
 				error,
 			});
 		}
 	});
 
 	// Delete Administrator user by UserId
-	app.delete(`/${ROUTE_PREPEND}/v1/adminUsers/:adminUserId`, async (req, res) => {
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
 		const { adminUserId } = req.params;
 
 		const apiName = 'Delete Admin User by UserId API';
@@ -229,7 +229,7 @@ module.exports = (app, config) => {
 			const error = { message: err.message, stack: err.stack };
 			res.status(500).send({
 				status: 500,
-				message: 'Failed to Delete Administrator user',
+				message: `${apiName} error`,
 				error,
 			});
 		}
