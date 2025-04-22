@@ -169,48 +169,6 @@ module.exports = (app, config) => {
 					status: 400,
 					message: 'Bad request: eventId is a required parameter.',
 				});
-			} else if (!title) {
-				console.log(`❌ ${apiName} Bad request: title is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: title is a required parameter.',
-				});
-			} else if (!description) {
-				console.log(`❌ ${apiName} Bad request: description is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: description is a required parameter.',
-				});
-			} else if (!eventDate) {
-				console.log(`❌ ${apiName} Bad request: eventDate is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: eventDate is a required parameter.',
-				});
-			} else if (!location) {
-				console.log(`❌ ${apiName} Bad request: location is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: location is a required parameter.',
-				});
-			} else if (!hostId) {
-				console.log(`❌ ${apiName} Bad request: hostId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: hostId is a required parameter.',
-				});
-			} else if (!isPublic) {
-				console.log(`❌ ${apiName} Bad request: isPublic is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: isPublic is a required parameter.',
-				});
 			} else {
 				const updateObj = {};
 

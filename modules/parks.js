@@ -152,55 +152,6 @@ module.exports = (app, config) => {
 					status: 400,
 					message: 'Bad request: parkId is a required parameter.',
 				});
-			} else if (!name) {
-				console.log(`❌ ${apiName} Bad request: name is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: name is a required parameter.',
-				});
-			} else if (!condition) {
-				console.log(`❌ ${apiName} Bad request: condition is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: condition is a required parameter.',
-				});
-			} else if (!lastInspected) {
-				console.log(`❌ ${apiName} Bad request: lastInspected is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: lastInspected is a required parameter.',
-				});
-			} else if (!images) {
-				console.log(`❌ ${apiName} Bad request: images is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: images is a required parameter.',
-				});
-			}  else if (!notes) {
-				console.log(`❌ ${apiName} Bad request: notes is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: notes is a required parameter.',
-				});
-			}  else if (!location) {
-				console.log(`❌ ${apiName} Bad request: location is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: location is a required parameter.',
-				});
-			} else if (!updatedBy) {
-				console.log(`❌ ${apiName} Bad request: updatedBy is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: updatedBy is a required parameter.',
-				});
 			} else {
 				const updateObj = {};
 
