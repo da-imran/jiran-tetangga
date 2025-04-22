@@ -1,4 +1,4 @@
-# 🏡 Neighbourhood Info System
+# 🏡 JiranTetangga
 
 A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.
 
@@ -36,7 +36,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 ## 📂 Backend Project Structure
 ```bash
-neighborhood-system/
+jiran-tetangga-system/
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
 │   ├── reports.js     # Issue reporting (e.g. pothole, disruption)
@@ -53,6 +53,14 @@ neighborhood-system/
 ├── app.js             # Express app, middleware, routes entry
 ├── server.js          # Separate boot file (optional)
 ├── package.json
+```
+
+---
+
+## 📂 Front Project Structure
+```bash
+jiran-tetangga-webapp/
+├── folder // In progress
 ```
 
 ---
@@ -94,10 +102,10 @@ npm run dev
 [x] MongoDB connection setup </br>
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
+[] React frontend dashboard </br>
 [] WhatsApp bot notification </br>
 [] CI/CD pipeline with GitLab </br>
 [] Kubernetes orchestration </br>
-[] React frontend dashboard </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.
