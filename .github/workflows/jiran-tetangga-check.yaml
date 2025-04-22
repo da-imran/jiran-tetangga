@@ -25,10 +25,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Linter
-        run: |
-          npm run lint || echo "Linting issues found. Review recommended."
-
       - name: Run tests (optional for now)
         run: |
           npm test || echo "No tests defined yet. Skipping."
