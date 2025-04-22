@@ -57,6 +57,14 @@ jiran-tetangga-system/
 
 ---
 
+## 📂 Front Project Structure
+```bash
+jiran-tetangga-webapp/
+├── folder // In progress
+```
+
+---
+
 ## ⚙️ Getting Started
 
 ### 1. Clone the project
@@ -94,10 +102,10 @@ npm run dev
 [x] MongoDB connection setup </br>
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
+[] React frontend dashboard </br>
 [] WhatsApp bot notification </br>
 [] CI/CD pipeline with GitLab </br>
 [] Kubernetes orchestration </br>
-[] React frontend dashboard </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.
