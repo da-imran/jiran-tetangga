@@ -60,7 +60,39 @@ jiran-tetangga-system/
 ## 📂 Front Project Structure
 ```bash
 jiran-tetangga-webapp/
-├── folder // In progress
+├── src/
+│   ├── components/
+│   │   └── Header.jsx
+│   │   └── Footer.jsx
+│   │   └── Navbar.jsx
+│   │   └── ReportForm.jsx
+│   │   └── EventList.jsx
+│   │   └── ShopList.jsx
+│   │   └── ParkStatus.jsx
+│   │   └── AdminDashboard.jsx
+│   ├── pages/
+│   │   └── Home.jsx
+│   │   └── Reports.jsx
+│   │   └── Events.jsx
+│   │   └── Shops.jsx
+│   │   └── Parks.jsx
+│   │   └── Admin.jsx
+│   ├── context/
+│   │   └── AuthContext.jsx
+│   │   └── DataContext.jsx
+│   ├── hooks/
+│   │   └── useAuth.js
+│   │   └── useFetch.js
+│   ├── utils/
+│   │   └── api.js
+│   ├── App.jsx
+│   ├── index.js
+│   └── App.css
+├── public/
+├── .env
+├── package.json
+├── tailwind.config.js
+└── vite.config.js
 ```
 
 ---
