@@ -82,11 +82,11 @@ npm install
 ### 3. Environment Setup
 Create a .env file
 ```bash
-PORT=your_port_number </br>
-MONGODB_URI=mongodb_db_connection_uri </br>
-MONGODB_DBNAME=mongodb_name </br>
-MONGODB_COLLECTION=mongodb_collection </br>
-ENCRYPTION_KEY=encryption_secret_key </br>
+PORT=your_port_number
+MONGODB_URI=mongodb_db_connection_uri
+MONGODB_DBNAME=mongodb_name
+MONGODB_COLLECTION=mongodb_collection
+ENCRYPTION_KEY=encryption_secret_key
 ```
 
 ### 4. Run Locally
