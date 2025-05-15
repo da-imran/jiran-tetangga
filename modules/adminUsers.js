@@ -1,5 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const CryptoJS = require('crypto-js');
+const { validateRequiredFields } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -58,42 +59,15 @@ module.exports = (app, config) => {
 		const apiName = 'Get Admin User by UserId API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!firstName) {
-				console.log(`❌ ${apiName} Bad request: firstName is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: firstName is a required parameter.',
-				});
-			} else if (!lastName) {
-				console.log(`❌ ${apiName} Bad request: lastName is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: lastName is a required parameter.',
-				});
-			} else if (!email) {
-				console.log(`❌ ${apiName} Bad request: email is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: email is a required parameter.',
-				});
-			} else if (!password || typeof password !== 'string' || password.length < 8) {
-				console.log(`❌ ${apiName} Bad request: Password is required and must be at least 8 characters.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: Password is required and must be at least 8 characters.',
-				});
-			} else if (!phone) {
-				console.log(`❌ ${apiName} Bad request: phone is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: phone is a required parameter.',
-				});
+			const requiredFields = [
+				'firstName',
+				'lastName',
+				'email',
+				'password',
+				'phone',
+			];
+			if (!validateRequiredFields(req.body, requiredFields, res)) {
+				return;
 			} else {
 				// 🔎 Check for duplicate email
 				const existingUser = await mongo.findOne(mongoClient, 'admin_user', { email });

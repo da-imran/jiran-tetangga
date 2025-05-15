@@ -1,4 +1,5 @@
 const mongo = require('../utilities/mongodb');
+const { validateRequiredFields } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -51,63 +52,18 @@ module.exports = (app, config) => {
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!name) {
-				console.log(`❌ ${apiName} Bad request: name is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: name is a required parameter.',
-				});
-			} else if (!category) {
-				console.log(`❌ ${apiName} Bad request: category is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: category is a required parameter.',
-				});
-			} else if (!status) {
-				console.log(`❌ ${apiName} Bad request: status is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: status is a required parameter.',
-				});
-			} else if (!owner) {
-				console.log(`❌ ${apiName} Bad request: owner is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: owner is a required parameter.',
-				});
-			} else if (!contact) {
-				console.log(`❌ ${apiName} Bad request: contact is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: contact is a required parameter.',
-				});
-			} else if (!images) {
-				console.log(`❌ ${apiName} Bad request: images is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: images is a required parameter.',
-				});
-			} else if (!location) {
-				console.log(`❌ ${apiName} Bad request: location is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: location is a required parameter.',
-				});
-			} else if (!openingHours) {
-				console.log(`❌ ${apiName} Bad request: openingHours is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: openingHours is a required parameter.',
-				});
+			const requiredFields = [
+				'name',
+				'category',
+				'status',
+				'owner',
+				'contact',
+				'images',
+				'location',
+				'openingHours',
+			];
+			if (!validateRequiredFields(req.body, requiredFields, res)) {
+				return;
 			} else {
 				// 🔎 Proceed to create shop
 				const inputShop = {

@@ -1,4 +1,5 @@
 const mongo = require('../utilities/mongodb');
+const { validateRequiredFields } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -49,49 +50,16 @@ module.exports = (app, config) => {
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!name) {
-				console.log(`❌ ${apiName} Bad request: name is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: name is a required parameter.',
-				});
-			} else if (!condition) {
-				console.log(`❌ ${apiName} Bad request: condition is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: condition is a required parameter.',
-				});
-			} else if (!lastInspected) {
-				console.log(`❌ ${apiName} Bad request: lastInspected is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: lastInspected is a required parameter.',
-				});
-			} else if (!images) {
-				console.log(`❌ ${apiName} Bad request: images is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: images is a required parameter.',
-				});
-			}  else if (!notes) {
-				console.log(`❌ ${apiName} Bad request: notes is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: notes is a required parameter.',
-				});
-			}  else if (!location) {
-				console.log(`❌ ${apiName} Bad request: location is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: location is a required parameter.',
-				});
+			const requiredFields = [
+				'name',
+				'condition',
+				'lastInspected',
+				'images',
+				'notes',
+				'location',
+			];
+			if (!validateRequiredFields(req.body, requiredFields, res)) {
+				return;
 			} else {
 				// 🔎 Proceed to create park
 				const inputPark = {
@@ -144,7 +112,6 @@ module.exports = (app, config) => {
 		const apiName = 'Update Parks API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
 			if (!parkId) {
 				console.log(`❌ ${apiName} Bad request: parkId is a required parameter.`);
 

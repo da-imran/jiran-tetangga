@@ -1,4 +1,5 @@
 const mongo = require('../utilities/mongodb');
+const { validateRequiredFields } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -48,42 +49,15 @@ module.exports = (app, config) => {
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!title) {
-				console.log(`❌ ${apiName} Bad request: title is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: title is a required parameter.',
-				});
-			} else if (!category) {
-				console.log(`❌ ${apiName} Bad request: category is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: category is a required parameter.',
-				});
-			} else if (!message) {
-				console.log(`❌ ${apiName} Bad request: message is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: message is a required parameter.',
-				});
-			} else if (!visibility) {
-				console.log(`❌ ${apiName} Bad request: visibility is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: visibility is a required parameter.',
-				});
-			} else if (!adminId) {
-				console.log(`❌ ${apiName} Bad request: adminId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: adminId is a required parameter.',
-				});
+			const requiredFields = [
+				'title',
+				'message',
+				'category',
+				'visibility',
+				'adminId',
+			];
+			if (!validateRequiredFields(req.body, requiredFields, res)) {
+				return;
 			} else {
 				// 🔎 Proceed to create shop
 				const inputNews = {

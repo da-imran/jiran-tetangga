@@ -1,4 +1,5 @@
 const mongo = require('../utilities/mongodb');
+const { validateRequiredFields } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -50,56 +51,17 @@ module.exports = (app, config) => {
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!firstName) {
-				console.log(`❌ ${apiName} Bad request: firstName is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: firstName is a required parameter.',
-				});
-			} else if (!lastName) {
-				console.log(`❌ ${apiName} Bad request: lastName is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: lastName is a required parameter.',
-				});
-			} else if (!email) {
-				console.log(`❌ ${apiName} Bad request: email is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: email is a required parameter.',
-				});
-			} else if (!phone) {
-				console.log(`❌ ${apiName} Bad request: phone is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: phone is a required parameter.',
-				});
-			} else if (!address) {
-				console.log(`❌ ${apiName} Bad request: address is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: address is a required parameter.',
-				});
-			} else if (!unitNo) {
-				console.log(`❌ ${apiName} Bad request: unitNo is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: unitNo is a required parameter.',
-				});
-			} else if (!role) {
-				console.log(`❌ ${apiName} Bad request: role is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: role is a required parameter.',
-				});
+			const requiredFields = [
+				'firstName',
+				'lastName',
+				'email',
+				'phone',
+				'address',
+				'unitNo',
+				'role',
+			];
+			if (!validateRequiredFields(req.body, requiredFields, res)) {
+				return;
 			} else {
 				// 🔎 Proceed to create resident
 				const inputResidents = {
