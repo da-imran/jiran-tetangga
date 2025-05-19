@@ -21,7 +21,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 | Layer        | Tech Stack           |
 |--------------|----------------------|
-| Frontend     | React.js (planned)   |
+| Frontend     | React.js   |
 | Backend      | Node.js + Express    |
 | Database     | MongoDB              |
 | Auth         | Encrypted password storage (AES) |
