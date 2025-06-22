@@ -93,7 +93,7 @@ npm run dev
 [x] MongoDB connection setup </br>
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
-[] React frontend dashboard </br>
+[x] NextJS frontend dashboard </br>
 [] WhatsApp bot notification </br>
 [] CI/CD pipeline with GitLab </br>
 [] Kubernetes orchestration </br>
