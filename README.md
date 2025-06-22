@@ -20,7 +20,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 | Layer        | Tech Stack           |
 |--------------|----------------------|
-| Frontend     | React.js   |
+| Frontend     | TypeScript, NextJS, Tailwind CSS (via Firebase 🔥)   |
 | Backend      | Node.js + Express    |
 | Database     | MongoDB              |
 | Auth         | Encrypted password storage (AES) |
