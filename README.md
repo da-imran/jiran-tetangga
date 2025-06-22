@@ -27,7 +27,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 | Messaging    | WhatsApp Bot	|
 | Container    | Docker, Docker Compose |
 | Orchestration| Kubernetes (local + cloud) |
-| CI/CD        | GitLab Pipelines     |
+| CI/CD        | Github Action     |
 | Monitoring   | Prometheus + Grafana |
 | Testing      | Jest / Mocha	|
 
