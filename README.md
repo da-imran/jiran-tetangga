@@ -6,13 +6,12 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 - 📢 Get real-time updates on:
   - Road disruptions
-  - Local events or ceremonies
-  - Shop openings or closures
+  - Local events and ceremonies
+  - Shop openings and closures
   - Park conditions
 - 📬 Residents can report damages or concerns
 - 🧠 Admin system for managing updates and users
 - 🤖 WhatsApp bot integration
-- 🌐 React frontend + Node.js backend + MongoDB
 - 🐳 Docker support + local and cloud deployment ready
 
 ---
@@ -53,46 +52,6 @@ jiran-tetangga-system/
 ├── app.js             # Express app, middleware, routes entry
 ├── server.js          # Separate boot file (optional)
 ├── package.json
-```
-
----
-
-## 📂 Front Project Structure
-```bash
-jiran-tetangga-webapp/
-├── src/
-│   ├── components/
-│   │   └── Header.jsx
-│   │   └── Footer.jsx
-│   │   └── Navbar.jsx
-│   │   └── ReportForm.jsx
-│   │   └── EventList.jsx
-│   │   └── ShopList.jsx
-│   │   └── ParkStatus.jsx
-│   │   └── AdminDashboard.jsx
-│   ├── pages/
-│   │   └── Home.jsx
-│   │   └── Reports.jsx
-│   │   └── Events.jsx
-│   │   └── Shops.jsx
-│   │   └── Parks.jsx
-│   │   └── Admin.jsx
-│   ├── context/
-│   │   └── AuthContext.jsx
-│   │   └── DataContext.jsx
-│   ├── hooks/
-│   │   └── useAuth.js
-│   │   └── useFetch.js
-│   ├── utils/
-│   │   └── api.js
-│   ├── App.jsx
-│   ├── index.js
-│   └── App.css
-├── public/
-├── .env
-├── package.json
-├── tailwind.config.js
-└── vite.config.js
 ```
 
 ---
