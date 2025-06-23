@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 	// Load routes/modules after MongoDB is ready
 	await loadModules(app, config);
 
-	app.get('/', (req, res) => res.send('Neighbourhood Info Backend Running'));
+	app.get('/', (req, res) => res.send('JiranTetangga Backend Running'));
 })();
 
 module.exports = { app };
