@@ -95,7 +95,7 @@ npm run dev
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
 [] WhatsApp bot notification </br>
-[] CI/CD pipeline with GitLab </br>
+[] CI/CD pipeline with Github Action </br>
 [] Kubernetes orchestration </br>
 
 ## 🤝 Contributing
