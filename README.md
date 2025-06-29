@@ -80,7 +80,6 @@ ROUTE_PREPEND = 'jiran-tetangga'
 API_VERSION = '1.0.0'
 APP_VERSION = '1.0.0'
 VERSION = 'v1'
-PORT = 'your port i.e. 3005'
 ```
 
 ### 4. Run Locally
