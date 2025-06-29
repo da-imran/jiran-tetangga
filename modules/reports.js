@@ -1,5 +1,5 @@
 const mongo = require('../utilities/mongodb');
-const { validateRequiredFields } = require('../utilities/validation');
+const { requiredCheck } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -12,7 +12,7 @@ module.exports = (app, config) => {
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const reportsResult = await mongo.find(mongoClient, 'events');
+			const reportsResult = await mongo.find(mongoClient, 'reports');
 
 			if (reportsResult) {
 				console.log(`${apiName} Response Success.`);
@@ -24,7 +24,39 @@ module.exports = (app, config) => {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
-					message: 'Events not found',
+					message: 'Reports not found',
+				});
+			}
+		} catch (err) {
+			const error = { message: err.message, stack: err.stack };
+			res.status(500).send({
+				status: 500,
+				message: `${apiName} error`,
+				error,
+			});
+		}
+	});
+
+	// Get Report by reportId API
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		const apiName = 'Get Report API';
+		const { reportId } = req.params;
+		try {
+			console.log(`${apiName} is called at ${new Date()}}`);
+
+			const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
+
+			if (reportsResult) {
+				console.log(`${apiName} Response Success.`);
+				res.status(200).send({
+					status: 200,
+					data: reportsResult
+				});
+			} else {
+				console.log(`❌ ${apiName} Response Failed.`);
+				res.status(404).send({
+					status: 404,
+					message: 'Report not found',
 				});
 			}
 		} catch (err) {
@@ -60,7 +92,7 @@ module.exports = (app, config) => {
 				'location',
 				'images',
 			];
-			if (!validateRequiredFields(req.body, requiredFields, res)) {
+			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create report

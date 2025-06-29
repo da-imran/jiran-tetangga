@@ -19,8 +19,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-	const mongoClient = await mongodb.clientConnect(process.env.MONGODB_URI);
-
+	const mongoClient = await mongodb.clientConnect(process.env.MONGO_URI);
+	
 	const config = { mongoClient };
 
 	// Load routes/modules after MongoDB is ready

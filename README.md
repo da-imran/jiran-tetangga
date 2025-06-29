@@ -39,7 +39,6 @@ jiran-tetangga-system/
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
 │   ├── reports.js     # Issue reporting (e.g. pothole, disruption)
-│   ├── residents.js   # Resident info (optional user profiles)
 │   ├── updates.js     # News, announcements
 │   ├── events.js      # Family events, ceremonies
 │   ├── shops.js       # Shop status, new openings/closures
@@ -76,8 +75,12 @@ Create a .env file
 PORT=your_port_number
 MONGODB_URI=mongodb_db_connection_uri
 MONGODB_DBNAME=mongodb_name
-MONGODB_COLLECTION=mongodb_collection
-ENCRYPTION_KEY=encryption_secret_key
+ENCRYPTION_KEY=any random strings
+ROUTE_PREPEND = 'jiran-tetangga'
+API_VERSION = '1.0.0'
+APP_VERSION = '1.0.0'
+VERSION = 'v1'
+PORT = 'your port i.e. 3005'
 ```
 
 ### 4. Run Locally

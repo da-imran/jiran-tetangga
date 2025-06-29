@@ -1,4 +1,4 @@
-const validateRequiredFields = (input, requiredFields, res) => {
+const requiredCheck = (input, requiredFields, res) => {
 	for (const field of requiredFields) {
 		if (!input[field]) {
 			console.error(`❌ Bad request: ${field} is a required parameter.`);
@@ -12,4 +12,4 @@ const validateRequiredFields = (input, requiredFields, res) => {
 	return true;
 };
 
-module.exports = { validateRequiredFields };
+module.exports = { requiredCheck }; 

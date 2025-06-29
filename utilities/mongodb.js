@@ -75,7 +75,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $set: { ...updateInput }, $unset: { ...unsetFields } }, { ...updateOptions, returnDocument: 'after' });
-			console.log(`✅ MongoDB findOneAndUpdate result: ${JSON.stringify(result)}`);
+			console.log(`✅ MongoDB findOneAndUpdate result: ${JSON.parse(JSON.stringify(result))}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdate process failed:', error);
@@ -89,7 +89,7 @@ module.exports = {
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $inc: { ...updateInput } }, { ...updateOptions, returnDocument: 'after' });
 			console.log(`✅ MongoDB findOneAndUpdateInc result: ${result}`);
-			resolve(result.value);
+			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdateInc process failed:', error);
 			resolve(error);
@@ -102,7 +102,7 @@ module.exports = {
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $inc: { ...updateInput } });
 			console.log(`✅ MongoDB updateOneInc result: ${result}`);
-			resolve(result.value);
+			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB updateOneInc process failed:', error);
 			resolve(error);
@@ -114,7 +114,7 @@ module.exports = {
 			const collection = db.collection(collectionName);
 			const result = await collection.findOneAndUpdate({ ...matchParameters }, { $addToSet: { ...updateInput } }, { ...updateOptions, returnDocument: 'after' });
 			console.log(`✅ MongoDB findOneAndUpdateAddToSet result: ${result}`);
-			resolve(result.value);
+			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOneAndUpdateAddToSet process failed:', error);
 			resolve(error);

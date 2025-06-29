@@ -1,5 +1,5 @@
 const mongo = require('../utilities/mongodb');
-const { validateRequiredFields } = require('../utilities/validation');
+const { requiredCheck } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -13,6 +13,38 @@ module.exports = (app, config) => {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
 			const parksResult = await mongo.find(mongoClient, 'parks');
+
+			if (parksResult) {
+				console.log(`${apiName} Response Success.`);
+				res.status(200).send({
+					status: 200,
+					data: parksResult
+				});
+			} else {
+				console.log(`❌ ${apiName} Response Failed.`);
+				res.status(404).send({
+					status: 404,
+					message: 'Parks not found',
+				});
+			}
+		} catch (err) {
+			const error = { message: err.message, stack: err.stack };
+			res.status(500).send({
+				status: 500,
+				message: `${apiName} error`,
+				error,
+			});
+		}
+	});
+
+	// Get Parks by parkId API
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		const apiName = 'Get Park API';
+		const { parkId } = req.params;
+		try {
+			console.log(`${apiName} is called at ${new Date()}}`);
+
+			const parksResult = await mongo.find(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
 
 			if (parksResult) {
 				console.log(`${apiName} Response Success.`);
@@ -58,7 +90,7 @@ module.exports = (app, config) => {
 				'notes',
 				'location',
 			];
-			if (!validateRequiredFields(req.body, requiredFields, res)) {
+			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create park

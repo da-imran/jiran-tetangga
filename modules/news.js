@@ -1,5 +1,5 @@
 const mongo = require('../utilities/mongodb');
-const { validateRequiredFields } = require('../utilities/validation');
+const { requiredCheck } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -13,6 +13,38 @@ module.exports = (app, config) => {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
 			const newsResult = await mongo.find(mongoClient, 'news');
+
+			if (newsResult) {
+				console.log(`${apiName} Response Success.`);
+				res.status(200).send({
+					status: 200,
+					data: newsResult
+				});
+			} else {
+				console.log(`❌ ${apiName} Response Failed.`);
+				res.status(404).send({
+					status: 404,
+					message: 'News not found',
+				});
+			}
+		} catch (err) {
+			const error = { message: err.message, stack: err.stack };
+			res.status(500).send({
+				status: 500,
+				message: `${apiName} error`,
+				error,
+			});
+		}
+	});
+
+	// Get News API by newsId
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/news/:newsId`, async (req, res) => {
+		const apiName = 'Get News API';
+		const { newsId } = req.params;
+		try {
+			console.log(`${apiName} is called at ${new Date()}}`);
+
+			const newsResult = await mongo.find(mongoClient, 'news', {_id: mongo.getObjectId(newsId)});
 
 			if (newsResult) {
 				console.log(`${apiName} Response Success.`);
@@ -56,7 +88,7 @@ module.exports = (app, config) => {
 				'visibility',
 				'adminId',
 			];
-			if (!validateRequiredFields(req.body, requiredFields, res)) {
+			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create shop

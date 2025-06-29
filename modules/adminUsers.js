@@ -1,6 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const CryptoJS = require('crypto-js');
-const { validateRequiredFields } = require('../utilities/validation');
+const { requiredCheck } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -9,11 +9,10 @@ module.exports = (app, config) => {
 
 	const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-
 	// Get all Administrator user details or filter by the email API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
 		const { email } = req.query;
-		const apiName = 'Get Admin User API';
+		const apiName = 'Get All Admin Users API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
@@ -23,6 +22,38 @@ module.exports = (app, config) => {
 			const adminUser = await mongo.aggregate(mongoClient, 'admin_user', [
 				{ $match: filter } // Filter by email if provided
 			]);
+
+			if (adminUser) {
+				console.log(`${apiName} Response Success.`);
+				res.status(200).send({
+					status: 200,
+					data: adminUser
+				});
+			} else {
+				console.log(`❌ ${apiName} failed to fetch the admin user. Admin User not found.`);
+				res.status(404).send({
+					status: 404,
+					message: 'Admin user not found',
+				});
+			}
+		} catch (err) {
+			const error = { message: err.message, stack: err.stack };
+			res.status(500).send({
+				status: 500,
+				message: `${apiName} error`,
+				error,
+			});
+		}
+	});
+
+	// Get specific Administrator user details by UserId
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
+		const { adminUserId } = req.query;
+		const apiName = 'Get Admin User API';
+		try {
+			console.log(`${apiName} is called at ${new Date()}}`);
+
+			const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
 
 			if (adminUser) {
 				console.log(`${apiName} Response Success.`);
@@ -66,7 +97,7 @@ module.exports = (app, config) => {
 				'password',
 				'phone',
 			];
-			if (!validateRequiredFields(req.body, requiredFields, res)) {
+			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Check for duplicate email

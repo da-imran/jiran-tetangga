@@ -1,5 +1,5 @@
 const mongo = require('../utilities/mongodb');
-const { validateRequiredFields } = require('../utilities/validation');
+const { requiredCheck } = require('../utilities/validation');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
@@ -8,7 +8,7 @@ module.exports = (app, config) => {
 
 	// Get all Events or by filter API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
-		const apiName = 'Get Events API';
+		const apiName = 'Get All Events API';
 		const {
 			title,
 			description,
@@ -55,6 +55,38 @@ module.exports = (app, config) => {
 		}
 	});
 
+	// Get all Events by eventId
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		const apiName = 'Get Event API';
+		const { eventId } = req.params;
+		try {
+			console.log(`${apiName} is called at ${new Date()}}`);
+
+			const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
+
+			if (eventsResult) {
+				console.log(`${apiName} Response Success.`);
+				res.status(200).send({
+					status: 200,
+					data: eventsResult
+				});
+			} else {
+				console.log(`❌ ${apiName} Response Failed.`);
+				res.status(404).send({
+					status: 404,
+					message: 'Events not found',
+				});
+			}
+		} catch (err) {
+			const error = { message: err.message, stack: err.stack };
+			res.status(500).send({
+				status: 500,
+				message: `${apiName} error`,
+				error,
+			});
+		}
+	});
+
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Create Events API';
@@ -76,7 +108,7 @@ module.exports = (app, config) => {
 				'hostId',
 				'isPublic',
 			];
-			if (!validateRequiredFields(req.body, requiredFields, res)) {
+			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create event
