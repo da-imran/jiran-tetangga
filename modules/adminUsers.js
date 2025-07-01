@@ -46,7 +46,7 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get specific Administrator user details by UserId
+	// Get Administrator user details by UserId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
 		const { adminUserId } = req.query;
 		const apiName = 'Get Admin User API';

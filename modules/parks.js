@@ -43,7 +43,7 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get Parks by parkId API
+	// Get Park by parkId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
 		const apiName = 'Get Park API';
 		const { parkId } = req.params;

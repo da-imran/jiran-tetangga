@@ -47,7 +47,7 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get News API by newsId
+	// Get New by newsId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/news/:newsId`, async (req, res) => {
 		const apiName = 'Get News API';
 		const { newsId } = req.params;

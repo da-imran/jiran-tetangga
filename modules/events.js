@@ -55,7 +55,7 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get all Events by eventId
+	// Get Event by eventId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
 		const apiName = 'Get Event API';
 		const { eventId } = req.params;
