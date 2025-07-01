@@ -1,6 +1,12 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
+const parkStatus = {
+	OPEN: 'open',
+	CLOSED: 'closed',
+	MAINTENANCE: 'maintenance'
+};
+
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -74,20 +80,18 @@ module.exports = (app, config) => {
 		const apiName = 'Create Parks API';
 		const {
 			name,
-			condition,
-			lastInspected,
+			description,
 			images,
-			notes,
 			location,
+			openingHours,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
-				'condition',
-				'lastInspected',
+				'description',
 				'images',
-				'notes',
+				'openingHours',
 				'location',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -96,11 +100,11 @@ module.exports = (app, config) => {
 				// 🔎 Proceed to create park
 				const inputPark = {
 					name,
-					condition,
-					lastInspected,
+					description,
+					status: parkStatus.CLOSED, // Set the status to CLOSED by default
 					images,
-					notes,
 					location,
+					openingHours,
 					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputPark);

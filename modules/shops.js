@@ -1,6 +1,12 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
+const shopStatus = {
+	OPEN: 'open',
+	CLOSED: 'closed',
+	MAINTENANCE: 'maintenance'
+};
+
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -74,10 +80,8 @@ module.exports = (app, config) => {
 		const apiName = 'Create Shops API';
 		const {
 			name,
+			description,
 			category,
-			status,
-			owner,
-			contact,
 			images,
 			location,
 			openingHours,
@@ -86,10 +90,8 @@ module.exports = (app, config) => {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
+				'description',
 				'category',
-				'status',
-				'owner',
-				'contact',
 				'images',
 				'location',
 				'openingHours',
@@ -100,10 +102,9 @@ module.exports = (app, config) => {
 				// 🔎 Proceed to create shop
 				const inputShop = {
 					name,
+					description,
 					category,
-					status,
-					owner,
-					contact,
+					status: shopStatus.CLOSED, // Set the status to CLOSED by default
 					images,
 					location,
 					openingHours,

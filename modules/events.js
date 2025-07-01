@@ -93,9 +93,10 @@ module.exports = (app, config) => {
 		const {
 			title,
 			description,
+			organizerName,
+			organizerEmail,
 			eventDate,
 			location,
-			hostId,
 			isPublic,
 		} = req.body;
 		try {
@@ -103,9 +104,10 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'title',
 				'description',
+				'organizerName',
+				'organizerEmail',
 				'eventDate',
 				'location',
-				'hostId',
 				'isPublic',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -115,9 +117,10 @@ module.exports = (app, config) => {
 				const inputEvents = {
 					title,
 					description,
+					organizerName,
+					organizerEmail,
 					eventDate,
 					location,
-					hostId,
 					isPublic,
 					createdAt: new Date(),
 				};

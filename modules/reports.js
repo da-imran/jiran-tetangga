@@ -1,6 +1,12 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
+const reportStatus = {
+	PENDING: 'pending',
+	COMPLETED: 'completed',
+	REJECTED: 'rejected'
+};
+
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -73,23 +79,17 @@ module.exports = (app, config) => {
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
 		const apiName = 'Create Reports API';
 		const {
-			residentId,
-			title,
-			description,
+			complainantEmail,
 			category,
-			status,
-			location,
+			description,
 			images,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
-				'residentId',
-				'title',
-				'description',
+				'complainantEmail',
 				'category',
-				'status',
-				'location',
+				'description',
 				'images',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -97,14 +97,12 @@ module.exports = (app, config) => {
 			} else {
 				// 🔎 Proceed to create report
 				const inputReports = {
-					residentId,
-					title,
-					description,
+					complainantEmail,
 					category,
-					status,
-					location,
+					description,
 					images,
-					createdAt: new Date(),
+					status: reportStatus.PENDING,
+					reportedAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputReports);
 				if (inputResult) {

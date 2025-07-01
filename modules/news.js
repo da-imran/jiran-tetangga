@@ -1,6 +1,16 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
+const newCategory = {
+	INFO: 'informational', // More like general news, tips, the default value
+	UPDATE: 'update', // Follow-up information for a certain situation
+	EVENT: 'event', // Information for specific event i.e. pasar malam, gotong royong
+	ANNOUNCEMENT: 'announcement', // Official statements, or updates
+	WARNING: 'warning', // Alerts on potential issues or riskk
+	ALERT: 'alert', // More urgent or critical notification than warning
+	EMERGENCT: 'emergency' // Highest level of urgency, indicating serious situation
+};
+
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -74,18 +84,14 @@ module.exports = (app, config) => {
 		const apiName = 'Create News API';
 		const {
 			title,
-			message,
-			category,
-			visibility,
+			description,
 			adminId,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'title',
-				'message',
-				'category',
-				'visibility',
+				'descripiton',
 				'adminId',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -94,10 +100,10 @@ module.exports = (app, config) => {
 				// 🔎 Proceed to create shop
 				const inputNews = {
 					title,
-					message,
-					category,
-					visibility,
-					adminId,
+					description,
+					status: false, // Set false as default value for inactive
+					category: newCategory.INFO,
+					createdBy: mongo.getObjectId(adminId),
 					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'news', inputNews);
