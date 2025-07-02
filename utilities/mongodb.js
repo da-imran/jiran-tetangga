@@ -48,7 +48,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.findOne({ ...parameters }, { projection });
-			console.log(`✅ MongoDB findOne result: ${result}`);
+			console.log(`✅ MongoDB findOne result: ${JSON.stringify(result)}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB findOne process failed:', error);
