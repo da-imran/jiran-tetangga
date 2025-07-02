@@ -3,6 +3,12 @@ const API_VERSION = process.env.API_VERSION;
 const APP_VERSION = process.env.APP_VERSION;
 const VERSION = process.env.VERSION;
 
+console.log(`[index.js Startup] ROUTE_PREPEND: "${ROUTE_PREPEND}"`);
+console.log(`[index.js Startup] VERSION: "${VERSION}"`);
+console.log(`[index.js Startup] API_VERSION: "${API_VERSION}"`);
+console.log(`[index.js Startup] APP_VERSION: "${APP_VERSION}"`);
+console.log(`[index.js Startup] Expected API base path: "/${ROUTE_PREPEND}/${VERSION}"`);
+
 module.exports = async (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}`, (_, res) => {
 		try {
