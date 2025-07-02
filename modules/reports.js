@@ -49,21 +49,26 @@ module.exports = (app, config) => {
 		const { reportId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
-
-			if (reportsResult) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: reportsResult
-				});
+			const requiredFields = [
+				'reportId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
-				console.log(`❌ ${apiName} Response Failed.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Report not found',
-				});
+				const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
+				if (reportsResult) {
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: reportsResult
+					});
+				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Report not found',
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };

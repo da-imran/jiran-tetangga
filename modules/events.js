@@ -61,21 +61,26 @@ module.exports = (app, config) => {
 		const { eventId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
-
-			if (eventsResult) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: eventsResult
-				});
+			const requiredFields = [
+				'eventId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
-				console.log(`❌ ${apiName} Response Failed.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Events not found',
-				});
+				const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
+				if (eventsResult) {
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: eventsResult
+					});
+				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Events not found',
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };

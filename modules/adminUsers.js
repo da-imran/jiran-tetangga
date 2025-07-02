@@ -48,25 +48,32 @@ module.exports = (app, config) => {
 
 	// Get Administrator user details by UserId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.query;
+		const { adminUserId } = req.params;
 		const apiName = 'Get Admin User API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
-
-			if (adminUser) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: adminUser
-				});
+			const requiredFields = [
+				'adminUserId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
-				console.log(`❌ ${apiName} failed to fetch the admin user. Admin User not found.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Admin user not found',
-				});
+				const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
+
+				if (adminUser) {
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: adminUser
+					});
+				} else {
+					console.log(`❌ ${apiName} failed to fetch the admin user. Admin user not found.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Admin user not found',
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };
