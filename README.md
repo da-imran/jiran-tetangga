@@ -60,7 +60,7 @@ jiran-tetangga-system/
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/da-imran/neighborhood-system.git
+git clone https://github.com/da-imran/jiran-tetangga.git
 cd neighbourhood-system
 ```
 
