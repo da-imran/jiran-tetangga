@@ -24,11 +24,12 @@ jobs:
         run: npm install
 
       - name: Build Docker Image
-        uses: actions/build-push-actions@v2
+        uses: actions/build-push-actions@v5
         with:
           context: .
           dockerfile: Dockerfile
           push: false
+          tags: jiran-tetangga:latest
 
       - name: Done
         run: echo "CI pipeline build stage completed."
