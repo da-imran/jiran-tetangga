@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Build Docker Image
-        uses: actions/build-push-actions@v5
+        uses: actions/setup-buildx-action@v3
         with:
           context: .
           dockerfile: Dockerfile
