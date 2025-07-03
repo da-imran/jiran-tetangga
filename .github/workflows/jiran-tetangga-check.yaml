@@ -7,7 +7,7 @@ on:
       - development
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,44 +15,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm install
+
+      - name: Build Docker Image
+        uses: actions/build-push-actions@v2
+        with:
+          context: .
+          dockerfile: Dockerfile
+          push: false
+
       - name: Done
-        run: echo "CI pipeline setup stage completed."
+        run: echo "CI pipeline build stage completed."
+
   test:
-    needs: setup
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+
       - name: Install dependencies
         run: npm install
+
       - name: Run tests
         run: |
           npm test || echo "No tests defined yet. Skipping."
+
       - name: Done
         run: echo "CI pipeline test stage completed."
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-      - name: Install dependencies
-        run: npm install
-      - name: Build Next.js Project
-        run: npm run build
-      - name: Done
-        run: echo "CI pipeline build stage completed."
