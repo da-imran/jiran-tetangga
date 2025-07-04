@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Report by reportId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
 		const apiName = 'Get Report API';
-		const { reportId } = req.params;
+		const { reportId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
@@ -135,8 +135,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Reports API by reportId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const { reportId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		const { reportId } = req.query;
 		const {
 			title,
 			description,
@@ -150,13 +150,11 @@ module.exports = (app, config) => {
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!reportId) {
-				console.log(`❌ ${apiName} Bad request: reportId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: reportId is a required parameter.',
-				});
+			const requiredFields = [
+				'reportId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
@@ -192,18 +190,18 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Reports API by reportId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const { reportId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		const { reportId } = req.query;
 
 		const apiName = 'Delete Reports API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!reportId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: reportId is a required parameters.',
-				});
+			const requiredFields = [
+				'reportId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
 				if (deleteResult) {

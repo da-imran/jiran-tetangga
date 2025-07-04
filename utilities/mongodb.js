@@ -161,7 +161,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const filter = { ...input };
-			if (input._id) filter._id = new mongo.ObjectId.createFromHexString(input._id);
+			if (input?._id) filter._id = new mongo.ObjectId.createFromHexString(input._id);
 			const result = await collection.find({ ...filter }).project({ ...projection }).toArray();
 			console.log(`✅ MongoDB find result: ${result}`);
 			resolve(result);

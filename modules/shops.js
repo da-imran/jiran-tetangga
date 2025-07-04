@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Shop by shopId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
 		const apiName = 'Get Shop API';
-		const { shopId } = req.params;
+		const { shopId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const shopResult = await mongo.find(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
@@ -141,8 +141,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Shops API by shopId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
-		const { shopId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		const { shopId } = req.query;
 		const {
 			name,
 			category,
@@ -158,13 +158,11 @@ module.exports = (app, config) => {
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!shopId) {
-				console.log(`❌ ${apiName} Bad request: shopId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: shopId is a required parameter.',
-				});
+			const requiredFields = [
+				'shopId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
@@ -203,18 +201,18 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Shops API by shopId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
-		const { shopId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		const { shopId } = req.query;
 
 		const apiName = 'Delete Shops API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!shopId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: shopId is a required parameters.',
-				});
+			const requiredFields = [
+				'shopId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
 				if (deleteResult) {

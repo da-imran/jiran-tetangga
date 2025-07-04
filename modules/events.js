@@ -56,15 +56,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Event by eventId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Get Event API';
-		const { eventId } = req.params;
+		const { eventId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
@@ -155,8 +155,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Events API by eventId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
-		const { eventId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		const { eventId } = req.query;
 		const { 
 			title,
 			description,
@@ -169,14 +169,13 @@ module.exports = (app, config) => {
 		const apiName = 'Update Events API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
+			
+			const requiredFields = [
+				'eventId',
+			];
 
-			if (!eventId) {
-				console.log(`❌ ${apiName} Bad request: eventId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: eventId is a required parameter.',
-				});
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
@@ -212,18 +211,17 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Event by eventId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
-		const { eventId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		const { eventId } = req.query;
 
 		const apiName = 'Delete Event API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!eventId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: eventId is a required parameters.',
-				});
+			const requiredFields = [
+				'eventId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'events', { _id: mongo.getObjectId(eventId) });
 				if (deleteResult) {

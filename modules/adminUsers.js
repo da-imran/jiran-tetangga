@@ -47,8 +47,8 @@ module.exports = (app, config) => {
 	});
 
 	// Get Administrator user details by UserId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.params;
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser`, async (req, res) => {
+		const { adminUserId } = req.query;
 		const apiName = 'Get Admin User API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
@@ -56,7 +56,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'adminUserId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
@@ -154,29 +154,24 @@ module.exports = (app, config) => {
 	});
 
 	// Update Administrator user by UserId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		const { adminUserId } = req.query;
 		const { 
 			firstName,
 			lastName,
-			phone,
-			email
 		} = req.body;
 
 		const apiName = 'Update Admin User by UserId API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (phone) {
-				res.status(400).send({
-					status: 400,
-					message: 'Phone number of the administrator user cannot be updated.',
-				});
-			} else if (email) {
-				res.status(400).send({
-					status: 400,
-					message: 'Email of the administrator user cannot be updated.',
-				});
+			const requiredFields = [
+				'adminUserId',
+			];
+			const dataToValidate = { ...req.query, ...req.body };
+	
+			if (!requiredCheck(dataToValidate, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
@@ -208,18 +203,17 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Administrator user by UserId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		const { adminUserId } = req.query;
 
 		const apiName = 'Delete Admin User by UserId API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!adminUserId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: adminUserId is a required parameters.',
-				});
+			const requiredFields = [
+				'adminUserId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });
 				if (deleteResult) {

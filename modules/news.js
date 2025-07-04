@@ -48,16 +48,16 @@ module.exports = (app, config) => {
 	});
 
 	// Get New by newsId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/news/:newsId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
 		const apiName = 'Get News API';
-		const { newsId } = req.params;
+		const { newsId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
 			const requiredFields = [
 				'newsId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const newsResult = await mongo.find(mongoClient, 'news', {_id: mongo.getObjectId(newsId)});
@@ -97,7 +97,7 @@ module.exports = (app, config) => {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'title',
-				'descripiton',
+				'description',
 				'adminId',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -138,41 +138,35 @@ module.exports = (app, config) => {
 	});
 
 	// Update News API by shopId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/news/:newsId`, async (req, res) => {
-		const { newsId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
+		const { newsId } = req.query;
 		const {
 			title,
-			message,
+			description,
 			category,
-			visibility,
+			status,
 			adminId,
 		} = req.body;
 
 		const apiName = 'Update News API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
+			
+			const requiredFields = [
+				'newsId',
+				'adminId',
+			];
 
-			if (!newsId) {
-				console.log(`❌ ${apiName} Bad request: newsId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: newsId is a required parameter.',
-				});
-			} else if (!adminId) {
-				console.log(`❌ ${apiName} Bad request: adminId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: adminId is a required parameter.',
-				});
+			const dataToValidate = { ...req.query, ...req.body };
+			if (!requiredCheck(dataToValidate, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
 				if (title) updateObj.title = title;
 				if (category) updateObj.category = category;
-				if (message) updateObj.message = message;
-				if (visibility) updateObj.visibility = visibility;
+				if (description) updateObj.description = description;
+				if (status) updateObj.status = status;
 				if (adminId) updateObj.adminId = adminId;
 				updateObj.updatedAt = new Date();
 
@@ -201,18 +195,18 @@ module.exports = (app, config) => {
 	});
 
 	// Delete News API by shopId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/news/:newsId`, async (req, res) => {
-		const { newsId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
+		const { newsId } = req.query;
 
 		const apiName = 'Delete News API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!newsId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: newsId is a required parameters.',
-				});
+	
+			const requiredFields = [
+				'newsId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'news', { _id: mongo.getObjectId(newsId) });
 				if (deleteResult) {

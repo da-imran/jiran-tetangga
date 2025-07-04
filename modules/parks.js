@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Park by parkId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
 		const apiName = 'Get Park API';
-		const { parkId } = req.params;
+		const { parkId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'parkId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
 				const parksResult = await mongo.find(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
@@ -138,8 +138,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Parks API by parkId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
-		const { parkId } = req.params;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		const { parkId } = req.query;
 		const {
 			name,
 			condition,
@@ -153,13 +153,13 @@ module.exports = (app, config) => {
 		const apiName = 'Update Parks API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-			if (!parkId) {
-				console.log(`❌ ${apiName} Bad request: parkId is a required parameter.`);
 
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: parkId is a required parameter.',
-				});
+			const requiredFields = [
+				'parkId',
+			];
+			
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
@@ -197,18 +197,18 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Parks API by parkId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
-		const { parkId } = req.params;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		const { parkId } = req.query;
 
 		const apiName = 'Delete Parks API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!parkId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: parkId is a required parameters.',
-				});
+			const requiredFields = [
+				'parkId',
+			];
+			if (!requiredCheck(req.query, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
 				if (deleteResult) {
