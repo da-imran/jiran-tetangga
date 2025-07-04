@@ -26,6 +26,8 @@ services:
     command: ["npm", "run", "dev"]
     ports:
       - "3500:3500"
+    networks:
+      - jiran-tetangga-networks
     depends_on:
       mongodb:
         condition: service_healthy
@@ -39,12 +41,19 @@ services:
       - db_data:/data/mongodb
     ports:
       - "27018:27018"
+    networks:
+      - jiran-tetangga-networks
     healthcheck:
       test: ["CMD", "mongosh" ,"--eval", "db.adminCommand({ping: 1})", "--quiet"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
+
+networks:
+  jiran-tetangga-networks:
+    external: true
+    name: jiran-tetangga-networks
 
 volumes:
   db_data:
