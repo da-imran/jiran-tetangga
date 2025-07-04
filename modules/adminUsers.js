@@ -130,6 +130,7 @@ module.exports = (app, config) => {
 
 					const inputResult = await mongo.insertOne(mongoClient, 'admin_user', newAdmin);
 					if (inputResult) {
+						console.log(`${apiName} Response Success.`);
 						return res.status(200).json({
 							message: 'Administrator created successfully',
 							adminId: inputResult.insertedId,
@@ -178,18 +179,29 @@ module.exports = (app, config) => {
 				if (firstName) updateObj.firstName = firstName;
 				if (lastName) updateObj.lastName = lastName;
 
-				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) }, updateObj);
-				if (!updateResult) {
+				const adminUser = await mongo.findOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });
+				if(!adminUser) {
+					console.log(`❌ ${apiName} User not found!`);
 					res.status(404).send({
 						status: 404,
-						message: 'Admin user not updated'
+						message: 'User not found'
 					});
 				} else {
-					res.status(200).send({
-						status: 200,
-						message: 'Admin user updated successfully.',
-						data: JSON.parse(JSON.stringify(updateResult)),
-					});
+					const updateResult = await mongo.findOneAndUpdate(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) }, updateObj);
+					if (!updateResult) {
+						console.log(`❌ ${apiName} Admin user not updates.`);
+						res.status(404).send({
+							status: 404,
+							message: 'Admin user not updated'
+						});
+					} else {
+						console.log(`${apiName} Response Success.`);
+						res.status(200).send({
+							status: 200,
+							message: 'Admin user updated successfully.',
+							data: JSON.parse(JSON.stringify(updateResult)),
+						});
+					}
 				}
 			}
 		} catch (err) {
