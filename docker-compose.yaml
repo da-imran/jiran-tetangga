@@ -38,7 +38,7 @@ services:
     container_name: mongodb
     restart: always
     volumes:
-      - db_data:/data/mongodb
+      - db_data:/data/db
     ports:
       - "27018:27018"
     networks:
