@@ -1,14 +1,11 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const newCategory = {
-	INFO: 'informational', // More like general news, tips, the default value
-	UPDATE: 'update', // Follow-up information for a certain situation
-	EVENT: 'event', // Information for specific event i.e. pasar malam, gotong royong
-	ANNOUNCEMENT: 'announcement', // Official statements, or updates
-	WARNING: 'warning', // Alerts on potential issues or riskk
+const disruptionCategory = {
+	INFO: 'informational', // More like general disruption
+	WARNING: 'warning', // Alerts on potential disruption
 	ALERT: 'alert', // More urgent or critical notification than warning
-	EMERGENCT: 'emergency' // Highest level of urgency, indicating serious situation
+	EMERGENCY: 'emergency' // Highest level of urgency, indicating serious situation
 };
 
 module.exports = (app, config) => {
@@ -16,25 +13,25 @@ module.exports = (app, config) => {
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
 
-	// Get All News API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
-		const apiName = 'Get All News API';
+	// Get All Disruptions API
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const apiName = 'Get All Disruptions API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const newsResult = await mongo.find(mongoClient, 'news');
+			const mongoResult = await mongo.find(mongoClient, 'disruptions');
 
-			if (newsResult) {
+			if (mongoResult) {
 				console.log(`${apiName} Response Success.`);
 				res.status(200).send({
 					status: 200,
-					data: newsResult
+					data: mongoResult
 				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
-					message: 'News not found',
+					message: 'Disruptions not found',
 				});
 			}
 		} catch (err) {
@@ -47,31 +44,31 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get New by newsId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
-		const apiName = 'Get News API';
-		const { newsId } = req.query;
+	// Get Disruption by disruptionId
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const apiName = 'Get Disruption API';
+		const { disruptionId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
 			const requiredFields = [
-				'newsId',
+				'disruptionId',
 			];
 			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
-				const newsResult = await mongo.find(mongoClient, 'news', {_id: mongo.getObjectId(newsId)});
-				if (newsResult) {
+				const mongoResult = await mongo.find(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
+				if (mongoResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						data: newsResult
+						data: mongoResult
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'News not found',
+						message: 'Disruption not found',
 					});
 				}
 			}
@@ -85,9 +82,9 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Create News API
-	app.post(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
-		const apiName = 'Create News API';
+	// Create Disruptions API
+	app.post(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const apiName = 'Create Disruption API';
 		const {
 			title,
 			description,
@@ -103,27 +100,27 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
-				// 🔎 Proceed to create shop
-				const inputNews = {
+				// 🔎 Proceed to create disruption
+				const inputObj = {
 					title,
 					description,
 					status: false, // Set false as default value for inactive
-					category: newCategory.INFO,
+					category: disruptionCategory.INFO, // Set edfault value as INFO
 					createdBy: mongo.getObjectId(adminId),
 					createdAt: new Date(),
 				};
-				const inputResult = await mongo.insertOne(mongoClient, 'news', inputNews);
+				const inputResult = await mongo.insertOne(mongoClient, 'disruptions', inputObj);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
-						message: 'News created successfully',
+						message: 'Disruption created successfully',
 						adminId: inputResult.insertedId,
 					});
 				} else {
-					console.error('❌ Error creating news.');
+					console.error('❌ Error creating disruption.');
 					res.status(404).send({
 						status: 404,
-						message: 'Error creating news.',
+						message: 'Error creating disruption.',
 					});
 				}
 			}
@@ -137,9 +134,9 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Update News API by shopId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
-		const { newsId } = req.query;
+	// Update Disruptions by shopId 
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const { disruptionId } = req.query;
 		const {
 			title,
 			description,
@@ -148,12 +145,12 @@ module.exports = (app, config) => {
 			adminId,
 		} = req.body;
 
-		const apiName = 'Update News API';
+		const apiName = 'Update Disruption API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			
 			const requiredFields = [
-				'newsId',
+				'disruptionId',
 				'adminId',
 			];
 
@@ -164,22 +161,23 @@ module.exports = (app, config) => {
 				const updateObj = {};
 
 				if (title) updateObj.title = title;
-				if (category) updateObj.category = category;
+				if (category) updateObj.category = disruptionCategory[category];
 				if (description) updateObj.description = description;
 				if (status) updateObj.status = status;
 				if (adminId) updateObj.adminId = adminId;
 				updateObj.updatedAt = new Date();
 
-				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'news', { _id: mongo.getObjectId(newsId) }, updateObj);
+				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) }, updateObj);
 				if (!updateResult) {
+					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'News not updated'
+						message: 'Disruption not updated'
 					});
 				} else {
 					res.status(200).send({
 						status: 200,
-						message: 'News updated successfully.',
+						message: 'Disruption updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
 					});
 				}
@@ -194,33 +192,35 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Delete News API by shopId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/news`, async (req, res) => {
-		const { newsId } = req.query;
+	// Delete Disruptions API by shopId
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const { disruptionId } = req.query;
 
-		const apiName = 'Delete News API';
+		const apiName = 'Delete Disruptions API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 	
 			const requiredFields = [
-				'newsId',
+				'disruptionId',
 			];
 			if (!requiredCheck(req.query, requiredFields, res)) {
 				return;
 			} else {
-				const deleteResult = await mongo.deleteOne(mongoClient, 'news', { _id: mongo.getObjectId(newsId) });
+				const deleteResult = await mongo.deleteOne(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) });
 				if (deleteResult) {
+					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						message: 'News deleted successfully.',
+						message: 'Disruption deleted successfully.',
 						data: {
 							adminUser: deleteResult
 						},
 					});
 				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'News not deleted'
+						message: 'Disruption not deleted'
 					});
 				}
 			}

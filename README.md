@@ -38,8 +38,8 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 jiran-tetangga-system/
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
-│   ├── reports.js     # Issue reporting (e.g. pothole, disruption)
-│   ├── updates.js     # News, announcements
+│   ├── reports.js     # Issues reporting (e.g. pothole, accidents)
+│   ├── disruptions.js # Road disruptions
 │   ├── events.js      # Family events, ceremonies
 │   ├── shops.js       # Shop status, new openings/closures
 │   ├── parks.js       # Park conditions, usage
@@ -49,7 +49,7 @@ jiran-tetangga-system/
 │   └── test.js        # Central place for backend API tests
 ├── .env               # Sensitive config (PORT, DB_URL)
 ├── app.js             # Express app, middleware, routes entry
-├── server.js          # Separate boot file (optional)
+├── server.js          # Separate boot file
 ├── package.json
 ```
 
