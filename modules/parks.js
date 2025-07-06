@@ -86,8 +86,6 @@ module.exports = (app, config) => {
 		const {
 			name,
 			description,
-			images,
-			location,
 			openingHours,
 		} = req.body;
 		try {
@@ -95,9 +93,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'name',
 				'description',
-				'images',
 				'openingHours',
-				'location',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
@@ -107,20 +103,21 @@ module.exports = (app, config) => {
 					name,
 					description,
 					status: parkStatus.CLOSED, // Set the status to CLOSED by default
-					images,
-					location,
-					openingHours,
+					openingHours: {
+						opening: openingHours.opening,
+						closing: openingHours.closing
+					},
 					createdAt: new Date(),
 				};
-				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputPark);
+				const inputResult = await mongo.insertOne(mongoClient, 'parks', inputPark);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
 						message: 'Park created successfully',
-						adminId: inputResult.insertedId,
+						_id: inputResult.insertedId,
 					});
 				} else {
-					console.error('❌ Error creating park.');
+					console.error('❌ failed to create.');
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating park.',
@@ -142,12 +139,9 @@ module.exports = (app, config) => {
 		const { parkId } = req.query;
 		const {
 			name,
-			condition,
-			lastInspected,
-			images,
-			notes,
+			status,
 			location,
-			updatedBy,
+			adminId: updatedBy,
 		} = req.body;
 
 		const apiName = 'Update Parks API';
@@ -164,21 +158,20 @@ module.exports = (app, config) => {
 				const updateObj = {};
 
 				if (name) updateObj.name = name;
-				if (condition) updateObj.condition = condition;
-				if (lastInspected) updateObj.lastInspected = lastInspected;
-				if (images) updateObj.images = images;
-				if (notes) updateObj.notes = notes;
+				if (status) updateObj.status = parkStatus[status];
 				if (location) updateObj.location = location;
 				if (updatedBy) updateObj.updatedBy = updatedBy;
 				updateObj.updatedAt = new Date();
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) }, updateObj);
 				if (!updateResult) {
+					console.log(`${apiName} failed to update.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Park not updated'
 					});
 				} else {
+					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Park updated successfully.',
@@ -212,6 +205,7 @@ module.exports = (app, config) => {
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
 				if (deleteResult) {
+					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Park deleted successfully.',
@@ -220,6 +214,7 @@ module.exports = (app, config) => {
 						},
 					});
 				} else {
+					console.error(`❌ ${apiName} failed to delete.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Park not deleted'

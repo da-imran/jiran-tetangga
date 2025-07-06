@@ -114,7 +114,7 @@ module.exports = (app, config) => {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
 						message: 'Disruption created successfully',
-						adminId: inputResult.insertedId,
+						_id: inputResult.insertedId,
 					});
 				} else {
 					console.error('❌ Error creating disruption.');
