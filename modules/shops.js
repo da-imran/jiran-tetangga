@@ -161,7 +161,7 @@ module.exports = (app, config) => {
 				const updateObj = {};
 				if (name) updateObj.name = name;
 				if (description) updateObj.description = description;
-				if (status) updateObj.stack = shopStatus[status];
+				if (status) updateObj.status = shopStatus[status];
 				if (location) updateObj.location = location;
 				if (openingHours) {
 					if (!updateObj.openingHours) {
