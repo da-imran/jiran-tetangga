@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-	const apiKey = req.headers['X-API-Key'];
+	const apiKey = req.headers['x-api-key'];
 	const secretsApiKey = process.env.API_KEY;
 
 	if (!apiKey) {
