@@ -34,8 +34,8 @@ services:
       VERSION: 'v1'
       MONGO_DB_NAME: 'jiran-tetangga'
       PORT: 3500
-      ENCRYPTION_KEY: '${ENCRYPTION_KEY}'
-      API_KEY: '${API_KEY}'
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      API_KEY: ${API_KEY}
     command: ["npm", "run", "dev"]
     ports:
       - "3500:3500"
