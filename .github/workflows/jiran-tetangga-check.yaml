@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Docker Image
+      - name: Build Docker Image with API Key
         uses: docker/build-push-action@v6
         with:
           context: .
