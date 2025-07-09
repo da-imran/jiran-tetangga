@@ -99,6 +99,7 @@ npm run dev
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
+[x] Docker support
 [] WhatsApp bot notification </br>
 [] CI/CD pipeline with Github Action </br>
 [] Kubernetes orchestration </br>
