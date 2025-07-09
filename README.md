@@ -1,6 +1,6 @@
 # 🏡 JiranTetangga
 
-A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.
+A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system. This repository is the backend part of the whole project 
 
 ## 🚀 Features
 
@@ -10,7 +10,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
   - Shop openings and closures
   - Park conditions
 - 📬 Residents can report damages or concerns
-- 🧠 Admin system for managing updates and users
+- 🧠 Admin system for managing updates
 - 🤖 WhatsApp bot integration
 - 🐳 Docker support + local and cloud deployment ready
 
@@ -35,7 +35,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 ## 📂 Backend Project Structure
 ```bash
-jiran-tetangga-system/
+jiran-tetangga/
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
 │   ├── reports.js     # Issue reporting (e.g. pothole, disruption)
@@ -61,7 +61,7 @@ jiran-tetangga-system/
 
 ```bash
 git clone https://github.com/da-imran/jiran-tetangga.git
-cd neighbourhood-system
+cd jiran-tetangga
 ```
 
 ### 2. Install Dependencies
@@ -88,7 +88,10 @@ npm run dev
 ```
 
 ## 📦 Docker Support 
-(Coming soon in Phase 3)
+1.  Docker support has been built into the project
+2.  Contains `Dockerfile` and `docker-compose.yaml` for the Docker configurations
+3.  Can easily run command in CLI to start up the project
+4.  ##Requirement:** Docker
 
 ## 📌 Roadmap 
 [x] Admin user creation API </br>
