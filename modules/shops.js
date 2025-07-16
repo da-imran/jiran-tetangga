@@ -1,12 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const shopStatus = {
-	OPEN: 'open',
-	CLOSED: 'closed',
-	MAINTENANCE: 'maintenance'
-};
-
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -86,15 +80,14 @@ module.exports = (app, config) => {
 		const {
 			name,
 			description,
-			location,
 			openingHours,
+			status,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
 				'description',
-				'location',
 				'openingHours',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -104,8 +97,7 @@ module.exports = (app, config) => {
 				const inputShop = {
 					name,
 					description,
-					status: shopStatus.CLOSED, // Set the status to CLOSED by default
-					location,
+					status: status ?? 'closed', 
 					openingHours: {
 						opening: openingHours.opening,
 						closing: openingHours.closing
@@ -144,7 +136,6 @@ module.exports = (app, config) => {
 			name,
 			description,
 			status,
-			location,
 			openingHours,
 		} = req.body;
 
@@ -161,8 +152,7 @@ module.exports = (app, config) => {
 				const updateObj = {};
 				if (name) updateObj.name = name;
 				if (description) updateObj.description = description;
-				if (status) updateObj.status = shopStatus[status];
-				if (location) updateObj.location = location;
+				if (status) updateObj.status = status;
 				if (openingHours) {
 					if (!updateObj.openingHours) {
 						updateObj.openingHours = {};

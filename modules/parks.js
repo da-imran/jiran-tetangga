@@ -1,12 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const parkStatus = {
-	OPEN: 'open',
-	CLOSED: 'closed',
-	MAINTENANCE: 'maintenance'
-};
-
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -102,7 +96,7 @@ module.exports = (app, config) => {
 				const inputPark = {
 					name,
 					description,
-					status: parkStatus.CLOSED, // Set the status to CLOSED by default
+					status: 'closed', // Set the status to closed by default
 					openingHours: {
 						opening: openingHours.opening,
 						closing: openingHours.closing
@@ -139,9 +133,9 @@ module.exports = (app, config) => {
 		const { parkId } = req.params;
 		const {
 			name,
-			status,
+			status = status.toUpperCase(),
 			location,
-			adminId: updatedBy,
+			openingHours,
 		} = req.body;
 
 		const apiName = 'Update Parks API';
@@ -158,10 +152,19 @@ module.exports = (app, config) => {
 				const updateObj = {};
 
 				if (name) updateObj.name = name;
-				if (status) updateObj.status = parkStatus[status];
+				if (status) updateObj.status = status;
 				if (location) updateObj.location = location;
-				if (updatedBy) updateObj.updatedBy = updatedBy;
-				updateObj.updatedAt = new Date();
+				if (openingHours) {
+					if (!updateObj.openingHours) {
+						updateObj.openingHours = {};
+					}
+					if(openingHours.opening) {
+						updateObj.openingHours.opening = openingHours.opening;
+					}
+					if(openingHours.closing) {
+						updateObj.openingHours.closing = openingHours.closing;
+					}
+				}
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) }, updateObj);
 				if (!updateResult) {

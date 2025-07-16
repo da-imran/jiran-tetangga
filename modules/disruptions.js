@@ -1,13 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const disruptionCategory = {
-	INFO: 'informational', // More like general disruption
-	WARNING: 'warning', // Alerts on potential disruption
-	ALERT: 'alert', // More urgent or critical notification than warning
-	EMERGENCY: 'emergency' // Highest level of urgency, indicating serious situation
-};
-
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -88,14 +81,12 @@ module.exports = (app, config) => {
 		const {
 			title,
 			description,
-			adminId,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'title',
 				'description',
-				'adminId',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
@@ -104,9 +95,7 @@ module.exports = (app, config) => {
 				const inputObj = {
 					title,
 					description,
-					status: false, // Set false as default value for inactive
-					category: disruptionCategory.INFO, // Set edfault value as INFO
-					createdBy: mongo.getObjectId(adminId),
+					status: 'inactive', // Set inactive as default value
 					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'disruptions', inputObj);
@@ -140,10 +129,9 @@ module.exports = (app, config) => {
 		const {
 			title,
 			description,
-			category,
 			status,
 		} = req.body;
-
+	
 		const apiName = 'Update Disruption API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
@@ -155,9 +143,7 @@ module.exports = (app, config) => {
 				return;
 			} else {
 				const updateObj = {};
-
 				if (title) updateObj.title = title;
-				if (category) updateObj.category = disruptionCategory[category];
 				if (description) updateObj.description = description;
 				if (status) updateObj.status = status;
 				updateObj.updatedAt = new Date();

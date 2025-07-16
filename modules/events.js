@@ -76,26 +76,26 @@ module.exports = (app, config) => {
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Create Events API';
-		const { inputObj } = req.body;
+		const input = req.body?.inputObj ?? req.body;
+		const title = input?.eventName ?? input?.title;
+		const organizerName = input?.organizerName ?? null; // null if created by admin
+		const organizerEmail = input?.organizerEmail ?? null; // null if created by admin
+	
 		const {
-			eventName: title,
 			description,
-			organizerName,
-			organizerEmail,
 			eventDate,
 			location,
-		} = inputObj;
+		} = input;
+
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
-				'eventName',
+				'title',
 				'description',
-				'organizerName',
-				'organizerEmail',
 				'eventDate',
 				'location',
 			];
-			if (!requiredCheck(inputObj, requiredFields, res)) {
+			if (!requiredCheck(input, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create event
@@ -143,6 +143,7 @@ module.exports = (app, config) => {
 			description,
 			location,
 			status,
+			eventDate,
 		} = req.body;
 
 		const apiName = 'Update Events API';
@@ -161,6 +162,7 @@ module.exports = (app, config) => {
 				if (description) updateObj.description = description;
 				if (location) updateObj.location = location;
 				if (status) updateObj.status = status;
+				if (eventDate) updateObj.eventDate = eventDate;
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'events', { _id: mongo.getObjectId(eventId) }, updateObj);
 				if (!updateResult) {
