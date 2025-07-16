@@ -142,7 +142,6 @@ module.exports = (app, config) => {
 			description,
 			category,
 			status,
-			adminId,
 		} = req.body;
 
 		const apiName = 'Update Disruption API';
@@ -151,11 +150,8 @@ module.exports = (app, config) => {
 			
 			const requiredFields = [
 				'disruptionId',
-				'adminId',
 			];
-
-			const dataToValidate = { ...req.params, ...req.body };
-			if (!requiredCheck(dataToValidate, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -164,7 +160,6 @@ module.exports = (app, config) => {
 				if (category) updateObj.category = disruptionCategory[category];
 				if (description) updateObj.description = description;
 				if (status) updateObj.status = status;
-				if (adminId) updateObj.adminId = adminId;
 				updateObj.updatedAt = new Date();
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) }, updateObj);

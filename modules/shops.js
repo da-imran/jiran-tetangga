@@ -167,7 +167,6 @@ module.exports = (app, config) => {
 					if (!updateObj.openingHours) {
 						updateObj.openingHours = {};
 					}
-
 					if(openingHours.opening) {
 						updateObj.openingHours.opening = openingHours.opening;
 					}

@@ -143,7 +143,6 @@ module.exports = (app, config) => {
 			description,
 			location,
 			status,
-			adminId,
 		} = req.body;
 
 		const apiName = 'Update Events API';
@@ -151,11 +150,9 @@ module.exports = (app, config) => {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			
 			const requiredFields = [
-				'adminId',
+				'eventId',
 			];
-
-			const dataToValidate = { ...req.params, ...req.body };
-			if (!requiredCheck(dataToValidate, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -164,7 +161,6 @@ module.exports = (app, config) => {
 				if (description) updateObj.description = description;
 				if (location) updateObj.location = location;
 				if (status) updateObj.status = status;
-				if (adminId) updateObj.adminId = adminId;
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'events', { _id: mongo.getObjectId(eventId) }, updateObj);
 				if (!updateResult) {
