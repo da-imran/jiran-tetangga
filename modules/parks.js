@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Park by parkId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		const { parkId } = req.params;
 		const apiName = 'Get Park API';
-		const { parkId } = req.query;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'parkId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const parksResult = await mongo.find(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
@@ -135,8 +135,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Parks API by parkId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
-		const { parkId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		const { parkId } = req.params;
 		const {
 			name,
 			status,
@@ -152,7 +152,7 @@ module.exports = (app, config) => {
 				'parkId',
 			];
 			
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -190,8 +190,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Parks API by parkId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
-		const { parkId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		const { parkId } = req.params;
 
 		const apiName = 'Delete Parks API';
 		try {
@@ -200,7 +200,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'parkId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });

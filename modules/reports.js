@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Report by reportId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
 		const apiName = 'Get Report API';
-		const { reportId } = req.query;
+		const { reportId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
@@ -135,8 +135,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Reports API by reportId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
-		const { reportId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		const { reportId } = req.params;
 		const {
 			title,
 			description,
@@ -153,7 +153,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -190,8 +190,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Reports API by reportId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
-		const { reportId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		const { reportId } = req.params;
 
 		const apiName = 'Delete Reports API';
 		try {
@@ -200,7 +200,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });

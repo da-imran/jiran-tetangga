@@ -45,16 +45,16 @@ module.exports = (app, config) => {
 	});
 
 	// Get Disruption by disruptionId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions:disruptionId`, async (req, res) => {
 		const apiName = 'Get Disruption API';
-		const { disruptionId } = req.query;
+		const { disruptionId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
 			const requiredFields = [
 				'disruptionId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const mongoResult = await mongo.find(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
@@ -135,8 +135,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Disruptions by shopId 
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
-		const { disruptionId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const { disruptionId } = req.params;
 		const {
 			title,
 			description,
@@ -154,7 +154,7 @@ module.exports = (app, config) => {
 				'adminId',
 			];
 
-			const dataToValidate = { ...req.query, ...req.body };
+			const dataToValidate = { ...req.params, ...req.body };
 			if (!requiredCheck(dataToValidate, requiredFields, res)) {
 				return;
 			} else {
@@ -193,8 +193,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Disruptions API by shopId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
-		const { disruptionId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const { disruptionId } = req.params;
 
 		const apiName = 'Delete Disruptions API';
 		try {
@@ -203,7 +203,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'disruptionId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) });

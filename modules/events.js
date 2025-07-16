@@ -37,15 +37,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Event by eventId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
 		const apiName = 'Get Event API';
-		const { eventId } = req.query;
+		const { eventId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
@@ -76,25 +76,26 @@ module.exports = (app, config) => {
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Create Events API';
+		const { inputObj } = req.body;
 		const {
-			title,
+			eventName: title,
 			description,
 			organizerName,
 			organizerEmail,
 			eventDate,
 			location,
-		} = req.body;
+		} = inputObj;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
-				'title',
+				'eventName',
 				'description',
 				'organizerName',
 				'organizerEmail',
 				'eventDate',
 				'location',
 			];
-			if (!requiredCheck(req.body, requiredFields, res)) {
+			if (!requiredCheck(inputObj, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create event
@@ -105,12 +106,14 @@ module.exports = (app, config) => {
 					organizerEmail,
 					eventDate,
 					location,
+					status: 'pending',
 					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'events', inputEvents);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
+						status: 200,
 						message: 'Event created successfully',
 						_id: inputResult.insertedId,
 					});
@@ -133,12 +136,13 @@ module.exports = (app, config) => {
 	});
 
 	// Update Events API by eventId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
-		const { eventId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		const { eventId } = req.params;
 		const { 
 			title,
 			description,
 			location,
+			status,
 			adminId,
 		} = req.body;
 
@@ -150,7 +154,7 @@ module.exports = (app, config) => {
 				'adminId',
 			];
 
-			const dataToValidate = { ...req.query, ...req.body };
+			const dataToValidate = { ...req.params, ...req.body };
 			if (!requiredCheck(dataToValidate, requiredFields, res)) {
 				return;
 			} else {
@@ -159,6 +163,7 @@ module.exports = (app, config) => {
 				if (title) updateObj.title = title;
 				if (description) updateObj.description = description;
 				if (location) updateObj.location = location;
+				if (status) updateObj.status = status;
 				if (adminId) updateObj.adminId = adminId;
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'events', { _id: mongo.getObjectId(eventId) }, updateObj);
@@ -188,8 +193,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Event by eventId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
-		const { eventId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		const { eventId } = req.params;
 
 		const apiName = 'Delete Event API';
 		try {
@@ -197,7 +202,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'events', { _id: mongo.getObjectId(eventId) });

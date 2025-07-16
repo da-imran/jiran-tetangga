@@ -47,8 +47,8 @@ module.exports = (app, config) => {
 	});
 
 	// Get Administrator user details by UserId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser`, async (req, res) => {
-		const { adminUserId } = req.query;
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
+		const { adminUserId } = req.params;
 		const apiName = 'Get Admin User API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
@@ -56,7 +56,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'adminUserId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
@@ -155,8 +155,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Administrator user by UserId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
-		const { adminUserId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
+		const { adminUserId } = req.params;
 		const { 
 			firstName,
 			lastName,
@@ -169,7 +169,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'adminUserId',
 			];
-			const dataToValidate = { ...req.query, ...req.body };
+			const dataToValidate = { ...req.params, ...req.body };
 	
 			if (!requiredCheck(dataToValidate, requiredFields, res)) {
 				return;
@@ -215,8 +215,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Administrator user by UserId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
-		const { adminUserId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
+		const { adminUserId } = req.params;
 
 		const apiName = 'Delete Admin User by UserId API';
 		try {
@@ -224,7 +224,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'adminUserId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });

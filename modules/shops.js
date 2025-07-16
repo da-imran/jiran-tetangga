@@ -44,15 +44,15 @@ module.exports = (app, config) => {
 	});
 
 	// Get Shop by shopId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
 		const apiName = 'Get Shop API';
-		const { shopId } = req.query;
+		const { shopId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const shopResult = await mongo.find(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
@@ -138,8 +138,8 @@ module.exports = (app, config) => {
 	});
 
 	// Update Shops API by shopId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
-		const { shopId } = req.query;
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		const { shopId } = req.params;
 		const {
 			name,
 			description,
@@ -155,7 +155,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -202,8 +202,8 @@ module.exports = (app, config) => {
 	});
 
 	// Delete Shops API by shopId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
-		const { shopId } = req.query;
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		const { shopId } = req.params;
 
 		const apiName = 'Delete Shops API';
 		try {
@@ -212,7 +212,7 @@ module.exports = (app, config) => {
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.query, requiredFields, res)) {
+			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
