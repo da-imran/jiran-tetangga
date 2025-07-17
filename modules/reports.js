@@ -55,7 +55,7 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const reportsResult = await mongo.find(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
+				const reportsResult = await mongo.findOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
 				if (reportsResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -84,30 +84,32 @@ module.exports = (app, config) => {
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
 		const apiName = 'Create Reports API';
 		const {
-			complainantEmail,
-			category,
+			email,
 			description,
+			location,
+			category,
 			images,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
-				'complainantEmail',
+				'email',
 				'category',
+				'location',
 				'description',
-				'images',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
 				// 🔎 Proceed to create report
 				const inputReports = {
-					complainantEmail,
-					category,
+					email,
 					description,
-					images,
+					location,
+					category,
+					images: images ?? null,
 					status: reportStatus.PENDING,
-					reportedAt: new Date(),
+					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputReports);
 				if (inputResult) {
@@ -138,12 +140,12 @@ module.exports = (app, config) => {
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
 		const { reportId } = req.params;
 		const {
-			title,
+			email,
 			description,
-			category,
-			status,
 			location,
+			category,
 			images,
+			status,
 		} = req.body;
 
 		const apiName = 'Update Reports API';
@@ -158,7 +160,7 @@ module.exports = (app, config) => {
 			} else {
 				const updateObj = {};
 
-				if (title) updateObj.title = title;
+				if (email) updateObj.email = email;
 				if (description) updateObj.description = description;
 				if (category) updateObj.category = category;
 				if (location) updateObj.location = location;
