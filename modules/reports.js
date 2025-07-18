@@ -169,11 +169,13 @@ module.exports = (app, config) => {
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) }, updateObj);
 				if (!updateResult) {
+					console.error(`❌ ${apiName} failed!`);
 					res.status(404).send({
 						status: 404,
-						message: 'Report not updated'
+						message: 'Update report failed!'
 					});
 				} else {
+					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Report updated successfully.',
@@ -183,9 +185,10 @@ module.exports = (app, config) => {
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };
+			console.error(`❌ ${apiName} Failed to update`);
 			res.status(500).send({
 				status: 500,
-				message: `${apiName} error`,
+				message: `${apiName} Failed to update`,
 				error,
 			});
 		}
