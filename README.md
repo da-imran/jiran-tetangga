@@ -94,14 +94,14 @@ npm run dev
 4.  **Requirement:** Docker
 
 ## 📌 Roadmap 
-[x] Admin user creation API </br>
-[x] MongoDB connection setup </br>
-[x] Reversible password encryption </br>
+[x] Admin dahsboard </br>
+[x] MongoDB setup </br>
+[x] Password encryption & JWT configuration </br>
 [x] Modular Express routing </br>
-[x] NextJS frontend dashboard </br>
+[x] NextJS frontend dashboard with Firebase Studio </br>
 [x] Docker support </br>
 [] WhatsApp bot notification </br>
-[] CI/CD pipeline with Github Action </br>
+[x] CI/CD pipeline with Github Actions </br>
 [] Kubernetes orchestration </br>
 
 ## 🤝 Contributing
