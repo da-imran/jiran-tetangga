@@ -9,20 +9,21 @@ module.exports = (app, config) => {
 
 	const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-	// Get all Administrator user details or filter by the email API
+	// Get all Administrator user details
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
-		const { email } = req.query;
 		const apiName = 'Get All Admin Users API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const filter = {};
-			if (email) filter.email = email;
-
-			const adminUser = await mongo.aggregate(mongoClient, 'admin_user', [
-				{ $match: filter } // Filter by email if provided
-			]);
-
+			const adminUser = await mongo.find(mongoClient, 'admin_user',{}, 
+				{ 
+					_id: 1,
+					firstName: 1,
+					lastName: 1,
+					createdAt: 1
+					
+				}
+			);
 			if (adminUser) {
 				console.log(`${apiName} Response Success.`);
 				res.status(200).send({
@@ -52,15 +53,19 @@ module.exports = (app, config) => {
 		const apiName = 'Get Admin User API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
 			const requiredFields = [
 				'adminUserId',
 			];
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
-
+				const adminUser = await mongo.findOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) },
+					{
+						_id: 1,
+						firstName: 1,
+						lastName: 1,
+						createdAt: 1
+					});
 				if (adminUser) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
