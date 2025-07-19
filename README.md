@@ -1,6 +1,6 @@
 # 🏡 JiranTetangga
 
-A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system. This repository is the backend part of the whole project 
+A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.
 
 ## 🚀 Features
 
@@ -10,7 +10,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
   - Shop openings and closures
   - Park conditions
 - 📬 Residents can report damages or concerns
-- 🧠 Admin system for managing updates
+- 🧠 Admin system for managing updates and users
 - 🤖 WhatsApp bot integration
 - 🐳 Docker support + local and cloud deployment ready
 
@@ -20,15 +20,13 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 
 | Layer        | Tech Stack           |
 |--------------|----------------------|
-| Frontend     | TypeScript, NextJS, Tailwind CSS (via Firebase 🔥)   |
+| Frontend     | TypeScript, NextJS, Tailwind CSS, Next.js (via Firebase 🔥)   |
 | Backend      | Node.js + Express    |
 | Database     | MongoDB              |
-| Auth         | Encrypted password storage (AES) |
+| Auth         | AES / JWT |
 | Messaging    | WhatsApp Bot	|
 | Container    | Docker, Docker Compose |
-| Orchestration| Kubernetes (local + cloud) |
-| CI/CD        | Github Action     |
-| Monitoring   | Prometheus + Grafana |
+| CI Pipeline  | Github Action     |
 | Testing      | Chai / Sinon / Mocha	|
 
 ---
@@ -36,21 +34,29 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 ## 📂 Backend Project Structure
 ```bash
 jiran-tetangga/
+├── middleware/        # Middleware
+│   ├── authentication.js   # Authentication controller
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
-│   ├── reports.js     # Issue reporting (e.g. pothole, disruption)
-│   ├── updates.js     # News, announcements
+│   ├── reports.js     # Issues reporting (e.g. pothole, accidents)
+│   ├── disruptions.js # Road disruptions
 │   ├── events.js      # Family events, ceremonies
 │   ├── shops.js       # Shop status, new openings/closures
-│   ├── parks.js       # Park conditions, usage
+│   └── parks.js       # Park conditions, usage
 ├── utilities/
-│   └── mongodb.js     # Central DB connection logic
+│   ├── jwt.js         # JWT setup
+│   ├── mongodb.js     # Central DB connection logic
+│   └── validation.js  # Parameters check function
 ├── test/
 │   └── test.js        # Central place for backend API tests
 ├── .env               # Sensitive config (PORT, DB_URL)
 ├── app.js             # Express app, middleware, routes entry
-├── server.js          # Separate boot file (optional)
-├── package.json
+├── server.js          # Separate boot file
+├── index.js           # Index file
+├── package.json       # Package JSON file
+├── Dockerfile         # Docker configuration
+├── docker-compose.yaml   # Docker yaml configuration
+├── .postaman_collection.json   # Postman collection
 ```
 
 ---
@@ -75,11 +81,14 @@ Create a .env file
 PORT=your_port_number
 MONGODB_URI=mongodb_db_connection_uri
 MONGODB_DBNAME=mongodb_name
-ENCRYPTION_KEY=any random strings
 ROUTE_PREPEND = 'jiran-tetangga'
 API_VERSION = '1.0.0'
 APP_VERSION = '1.0.0'
 VERSION = 'v1'
+ENCRYPTION_KEY=any random strings
+API_KEY =any random strings
+JWT_KEY = any random strings
+RUN_ENV='local'
 ```
 
 ### 4. Run Locally
@@ -90,19 +99,17 @@ npm run dev
 ## 📦 Docker Support 
 1.  Docker support has been built into the project
 2.  Contains `Dockerfile` and `docker-compose.yaml` for the Docker configurations
-3.  Can easily run command in CLI to start up the project
+3.  Can easily run command `docker compose up --build -d` in CLI to start up the project
 4.  **Requirement:** Docker
 
 ## 📌 Roadmap 
-[x] Admin dahsboard </br>
-[x] MongoDB setup </br>
-[x] Password encryption & JWT configuration </br>
+[x] Admin user creation API </br>
+[x] MongoDB connection setup </br>
+[x] Reversible password encryption </br>
 [x] Modular Express routing </br>
-[x] NextJS frontend dashboard with Firebase Studio </br>
-[x] Docker support </br>
+[x] NextJS frontend dashboard </br>
 [] WhatsApp bot notification </br>
-[x] CI/CD pipeline with Github Actions </br>
-[] Kubernetes orchestration </br>
+[x] CI pipeline with Github Action </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.
