@@ -38,7 +38,7 @@ module.exports = (app, config) => {
 	});
 
 	// Get Disruption by disruptionId
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions:disruptionId`, async (req, res) => {
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
 		const apiName = 'Get Disruption API';
 		const { disruptionId } = req.params;
 		try {
