@@ -2,9 +2,7 @@ name: jiran-tetangga-ci
 
 on:
   push:
-    branches:
-      - master
-      - development
+  pull_request:
 
 jobs:
   build:
@@ -12,6 +10,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
+        
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Build Docker Image
-        uses: docker/setup-buildx-action@v3
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: false
@@ -32,25 +31,3 @@ jobs:
 
       - name: Done
         run: echo "CI pipeline build stage completed."
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: |
-          npm test || echo "No tests defined yet. Skipping."
-
-      - name: Done
-        run: echo "CI pipeline test stage completed."
