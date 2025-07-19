@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --timeout 5000 --exit",
     "start": "node app.js",
     "dev": "node server.js",
     "lint": "eslint ."
@@ -13,11 +13,16 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mongodb": "^6.15.0"
+    "jsonwebtoken": "^9.0.2",
+    "mocha": "^11.7.1",
+    "mongodb": "^6.15.0",
+    "sinon": "^15.2.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

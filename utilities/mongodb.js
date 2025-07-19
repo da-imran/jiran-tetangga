@@ -149,7 +149,7 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const result = await collection.aggregate(pipelines).toArray();
-			console.log(`✅ MongoDB aggregate result: ${result}`);
+			console.log(`✅ MongoDB aggregate result: ${JSON.stringify(result)}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB aggregate process failed:', error);
@@ -161,9 +161,9 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const filter = { ...input };
-			if (input._id) filter._id = new mongo.ObjectId.createFromHexString(input._id);
+			if (input?._id) filter._id = new mongo.ObjectId(input._id);
 			const result = await collection.find({ ...filter }).project({ ...projection }).toArray();
-			console.log(`✅ MongoDB find result: ${result}`);
+			console.log(`✅ MongoDB find result: ${JSON.stringify(result)}`);
 			resolve(result);
 		} catch (error) {
 			console.error('❌ MongoDB find process failed:', error);

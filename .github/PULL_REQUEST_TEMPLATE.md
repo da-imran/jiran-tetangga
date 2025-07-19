@@ -20,7 +20,7 @@
 - Changes 3
 
 ## Test Case/s
-### Please describe the test that you made to verify your changes or link to the test documentation
+### Please describe the test that you made to verify your changes or provide link to the test documentation
 - Test A
 - Test B
 - [Test Case](url)

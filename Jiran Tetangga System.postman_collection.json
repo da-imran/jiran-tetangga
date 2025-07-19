@@ -1,0 +1,716 @@
+{
+	"info": {
+		"_postman_id": "59766c22-5df1-4102-9f33-beadc5d0dcb3",
+		"name": "Jiran Tetangga System",
+		"description": "A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32506303"
+	},
+	"item": [
+		{
+			"name": "Administrator User",
+			"item": [
+				{
+					"name": "Get All Admin Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{DEV_URL}}/adminUsers"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Admin by userId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/adminUser/:adminUserId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"adminUser",
+								":adminUserId"
+							],
+							"variable": [
+								{
+									"key": "adminUserId",
+									"value": "685fbecb335bdc41ca63fa4a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Admin User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"firstName\": \"Muhammad Ehsan Imran\",\r\n   \"lastName\": \"Ehsan Imran\",\r\n   \"email\": \"ios.imrn@gmail.com\",\r\n   \"password\": \"Ehsan123\",\r\n   \"phone\": \"0123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/adminUsers"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Admin User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Muhammad Ehsan\",\r\n    \"lastName\": \"Imran\",\r\n    \"phone\": \"109\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/adminUsers/:adminUserId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"adminUsers",
+								":adminUserId"
+							],
+							"variable": [
+								{
+									"key": "adminUserId",
+									"value": "685fbecb335bdc41ca63fa4a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Admin User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/adminUsers/:adminUserId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"adminUsers",
+								":adminUserId"
+							],
+							"variable": [
+								{
+									"key": "adminUserId",
+									"value": "687b41140c904220de6681a9"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Disruptions",
+			"item": [
+				{
+					"name": "Get All Disruptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{DEV_URL}}/disruptions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Disruption by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/disruptions/:disruptionId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"disruptions",
+								":disruptionId"
+							],
+							"variable": [
+								{
+									"key": "disruptionId",
+									"value": "68693c9fe061eb6899d763d1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Disruption",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"title\": \"Jalan Cenderai Water Pipe Burst\",,\r\n    // \"description\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"status\": true,\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/disruptions/:disruptionId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"disruptions",
+								":disruptionId"
+							],
+							"variable": [
+								{
+									"key": "disruptionId",
+									"value": "68693c9fe061eb6899d763d1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Disruption",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"category\": \"informational\",\r\n    \"description\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/disruptions"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Disruption",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/disruptions/:disruptionId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"disruptions",
+								":disruptionId"
+							],
+							"variable": [
+								{
+									"key": "disruptionId",
+									"value": "687b425570b7a9722c456d36"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Parks",
+			"item": [
+				{
+					"name": "Get All Parks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{DEV_URL}}/parks"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Park by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/parks?parkId=686a81a642dfc8c72a77d5c6",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"parks"
+							],
+							"query": [
+								{
+									"key": "parkId",
+									"value": "686a81a642dfc8c72a77d5c6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Park",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"name\": \"Taman Rekreasi Sungai Tiram\",\r\n    // \"description\": \"Jogging track in the park closed for maintenance.\",\r\n    \"status\": \"MAINTENANCE\"\r\n    // \"openingHours\": {\r\n    //     \"opening\": \"600\",\r\n    //     \"closing\": \"1830\"\r\n    // },\r\n    // \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/parks/:parkId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"parks",
+								":parkId"
+							],
+							"variable": [
+								{
+									"key": "parkId",
+									"value": "6877bfa2135bca0d4868fc60"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Park",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Taman Permainan Sg Tiram\",\r\n    \"description\": \"The park is closed until further notice\",\r\n    \"openingHours\": {\r\n        \"opening\": \"0000\",\r\n        \"closing\": \"0000\"\r\n    },\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/parks"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Park",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/parks?parkId=686809def0819de87c48a848",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"parks"
+							],
+							"query": [
+								{
+									"key": "parkId",
+									"value": "686809def0819de87c48a848"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{DEV_URL}}/events"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/events?eventId=686a8a13c4383d5683602e04",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"events"
+							],
+							"query": [
+								{
+									"key": "eventId",
+									"value": "686a8a13c4383d5683602e04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Let's Zumba!\",\r\n    \"description\": \"There is a Zumba class at the park. Come join us!\",\r\n    \"location\": \"Taman Rekreasi Sungai Tiram\",\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/events/?eventId=686a8a13c4383d5683602e04",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"events",
+								""
+							],
+							"query": [
+								{
+									"key": "eventId",
+									"value": "686a8a13c4383d5683602e04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Let's Zumba!\",\r\n    \"description\": \"There is a Zumba class at the park. Come join us!\",\r\n    \"organizerName\": \"Ehsan\",\r\n    \"organizerEmail\": \"ios.imran@gmail.com\",\r\n    \"eventDate\": \"2025-07-15T00:00:00.000Z\",\r\n    \"location\": \"Taman Rekreasi Sungai Tiram\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/events"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/events?eventId=686809def0819de87c48a848",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"events"
+							],
+							"query": [
+								{
+									"key": "eventId",
+									"value": "686809def0819de87c48a848"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shops",
+			"item": [
+				{
+					"name": "Get All Shops",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "jxdMegN9KOAZMwMCfIbV",
+								"type": "text"
+							}
+						],
+						"url": "{{DEV_URL}}/shops"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shop by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/shops?shopId=686a8a13c4383d5683602e04",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"shops"
+							],
+							"query": [
+								{
+									"key": "shopId",
+									"value": "686a8a13c4383d5683602e04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Shop",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Coffe Bean & Tea Leaf\",\r\n    \"description\": \"Your favorite local coffee shop\",\r\n    \"location\": \"Lot 1/1A, Jalan Sungai Tiram 1\",\r\n    \"openingHours\": {\r\n        \"opening\": \"0900\",\r\n        \"closing\": \"2330\"\r\n    },\r\n    \"status\": \"OPEN\",\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/shops/?shopId=686bd20eef8c17f8253d22ce",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"shops",
+								""
+							],
+							"query": [
+								{
+									"key": "shopId",
+									"value": "686bd20eef8c17f8253d22ce"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shop",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Coffe Bean & Tea Leaf\",\r\n    \"description\": \"Your favorite local coffee shop\",\r\n    \"location\": \"Lot 1/1A, Jalan Sungai Tiram 1\",\r\n    \"openingHours\": {\r\n        \"opening\": \"900\",\r\n        \"closing\": \"2330\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/shops"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Shop",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/shops?shopId=686a9049dfa89afa013d2a60",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"shops"
+							],
+							"query": [
+								{
+									"key": "shopId",
+									"value": "686a9049dfa89afa013d2a60"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Get All Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "jxdMegN9KOAZMwMCfIbV",
+								"type": "text"
+							}
+						],
+						"url": "{{DEV_URL}}/reports"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Report by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/reports/:reportId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"reports",
+								":reportId"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "686a8a13c4383d5683602e04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Report",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"pending\",\r\n    \"category\": \"road-disruption\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/reports/:reportId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"reports",
+								":reportId"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "6879072035f79d4cdfa10ebb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"ios.imran@gmail.com\",\r\n    \"description\": \"Your favorite local coffee shop\",\r\n    \"location\": \"Lot 1/1A, Jalan Sungai Tiram 1\",\r\n    \"category\": \"road-disruption\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{DEV_URL}}/reports"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Report",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DEV_URL}}/reports/:reportId",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"reports",
+								":reportId"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Default endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{DEV_URL}}"
+			},
+			"response": []
+		}
+	]
+}

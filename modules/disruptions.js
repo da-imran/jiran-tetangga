@@ -1,36 +1,30 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const reportStatus = {
-	PENDING: 'pending',
-	COMPLETED: 'completed',
-	REJECTED: 'rejected'
-};
-
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
 
-	// Get All Reports API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
-		const apiName = 'Get All Reports API';
+	// Get All Disruptions API
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const apiName = 'Get All Disruptions API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const reportsResult = await mongo.find(mongoClient, 'reports');
+			const mongoResult = await mongo.find(mongoClient, 'disruptions');
 
-			if (reportsResult) {
+			if (mongoResult) {
 				console.log(`${apiName} Response Success.`);
 				res.status(200).send({
 					status: 200,
-					data: reportsResult
+					data: mongoResult
 				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
-					message: 'Reports not found',
+					message: 'Disruptions not found',
 				});
 			}
 		} catch (err) {
@@ -43,30 +37,31 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Get Report by reportId API
-	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const apiName = 'Get Report API';
-		const { reportId } = req.params;
+	// Get Disruption by disruptionId
+	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const apiName = 'Get Disruption API';
+		const { disruptionId } = req.params;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
+
 			const requiredFields = [
-				'reportId',
+				'disruptionId',
 			];
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const reportsResult = await mongo.findOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
-				if (reportsResult) {
+				const mongoResult = await mongo.find(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
+				if (mongoResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						data: reportsResult
+						data: mongoResult
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'Report not found',
+						message: 'Disruption not found',
 					});
 				}
 			}
@@ -80,49 +75,41 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Create Reports API
-	app.post(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
-		const apiName = 'Create Reports API';
+	// Create Disruptions API
+	app.post(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const apiName = 'Create Disruption API';
 		const {
-			email,
+			title,
 			description,
-			location,
-			category,
-			images,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
-				'email',
-				'category',
-				'location',
+				'title',
 				'description',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
 				return;
 			} else {
-				// 🔎 Proceed to create report
-				const inputReports = {
-					email,
+				// 🔎 Proceed to create disruption
+				const inputObj = {
+					title,
 					description,
-					location,
-					category,
-					images: images ?? null,
-					status: reportStatus.PENDING,
+					status: 'inactive', // Set inactive as default value
 					createdAt: new Date(),
 				};
-				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputReports);
+				const inputResult = await mongo.insertOne(mongoClient, 'disruptions', inputObj);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
-						message: 'Report created successfully',
+						message: 'Disruption created successfully',
 						_id: inputResult.insertedId,
 					});
 				} else {
-					console.error('❌ Error creating report.');
+					console.error('❌ Error creating disruption.');
 					res.status(404).send({
 						status: 404,
-						message: 'Error creating report.',
+						message: 'Error creating disruption.',
 					});
 				}
 			}
@@ -136,91 +123,85 @@ module.exports = (app, config) => {
 		}
 	});
 
-	// Update Reports API by reportId
-	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const { reportId } = req.params;
+	// Update Disruptions by shopId 
+	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const { disruptionId } = req.params;
 		const {
-			email,
+			title,
 			description,
-			location,
-			category,
-			images,
 			status,
 		} = req.body;
-
-		const apiName = 'Update Reports API';
+	
+		const apiName = 'Update Disruption API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
+			
 			const requiredFields = [
-				'reportId',
+				'disruptionId',
 			];
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
 				const updateObj = {};
-
-				if (email) updateObj.email = email;
+				if (title) updateObj.title = title;
 				if (description) updateObj.description = description;
-				if (category) updateObj.category = category;
-				if (location) updateObj.location = location;
 				if (status) updateObj.status = status;
-				if (images) updateObj.images = images;
+				updateObj.updatedAt = new Date();
 
-				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) }, updateObj);
+				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) }, updateObj);
 				if (!updateResult) {
-					console.error(`❌ ${apiName} failed!`);
+					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'Update report failed!'
+						message: 'Disruption not updated'
 					});
 				} else {
-					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
-						message: 'Report updated successfully.',
+						message: 'Disruption updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
 					});
 				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };
-			console.error(`❌ ${apiName} Failed to update`);
 			res.status(500).send({
 				status: 500,
-				message: `${apiName} Failed to update`,
+				message: `${apiName} error`,
 				error,
 			});
 		}
 	});
 
-	// Delete Reports API by reportId
-	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const { reportId } = req.params;
+	// Delete Disruptions API by shopId
+	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const { disruptionId } = req.params;
 
-		const apiName = 'Delete Reports API';
+		const apiName = 'Delete Disruptions API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
+	
 			const requiredFields = [
-				'reportId',
+				'disruptionId',
 			];
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const deleteResult = await mongo.deleteOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
+				const deleteResult = await mongo.deleteOne(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) });
 				if (deleteResult) {
+					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						message: 'Report deleted successfully.',
+						message: 'Disruption deleted successfully.',
 						data: {
 							adminUser: deleteResult
 						},
 					});
 				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
-						message: 'Report not deleted'
+						message: 'Disruption not deleted'
 					});
 				}
 			}

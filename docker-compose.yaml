@@ -22,10 +22,13 @@ services:
       VERSION: 'v1'
       MONGO_DB_NAME: 'jiran-tetangga'
       PORT: 3500
-      ENCRYPTION_KEY: 'UIjuWJntH8620DlacyjY' # Just for test purpose
+      ENCRYPTION_KEY: UIjuWJntH8620DlacyjY
+      API_KEY: jxdMegN9KOAZMwMCfIbV
     command: ["npm", "run", "dev"]
     ports:
       - "3500:3500"
+    networks:
+      - jiran-tetangga-networks
     depends_on:
       mongodb:
         condition: service_healthy
@@ -36,15 +39,22 @@ services:
     container_name: mongodb
     restart: always
     volumes:
-      - db_data:/data/mongodb
+      - db_data:/data/db
     ports:
       - "27018:27018"
+    networks:
+      - jiran-tetangga-networks
     healthcheck:
       test: ["CMD", "mongosh" ,"--eval", "db.adminCommand({ping: 1})", "--quiet"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
+
+networks:
+  jiran-tetangga-networks:
+    external: true
+    name: jiran-tetangga-networks
 
 volumes:
   db_data:

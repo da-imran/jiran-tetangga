@@ -1,12 +1,6 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 
-const shopStatus = {
-	OPEN: 'open',
-	CLOSED: 'closed',
-	MAINTENANCE: 'maintenance'
-};
-
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
@@ -86,19 +80,14 @@ module.exports = (app, config) => {
 		const {
 			name,
 			description,
-			category,
-			images,
-			location,
 			openingHours,
+			status,
 		} = req.body;
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
 				'description',
-				'category',
-				'images',
-				'location',
 				'openingHours',
 			];
 			if (!requiredCheck(req.body, requiredFields, res)) {
@@ -108,11 +97,11 @@ module.exports = (app, config) => {
 				const inputShop = {
 					name,
 					description,
-					category,
-					status: shopStatus.CLOSED, // Set the status to CLOSED by default
-					images,
-					location,
-					openingHours,
+					status: status ?? 'closed', 
+					openingHours: {
+						opening: openingHours.opening,
+						closing: openingHours.closing
+					},
 					createdAt: new Date(),
 				};
 				const inputResult = await mongo.insertOne(mongoClient, 'shops', inputShop);
@@ -120,7 +109,7 @@ module.exports = (app, config) => {
 					console.log(`${apiName} MongoDB Success.`);
 					return res.status(200).json({
 						message: 'Shop created successfully',
-						adminId: inputResult.insertedId,
+						_id: inputResult.insertedId,
 					});
 				} else {
 					console.error('❌ Error creating shop.');
@@ -145,12 +134,8 @@ module.exports = (app, config) => {
 		const { shopId } = req.params;
 		const {
 			name,
-			category,
+			description,
 			status,
-			owner,
-			contact,
-			images,
-			location,
 			openingHours,
 		} = req.body;
 
@@ -158,24 +143,27 @@ module.exports = (app, config) => {
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!shopId) {
-				console.log(`❌ ${apiName} Bad request: shopId is a required parameter.`);
-
-				res.status(400).send({
-					status: 400,
-					message: 'Bad request: shopId is a required parameter.',
-				});
+			const requiredFields = [
+				'shopId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
-
 				if (name) updateObj.name = name;
-				if (category) updateObj.category = category;
-				if (status) updateObj.stack = status;
-				if (owner) updateObj.owner = owner;
-				if (contact) updateObj.contact = contact;
-				if (images) updateObj.images = images;
-				if (location) updateObj.location = location;
-				if (openingHours) updateObj.openingHours = openingHours;
+				if (description) updateObj.description = description;
+				if (status) updateObj.status = status;
+				if (openingHours) {
+					if (!updateObj.openingHours) {
+						updateObj.openingHours = {};
+					}
+					if(openingHours.opening) {
+						updateObj.openingHours.opening = openingHours.opening;
+					}
+					if(openingHours.closing) {
+						updateObj.openingHours.closing = openingHours.closing;
+					}
+				}
 				updateObj.updatedAt = new Date();
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) }, updateObj);
@@ -210,11 +198,11 @@ module.exports = (app, config) => {
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (!shopId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: shopId is a required parameters.',
-				});
+			const requiredFields = [
+				'shopId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
 				if (deleteResult) {

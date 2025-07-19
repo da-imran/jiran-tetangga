@@ -9,20 +9,21 @@ module.exports = (app, config) => {
 
 	const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-	// Get all Administrator user details or filter by the email API
+	// Get all Administrator user details
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
-		const { email } = req.query;
 		const apiName = 'Get All Admin Users API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			const filter = {};
-			if (email) filter.email = email;
-
-			const adminUser = await mongo.aggregate(mongoClient, 'admin_user', [
-				{ $match: filter } // Filter by email if provided
-			]);
-
+			const adminUser = await mongo.find(mongoClient, 'admin_user',{}, 
+				{ 
+					_id: 1,
+					firstName: 1,
+					lastName: 1,
+					createdAt: 1
+					
+				}
+			);
 			if (adminUser) {
 				console.log(`${apiName} Response Success.`);
 				res.status(200).send({
@@ -52,15 +53,19 @@ module.exports = (app, config) => {
 		const apiName = 'Get Admin User API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
 			const requiredFields = [
 				'adminUserId',
 			];
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const adminUser = await mongo.findOne(mongoClient, 'admin_user', {_id: mongo.getObjectId(adminUserId)});
-
+				const adminUser = await mongo.findOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) },
+					{
+						_id: 1,
+						firstName: 1,
+						lastName: 1,
+						createdAt: 1
+					});
 				if (adminUser) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -130,6 +135,7 @@ module.exports = (app, config) => {
 
 					const inputResult = await mongo.insertOne(mongoClient, 'admin_user', newAdmin);
 					if (inputResult) {
+						console.log(`${apiName} Response Success.`);
 						return res.status(200).json({
 							message: 'Administrator created successfully',
 							adminId: inputResult.insertedId,
@@ -159,42 +165,48 @@ module.exports = (app, config) => {
 		const { 
 			firstName,
 			lastName,
-			phone,
-			email
 		} = req.body;
 
 		const apiName = 'Update Admin User by UserId API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
 
-			if (phone) {
-				res.status(400).send({
-					status: 400,
-					message: 'Phone number of the administrator user cannot be updated.',
-				});
-			} else if (email) {
-				res.status(400).send({
-					status: 400,
-					message: 'Email of the administrator user cannot be updated.',
-				});
+			const requiredFields = [
+				'adminUserId',
+			];
+			const dataToValidate = { ...req.params, ...req.body };
+	
+			if (!requiredCheck(dataToValidate, requiredFields, res)) {
+				return;
 			} else {
 				const updateObj = {};
 
 				if (firstName) updateObj.firstName = firstName;
 				if (lastName) updateObj.lastName = lastName;
 
-				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) }, updateObj);
-				if (!updateResult) {
+				const adminUser = await mongo.findOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });
+				if(!adminUser) {
+					console.log(`❌ ${apiName} User not found!`);
 					res.status(404).send({
 						status: 404,
-						message: 'Admin user not updated'
+						message: 'User not found'
 					});
 				} else {
-					res.status(200).send({
-						status: 200,
-						message: 'Admin user updated successfully.',
-						data: JSON.parse(JSON.stringify(updateResult)),
-					});
+					const updateResult = await mongo.findOneAndUpdate(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) }, updateObj);
+					if (!updateResult) {
+						console.log(`❌ ${apiName} Admin user not updates.`);
+						res.status(404).send({
+							status: 404,
+							message: 'Admin user not updated'
+						});
+					} else {
+						console.log(`${apiName} Response Success.`);
+						res.status(200).send({
+							status: 200,
+							message: 'Admin user updated successfully.',
+							data: JSON.parse(JSON.stringify(updateResult)),
+						});
+					}
 				}
 			}
 		} catch (err) {
@@ -214,12 +226,11 @@ module.exports = (app, config) => {
 		const apiName = 'Delete Admin User by UserId API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-
-			if (!adminUserId) {
-				res.status(400).send({
-					status: 400,
-					message: 'Bad Request: adminUserId is a required parameters.',
-				});
+			const requiredFields = [
+				'adminUserId',
+			];
+			if (!requiredCheck(req.params, requiredFields, res)) {
+				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });
 				if (deleteResult) {
