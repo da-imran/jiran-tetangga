@@ -2,7 +2,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-const mongo = require('mongodb');
 require('dotenv').config();
 
 const server = require('../app').app;
