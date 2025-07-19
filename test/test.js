@@ -11,7 +11,7 @@ const mongoFx = require('../utilities/mongodb');
 const should = chai.should();
 chai.use(chaiHttp);
 
-const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
+const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetanga';
 const VERSION = process.env.VERSION || 'v1';
 
 
