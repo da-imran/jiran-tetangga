@@ -13,7 +13,6 @@ chai.use(chaiHttp);
 const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetanga';
 const VERSION = process.env.VERSION || 'v1';
 
-
 // Admin user Module
 describe('🧪 ADM: Admin Module', () => {
 	let mongoStub;

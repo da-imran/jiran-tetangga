@@ -5,7 +5,6 @@
   "scripts": {
     "test": "mocha --timeout 5000 --exit",
     "start": "node app.js",
-    "dev": "node server.js",
     "lint": "eslint ."
   },
   "keywords": [],
