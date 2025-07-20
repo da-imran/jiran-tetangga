@@ -43,6 +43,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+      
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.12.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Install dependencies
         run: npm ci
@@ -56,6 +61,8 @@ jobs:
       - name: Run tests
         run: |
           npm test || echo "No tests defined yet. Skipping."
+        env:
+          CI: true
 
       - name: Done
         run: echo "CI pipeline test stage completed."
