@@ -60,6 +60,8 @@ jobs:
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
           echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
           echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> .env
+          echo "ROUTE_PREPEND=${{ secrets.ROUTE_PREPEND }}" >> .env
+          echo "VERSION=${{ secrets.VERSION }}" >> .env
 
       - name: Run tests
         run: |
