@@ -19,7 +19,7 @@ module.exports = async () => {
 	const mongoClient = await mongodb.clientConnect(process.env.MONGO_URI);
 	const config = { mongoClient };
 	
-	require('./testIndex')(app, config); // mount all routes
+	await require('./testIndex')(app, config); // mount all routes
 
 	return app;
 };
