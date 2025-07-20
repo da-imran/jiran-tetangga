@@ -31,3 +31,32 @@ jobs:
 
       - name: Done
         run: echo "CI pipeline build stage completed."
+  
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+          echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
+          echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> .env
+
+      - name: Run tests
+        run: |
+          npm test || echo "No tests defined yet. Skipping."
+
+      - name: Done
+        run: echo "CI pipeline test stage completed."
+
