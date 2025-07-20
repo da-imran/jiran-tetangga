@@ -24,7 +24,7 @@ services:
       PORT: 3500
       ENCRYPTION_KEY: UIjuWJntH8620DlacyjY
       API_KEY: jxdMegN9KOAZMwMCfIbV
-    command: ["npm", "run", "dev"]
+    command: ["npm", "start"]
     ports:
       - "3500:3500"
     networks:
