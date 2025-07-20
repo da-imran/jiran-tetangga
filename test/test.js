@@ -2,16 +2,21 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-require('dotenv').config();
-
-const server = require('../app').app;
 const mongoFx = require('../utilities/mongodb');
+require('dotenv').config();
 
 const should = chai.should();
 chai.use(chaiHttp);
 
 const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetanga';
 const VERSION = process.env.VERSION || 'v1';
+
+let server;
+
+before(async () => {
+	const appFactory = require('./server');
+	server = await appFactory(); // Initialize app with mocked setup
+});
 
 // Admin user Module
 describe('🧪 ADM: Admin Module', () => {
