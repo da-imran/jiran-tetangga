@@ -59,6 +59,7 @@ describe('🧪 ADM: Admin Module', () => {
 			.send(inputPayload)
 			.end((err, res) => {
 				if (err) console.log(err);
+				console.log('response', res);
 				should.exist(res.body);
 				res.should.have.status(200);
 				res.body.should.be.a('object');
