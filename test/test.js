@@ -8,7 +8,7 @@ require('dotenv').config();
 const should = chai.should();
 chai.use(chaiHttp);
 
-const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetanga';
+const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetangga';
 const VERSION = process.env.VERSION || 'v1';
 
 let server;
