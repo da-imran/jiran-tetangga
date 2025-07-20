@@ -23,7 +23,8 @@ services:
       MONGO_DB_NAME: 'jiran-tetangga'
       PORT: 3500
       ENCRYPTION_KEY: UIjuWJntH8620DlacyjY
-      API_KEY: jxdMegN9KOAZMwMCfIbV
+      API_KEY: jxdMegN9KOAZMwMCfIbV,
+      JWT_KEY: jxdMejuWJntOAlacyjYZMwlafIbV
     command: ["npm", "start"]
     ports:
       - "3500:3500"

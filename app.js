@@ -20,23 +20,24 @@ app.use(cors({
 	allowedHeaders: 'Origin, X-Requested-With, Content-disposition, Content-Type, Accept, Authorization, x-api-key'
 }));
 
-app.use((req, res, next) => {
-	// When running locally
-	if(environment === 'local') return next();
-	else {
-		// When running via docker
-		const excludedPaths = ['/', '/jiran-tetangga/v1'];
-		if (excludedPaths.includes(req.path)) {
-			return next();
-		}
-		return authentication(req, res, next);
-	}
-});
+// app.use((req, res, next) => {
+// 	// When running locally
+// 	if(environment === 'local') return next();
+// 	else {
+// 		// When running via docker
+// 		const excludedPaths = ['/', '/jiran-tetangga/v1'];
+// 		if (excludedPaths.includes(req.path)) {
+// 			return next();
+// 		}
+// 		return authentication(req, res, next);
+// 	}
+// });
 
 (async () => {
 	try {
 		const mongoClient = await mongodb.clientConnect(process.env.MONGO_URI);
 		const config = { mongoClient };
+		authentication(app, config);
 
 		// Load routes/modules after MongoDB is ready
 		require('./index')(app, config);
