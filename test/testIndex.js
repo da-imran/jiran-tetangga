@@ -1,7 +1,7 @@
-const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
-const API_VERSION = process.env.API_VERSION;
-const APP_VERSION = process.env.APP_VERSION;
-const VERSION = process.env.VERSION;
+const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetangga';
+const API_VERSION = process.env.API_VERSION || '1.0.0';
+const APP_VERSION = process.env.APP_VERSION || '1.0.0';
+const VERSION = process.env.VERSION || 'v1';
 
 module.exports = async (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}`, (_, res) => {
