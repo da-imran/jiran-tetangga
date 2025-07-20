@@ -13,7 +13,7 @@ const VERSION = process.env.VERSION || 'v1';
 
 let server;
 before(async () => {
-	const appFactory = require('./server');
+	const appFactory = require('./testServer');
 	server = await appFactory(); // Initialize app with mocked setup
 });
 
