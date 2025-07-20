@@ -6,12 +6,12 @@ module.exports = (app, config) => {
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
 
-	// Get all Events or by filter API
+	// Get all Events
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Get All Events API';
 		try {
 			console.log(`${apiName} is called at ${new Date()}}`);
-			const eventsResult = await mongo.aggregate(mongoClient, 'events');
+			const eventsResult = await mongo.find(mongoClient, 'events');
 
 			if (eventsResult) {
 				console.log(`${apiName} Response Success.`);
@@ -48,7 +48,7 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.params, requiredFields, res)) {
 				return;
 			} else {
-				const eventsResult = await mongo.aggregate(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
+				const eventsResult = await mongo.findOne(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
 				if (eventsResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({

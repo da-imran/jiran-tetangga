@@ -469,7 +469,7 @@ describe('🧪 EVT: Event Module', () => {
 	});
 
 	it('EVT-002: GET - Get All Event', (done) => {
-		mongoStub = sinon.stub(mongoFx, 'aggregate');
+		mongoStub = sinon.stub(mongoFx, 'find');
 		mongoStub.resolves(eventData);
 
 		chai.request(server)
