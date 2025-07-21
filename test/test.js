@@ -2,17 +2,24 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-require('dotenv').config();
-
-const server = require('../app').app;
 const mongoFx = require('../utilities/mongodb');
+require('dotenv').config();
 
 const should = chai.should();
 chai.use(chaiHttp);
 
-const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetanga';
+const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetangga';
 const VERSION = process.env.VERSION || 'v1';
 
+let server;
+before(async () => {
+	const appFactory = require('./testServer');
+	server = await appFactory(); // Initialize app with mocked setup
+});
+
+afterEach(() => {
+	sinon.restore(); // Restore stubs after each test
+});
 
 // Admin user Module
 describe('🧪 ADM: Admin Module', () => {
@@ -101,8 +108,18 @@ describe('🧪 ADM: Admin Module', () => {
 			firstName: 'Ehsan',
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			firstName: 'Ehsan',
+			lastName: 'Imran',
+			email: 'ios.imran@gmail.com',
+			password: 'U2FsdGVkX1/5+p3NiteLynq1ZOivCveI/V814kZZMh8=',
+			phone: '0123456789',
+			createdAt: '2025-06-28T10:07:07.985Z'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/${fakeId}`)
@@ -230,8 +247,17 @@ describe('🧪 DSP: Disruption Module', () => {
 			adminId: '685fbecb335bdc41ca63fa4a'
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			title: 'Jalan Cenderai Water Pipe Burst',
+			description: 'Jalan Cenderai Water Pipe Burst',
+			status: true,
+			createdAt: '2025-07-05T14:54:23.266Z',
+			updatedAt: '2025-07-20T09:59:03.366Z'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions/${fakeId}`)
@@ -365,8 +391,21 @@ describe('🧪 PRK: Park Module', () => {
 			status: 'MAINTENANCE',
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			name: 'Taman Rekreasi Sungai Tiram',
+			description: 'Jogging track in the park closed for maintenance.',
+			status: 'MAINTENANCE',
+			openingHours: {
+				opening: '0600',
+				closing: '2330'
+			},
+			createdAt: '2025-07-06T14:01:10.989Z',
+			updatedAt: '2025-07-08T14:53:37.957Z'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/parks/${fakeId}`)
@@ -496,12 +535,25 @@ describe('🧪 EVT: Event Module', () => {
 
 	it('EVT-004: PATCH - Update Event', (done) => {
 		const updatedPayload = {
-			location: 'Taman Rekreasi Sungai Tiram',
+			title: 'Lets Zumba',
 			adminId: '685fbecb335bdc41ca63fa4a'
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			title: 'Lets Zumba!',
+			descriptiom: 'There is a Zumba class at the park. Come join us!',
+			organizerName: 'Ehsan',
+			organizerEmail: 'ios.imran@gmail.com',
+			eventDate: '2025-07-15T16:00:00.000Z',
+			location: 'Taman Rekreasi Sungai Tiram',
+			createdAt: '2025-07-06T14:37:07.781Z',
+			adminId: '685fbecb335bdc41ca63fa4a',
+			status: 'approved'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/events/${fakeId}`)
@@ -637,8 +689,22 @@ describe('🧪 SHP: Shop Module', () => {
 			adminId: '685fbecb335bdc41ca63fa4a'
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			name: 'Coffe Bean & Tea Leaf',
+			description: 'Your favorite local coffee shop',
+			status: 'OPEN',
+			location: 'Lot 1/1A, Jalan Sungai Tiram 1',
+			openingHours: {
+				opening: '0900',
+				closing: '2330'
+			},
+			createdAt: '2025-07-06T15:09:15.107Z',
+			updatedAt: '2025-07-20T10:03:20.365Z'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/shops/${fakeId}`)
@@ -768,8 +834,19 @@ describe('🧪 RPT: Report Module', () => {
 			category: 'road-disruption'
 		};
 
+		const updateResult = {
+			_id: fakeId,
+			email: 'ios.imran@gmail.com',
+			description: 'Your favorite local coffee shop',
+			location: 'Lot 1/1A, Jalan Sungai Tiram 1',
+			category: 'road-disruption',
+			images: null,
+			status: 'pending',
+			createdAt: '2025-07-17T14:29:37.006Z'
+		};
+
 		mongoStub = sinon.stub(mongoFx, 'findOneAndUpdate');
-		mongoStub.resolves(updatedPayload);
+		mongoStub.resolves(updateResult);
 
 		chai.request(server)
 			.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/${fakeId}`)

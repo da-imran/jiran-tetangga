@@ -93,7 +93,7 @@ RUN_ENV='local'
 
 ### 4. Run Locally
 ```bash
-npm run dev
+npm start
 ```
 
 ## 📦 Docker Support 
