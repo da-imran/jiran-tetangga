@@ -34,28 +34,28 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 ## 📂 Backend Project Structure
 ```bash
 jiran-tetangga/
-├── middleware/        # Middleware
-│   ├── authentication.js   # Authentication controller
-├── modules/           # All feature-based route controllers
-│   ├── adminUser.js   # Admin auth, create/read admins
-│   ├── reports.js     # Issues reporting (e.g. pothole, accidents)
-│   ├── disruptions.js # Road disruptions
-│   ├── events.js      # Family events, ceremonies
-│   ├── shops.js       # Shop status, new openings/closures
-│   └── parks.js       # Park conditions, usage
+├── middleware/                 # Middleware
+│   ├── authentication.js       # Authentication controller
+├── modules/                    # All feature-based route controllers
+│   ├── adminUser.js            # Admin auth, create/read admins
+│   ├── reports.js              # Issues reporting (e.g. pothole, accidents)
+│   ├── disruptions.js          # Road disruptions
+│   ├── events.js               # Family events, ceremonies
+│   ├── shops.js                # Shop status, new openings/closures
+│   └── parks.js                # Park conditions, usage
 ├── utilities/
-│   ├── jwt.js         # JWT setup
-│   ├── mongodb.js     # Central DB connection logic
-│   └── validation.js  # Parameters check function
+│   ├── jwt.js                  # JWT setup
+│   ├── mongodb.js              # Central DB connection logic
+│   └── validation.js           # Parameters check function
 ├── test/
-│   └── test.js        # Central place for backend API tests
-├── .env               # Sensitive config (PORT, DB_URL)
-├── app.js             # Express app, middleware, routes entry
-├── server.js          # Separate boot file
-├── index.js           # Index file
-├── package.json       # Package JSON file
-├── Dockerfile         # Docker configuration
-├── docker-compose.yaml   # Docker yaml configuration
+│   └── test.js                 # Central place for backend API tests
+├── .env                        # Sensitive config (PORT, DB_URL)
+├── app.js                      # Express app, middleware, routes entry
+├── server.js                   # Separate boot file
+├── index.js                    # Index file
+├── package.json                # Package JSON file
+├── Dockerfile                  # Docker configuration
+├── docker-compose.yaml         # Docker yaml configuration
 ├── .postaman_collection.json   # Postman collection
 ```
 
