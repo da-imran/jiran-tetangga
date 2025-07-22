@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 
 const JWT_KEY = process.env.JWT_KEY;  
 function signToken(payload) {
-	return jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });
+	return jwt.sign(payload, JWT_KEY, { 
+		expiresIn: Math.floor(Date.now() / 1000) + (30 * 60) // Expiry in 30 mins
+	});
 }
 
 function verifyToken(token) {
