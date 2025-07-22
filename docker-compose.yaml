@@ -25,7 +25,6 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       API_KEY: ${API_KEY}
       JWT_KEY: ${JWT_KEY}
-    command: ["npm", "start"]
     ports:
       - "3500:3500"
     networks:
