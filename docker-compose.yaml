@@ -5,7 +5,7 @@
 # Here the instructions define your application as a service called "app".
 # This service is built from the Dockerfile in the current directory.
 # You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
+# database or a cache. For exampleshttps://github.com/da-imran/jiran-tetangga/security, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
   backend:
@@ -14,17 +14,17 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      NODE_ENV: development
-      MONGO_URI: 'mongodb://mongodb:27017/jiran-tetangga'
-      ROUTE_PREPEND: 'jiran-tetangga'
-      API_VERSION: '1.0.0'
-      APP_VERSION: '1.0.0'
-      VERSION: 'v1'
-      MONGO_DB_NAME: 'jiran-tetangga'
-      PORT: 3500
-      ENCRYPTION_KEY: UIjuWJntH8620DlacyjY
-      API_KEY: jxdMegN9KOAZMwMCfIbV,
-      JWT_KEY: jxdMejuWJntOAlacyjYZMwlafIbV
+      NODE_ENV: ${NODE_ENV}
+      MONGO_URI: ${MONGO_URI}
+      ROUTE_PREPEND: ${ROUTE_PREPEND}
+      API_VERSION: ${API_VERSION}
+      APP_VERSION: ${APP_VERSION}
+      VERSION: ${VERSION}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      PORT: ${PORT}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      API_KEY: ${API_KEY}
+      JWT_KEY: ${JWT_KEY}
     command: ["npm", "start"]
     ports:
       - "3500:3500"
