@@ -34,6 +34,10 @@ services:
       mongodb:
         condition: service_healthy
     restart: on-failure
+    volumes:
+      - .:/usr/src/app
+      - /usr/ssrc/app/node_modules
+    command: ["npm", "start"]
     
   mongodb:
     image: mongo:latest
@@ -42,7 +46,7 @@ services:
     volumes:
       - db_data:/data/db
     ports:
-      - "27018:27018"
+      - "27018:27017"
     networks:
       - jiran-tetangga-networks
     healthcheck:
