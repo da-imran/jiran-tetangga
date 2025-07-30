@@ -36,6 +36,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 jiran-tetangga/
 ├── middleware/        # Middleware
 │   ├── authentication.js   # Authentication controller
+│   └── apiCheck.js   # Api key check for protected routes
 ├── modules/           # All feature-based route controllers
 │   ├── adminUser.js   # Admin auth, create/read admins
 │   ├── reports.js     # Issues reporting (e.g. pothole, accidents)
@@ -43,12 +44,17 @@ jiran-tetangga/
 │   ├── events.js      # Family events, ceremonies
 │   ├── shops.js       # Shop status, new openings/closures
 │   └── parks.js       # Park conditions, usage
+├── nginx/
+│   └── nginx.conf     # Nginx configuration
 ├── utilities/
 │   ├── jwt.js         # JWT setup
 │   ├── mongodb.js     # Central DB connection logic
-│   └── validation.js  # Parameters check function
+│   ├── validation.js  # Parameters check function
+│   └── secrets.js     # Secrets functions with Infisical
 ├── test/
-│   └── test.js        # Central place for backend API tests
+│   ├── test.js        # Central place for backend API tests
+│   ├── testIndex.js   # Serve as the index file for backend API tests
+│   └── testServer.js  # Serve as the server for backend API tests
 ├── .env               # Sensitive config (PORT, DB_URL)
 ├── app.js             # Express app, middleware, routes entry
 ├── server.js          # Separate boot file
@@ -56,7 +62,7 @@ jiran-tetangga/
 ├── package.json       # Package JSON file
 ├── Dockerfile         # Docker configuration
 ├── docker-compose.yaml   # Docker yaml configuration
-├── .postaman_collection.json   # Postman collection
+├── .postman_collection.json   # Postman collection
 ```
 
 ---
