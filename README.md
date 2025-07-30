@@ -11,7 +11,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
   - Park conditions
 - 📬 Residents can report damages or concerns
 - 🧠 Admin system for managing updates and users
-- 🤖 WhatsApp bot integration
+- 🤖 Discord Webhook Notifications
 - 🐳 Docker support + local and cloud deployment ready
 
 ---
@@ -24,7 +24,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 | Backend      | Node.js + Express    |
 | Database     | MongoDB              |
 | Auth         | AES / JWT |
-| Messaging    | WhatsApp Bot	|
+| Notification | Discord Webhook	|
 | Container    | Docker, Docker Compose |
 | CI Pipeline  | Github Action     |
 | Testing      | Chai / Sinon / Mocha	|
@@ -78,18 +78,26 @@ npm install
 ### 3. Environment Setup
 Create a .env file
 ```bash
-PORT=your_port_number
-MONGODB_URI=mongodb_db_connection_uri
-MONGODB_DBNAME=mongodb_name
+HOSTNAME='localhost'
 ROUTE_PREPEND = 'jiran-tetangga'
 API_VERSION = '1.0.0'
 APP_VERSION = '1.0.0'
 VERSION = 'v1'
+PORT=your_port_number
+MONGODB_URI=mongodb_db_connection_uri
+MONGODB_DBNAME=mongodb_name
 ENCRYPTION_KEY=any random strings
 API_KEY =any random strings
 JWT_KEY = any random strings
-RUN_ENV='local'
+NODE_ENV='local' # For env when running npm run dev / npm start
+MONGO_URI='mongodb://localhost:27017/' # Default MongoDB localhost URI
+INFISICAL_URI=http://localhost:85 # Set to 85 due to my port 80 being used
+INFISICAL_PROJECT_ID='your infisical project id'
+INFISICAL_CLIENT_ID='your infisical client id'
+INFISICAL_CLIENT_SECRET='your infisical client secret'
+INFISICAL_ENV=dev
 ```
+<i>Sensitive information such as API_KEY, ENCRYPTION_KEY can be store using the Infisical secrets tools or you can just use any string for testing purposes</i>
 
 ### 4. Run Locally
 ```bash
@@ -108,8 +116,8 @@ npm start
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
-[] WhatsApp bot notification </br>
 [x] CI pipeline with Github Action </br>
+[] Discord webhook notification </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.

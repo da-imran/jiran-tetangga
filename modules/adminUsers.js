@@ -1,13 +1,14 @@
 const mongo = require('../utilities/mongodb');
 const CryptoJS = require('crypto-js');
 const { requiredCheck } = require('../utilities/validation');
+const { secrets } = require('../utilities/secrets');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
 
-	const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
+	const ENCRYPTION_KEY = secrets.ENCRYPTION_KEY.value;
 
 	// Get all Administrator user details
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {

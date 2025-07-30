@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
+const { secrets } = require('../utilities/secrets');
 
-const JWT_KEY = process.env.JWT_KEY;  
 function signToken(payload) {
-	return jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });
+	const JWT_KEY = secrets.JWT_KEY.value;  
+	return jwt.sign(payload, JWT_KEY, { expiresIn: '15m' });
 }
 
 function verifyToken(token) {
+	const JWT_KEY = secrets.JWT_KEY.value;
 	return jwt.verify(token, JWT_KEY);
 }
 

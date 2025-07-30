@@ -3,14 +3,13 @@ require('dotenv').config();
 
 const { MongoClient } = mongo;
 
-const uri = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DB_NAME;
 
 module.exports = {
-	clientConnect: async () =>
+	clientConnect: async (mongoDBUrl) =>
 		new Promise(async (resolve, reject) => {
 			try {
-				const client = new MongoClient(uri);
+				const client = new MongoClient(mongoDBUrl);
 				await client.connect();
 				console.log('✅ Connected to MongoDB');
 				resolve(client);
@@ -19,20 +18,20 @@ module.exports = {
 				reject(error);
 			}
 		}),
-	getCollections: async (collectionName) =>
-		new Promise(async (resolve, reject) => {
-			try {
-				const client = new MongoClient(uri);
-				await client.connect();
-				const db = client.db(db);
-				const collection = db.collection(collectionName);
-				console.log(`✅ MongoDB Fetched collection: ${collectionName}`);
-				resolve(collection);
-			} catch (error) {
-				console.error(`❌ MongoDB Failed to get ${collectionName} collection:`, error);
-				reject(error);
-			}
-		}),
+	// getCollections: async (collectionName) =>
+	// 	new Promise(async (resolve, reject) => {
+	// 		try {
+	// 			const client = new MongoClient(uri);
+	// 			await client.connect();
+	// 			const db = client.db(db);
+	// 			const collection = db.collection(collectionName);
+	// 			console.log(`✅ MongoDB Fetched collection: ${collectionName}`);
+	// 			resolve(collection);
+	// 		} catch (error) {
+	// 			console.error(`❌ MongoDB Failed to get ${collectionName} collection:`, error);
+	// 			reject(error);
+	// 		}
+	// 	}),
 	getObjectId: (str) => {
 		try {
 			const result = new mongo.ObjectId(str);
