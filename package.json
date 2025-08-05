@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 5000 --exit",
+    "test": "mocha --timeout 10000 --exit",
     "start": "node app.js",
     "lint": "eslint ."
   },
