@@ -6,4 +6,6 @@ node_modules
 
 # Logs folder
 logs/
-
+logs/combined.log
+logs/critical.log
+logs/error.log
