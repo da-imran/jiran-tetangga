@@ -4,3 +4,6 @@
 # Node JS
 node_modules
 
+# Logs folder
+logs/
+

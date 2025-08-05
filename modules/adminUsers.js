@@ -302,10 +302,12 @@ module.exports = (app, config) => {
 	// Update Administrator user by UserId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
 		const { adminUserId } = req.params;
+		const apiName = 'Update Admin User by UserId API';
 		const { 
 			firstName,
 			lastName,
 		} = req.body;
+	
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
 			service: SERVICE_NAME,
@@ -317,7 +319,6 @@ module.exports = (app, config) => {
 			level: LOG_LEVELS.INFO,
 		});
 
-		const apiName = 'Update Admin User by UserId API';
 		try {
 			const requiredFields = [
 				'adminUserId',
