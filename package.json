@@ -22,7 +22,9 @@
     "jsonwebtoken": "^9.0.2",
     "mocha": "^11.7.1",
     "mongodb": "^6.15.0",
-    "sinon": "^15.2.0"
+    "sinon": "^15.2.0",
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

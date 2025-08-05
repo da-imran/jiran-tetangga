@@ -1,5 +1,8 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
+const { logger, LOG_LEVELS } = require('../utilities/logger');
+const { MODULES } = require('../utilities/constants');
+const { v4: uuidv4 } = require('uuid');
 
 const reportStatus = {
 	PENDING: 'pending',
@@ -11,13 +14,28 @@ module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
+	const SERVICE_NAME = process.env.SERVICE_NAME;
+	const MODULE = MODULES.DISRUPTIONS;
+
+	const traceId = uuidv4();
+
 
 	// Get All Reports API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
 		const apiName = 'Get All Reports API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const reportsResult = await mongo.find(mongoClient, 'reports');
 
 			if (reportsResult) {
@@ -40,6 +58,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -47,12 +75,28 @@ module.exports = (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
 		const apiName = 'Get Report API';
 		const { reportId } = req.params;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const reportsResult = await mongo.findOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
@@ -77,6 +121,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -90,15 +144,31 @@ module.exports = (app, config) => {
 			category,
 			images,
 		} = req.body;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'email',
 				'category',
 				'location',
 				'description',
 			];
-			if (!requiredCheck(req.body, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.body, requiredFields, res, config)) {
 				return;
 			} else {
 				// 🔎 Proceed to create report
@@ -114,15 +184,37 @@ module.exports = (app, config) => {
 				const inputResult = await mongo.insertOne(mongoClient, 'reports', inputReports);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
-					return res.status(200).json({
+					res.status(200).json({
 						message: 'Report created successfully',
 						_id: inputResult.insertedId,
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Report created successfully',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				} else {
 					console.error('❌ Error creating report.');
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating report.',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Error creating report.',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -132,6 +224,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -149,13 +251,28 @@ module.exports = (app, config) => {
 		} = req.body;
 
 		const apiName = 'Update Reports API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -174,12 +291,34 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'Update report failed!'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Update report failed!',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Report updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Report updated successfully.',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				}
 			}
@@ -191,6 +330,16 @@ module.exports = (app, config) => {
 				message: `${apiName} Failed to update`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -199,13 +348,27 @@ module.exports = (app, config) => {
 		const { reportId } = req.params;
 
 		const apiName = 'Delete Reports API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+		try {
 			const requiredFields = [
 				'reportId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) });
@@ -217,10 +380,32 @@ module.exports = (app, config) => {
 							adminUser: deleteResult
 						},
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Report deleted successfully.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					res.status(404).send({
 						status: 404,
 						message: 'Report not deleted'
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Report not deleted.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -230,6 +415,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});

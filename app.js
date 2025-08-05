@@ -5,6 +5,7 @@ const mongodb = require('./utilities/mongodb');
 const authentication = require('./middleware/authentication');
 const apiKeyCheck = require('./middleware/apiCheck');
 const { checkSecretObjectNull, secrets } = require('./utilities/secrets');
+const { logger, LOG_LEVELS } = require('./utilities/logger');
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,7 @@ const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetangga';
 const VERSION = process.env.VERSION || 'v1';
 const ENVIRONMENT = process.env.NODE_ENV || 'local';
 const PORT = process.env.PORT || '3500';
+const SERVICE_NAME = process.env.SERVICE_NAME;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
@@ -42,6 +44,12 @@ app.use((req, res, next) => {
 		const secretsLoaded = await checkSecretObjectNull();
 		if (!secretsLoaded) {
 			console.error('❌ Critical secrets could not be loaded from Infisical. Exiting...');
+			logger.log({
+				level: LOG_LEVELS.CRITICAL,
+				message: 'Critical secrets could not be loaded from Infisical. Exiting...',
+				status: 500,
+				service: SERVICE_NAME,
+			});
 			process.exit(1);
 		}
 
@@ -59,6 +67,12 @@ app.use((req, res, next) => {
 		});
 	} catch (error) {
 		console.error('❌ Failed to start server:', error);
+		logger.log({
+			level: LOG_LEVELS.CRITICAL,
+			message: error,
+			status: 500,
+			service: SERVICE_NAME,
+		});
 		process.exit(1);
 	}
 	

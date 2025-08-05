@@ -1,17 +1,34 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
+const { logger, LOG_LEVELS } = require('../utilities/logger');
+const { MODULES } = require('../utilities/constants');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
+	const SERVICE_NAME = process.env.SERVICE_NAME;
+	const MODULE = MODULES.DISRUPTIONS;
+
+	const traceId = uuidv4();
 
 	// Get All Disruptions API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
 		const apiName = 'Get All Disruptions API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const mongoResult = await mongo.find(mongoClient, 'disruptions');
 
 			if (mongoResult) {
@@ -20,11 +37,33 @@ module.exports = (app, config) => {
 					status: 200,
 					data: mongoResult
 				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 200,
+					message: 'Response Success',
+					data: mongoResult,
+					traceId,
+					level: LOG_LEVELS.INFO,
+				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
 					message: 'Disruptions not found',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 404,
+					message: 'Disruptions not found',
+					data: mongoResult,
+					traceId,
+					level: LOG_LEVELS.ERROR,
 				});
 			}
 		} catch (err) {
@@ -34,6 +73,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -41,13 +90,28 @@ module.exports = (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
 		const apiName = 'Get Disruption API';
 		const { disruptionId } = req.params;
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const requiredFields = [
 				'disruptionId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const mongoResult = await mongo.find(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
@@ -57,11 +121,32 @@ module.exports = (app, config) => {
 						status: 200,
 						data: mongoResult
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success',
+						data: mongoResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Disruption not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Disruption not found',
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -71,6 +156,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.INFO,
 			});
 		}
 	});
@@ -82,13 +177,29 @@ module.exports = (app, config) => {
 			title,
 			description,
 		} = req.body;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'title',
 				'description',
 			];
-			if (!requiredCheck(req.body, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.body, requiredFields, res, config)) {
 				return;
 			} else {
 				// 🔎 Proceed to create disruption
@@ -101,15 +212,36 @@ module.exports = (app, config) => {
 				const inputResult = await mongo.insertOne(mongoClient, 'disruptions', inputObj);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
-					return res.status(200).json({
+					res.status(200).json({
 						message: 'Disruption created successfully',
 						_id: inputResult.insertedId,
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Disruption created successfully',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				} else {
 					console.error('❌ Error creating disruption.');
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating disruption.',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Error creating disruption.',
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -119,6 +251,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -131,15 +273,29 @@ module.exports = (app, config) => {
 			description,
 			status,
 		} = req.body;
-	
+
 		const apiName = 'Update Disruption API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
-			
 			const requiredFields = [
 				'disruptionId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -155,11 +311,32 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'Disruption not updated'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Disruption not updated',
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					res.status(200).send({
 						status: 200,
 						message: 'Disruption updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Disruption updated successfully.',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				}
 			}
@@ -170,6 +347,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -178,13 +365,28 @@ module.exports = (app, config) => {
 		const { disruptionId } = req.params;
 
 		const apiName = 'Delete Disruptions API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
-	
 			const requiredFields = [
 				'disruptionId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) });
@@ -197,11 +399,32 @@ module.exports = (app, config) => {
 							adminUser: deleteResult
 						},
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Disruption deleted successfully.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Disruption not deleted'
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Disruption not deleted',
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -211,6 +434,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});

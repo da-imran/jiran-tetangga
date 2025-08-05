@@ -1,6 +1,6 @@
 # 🏡 JiranTetangga
 
-A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.
+A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates and report issues.
 
 ## 🚀 Features
 

@@ -1,17 +1,35 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
+const { logger, LOG_LEVELS } = require('../utilities/logger');
+const { MODULES } = require('../utilities/constants');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
+	const SERVICE_NAME = process.env.SERVICE_NAME;
+	const MODULE = MODULES.DISRUPTIONS;
+
+	const traceId = uuidv4();
+
 
 	// Get All Parks API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
 		const apiName = 'Get All Parks API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const parksResult = await mongo.find(mongoClient, 'parks');
 
 			if (parksResult) {
@@ -20,11 +38,33 @@ module.exports = (app, config) => {
 					status: 200,
 					data: parksResult
 				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 200,
+					message: 'Response Success.',
+					data: parksResult,
+					traceId,
+					level: LOG_LEVELS.INFO,
+				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
 					message: 'Parks not found',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 404,
+					message: 'Parks not found',
+					data: parksResult,
+					traceId,
+					level: LOG_LEVELS.ERROR,
 				});
 			}
 		} catch (err) {
@@ -34,6 +74,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -41,12 +91,28 @@ module.exports = (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
 		const { parkId } = req.params;
 		const apiName = 'Get Park API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'parkId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const parksResult = await mongo.find(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
@@ -56,11 +122,33 @@ module.exports = (app, config) => {
 						status: 200,
 						data: parksResult
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success.',
+						data: parksResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Parks not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Parks not found',
+						data: parksResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -70,6 +158,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -82,14 +180,30 @@ module.exports = (app, config) => {
 			description,
 			openingHours,
 		} = req.body;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
 				'description',
 				'openingHours',
 			];
-			if (!requiredCheck(req.body, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.body, requiredFields, res, config)) {
 				return;
 			} else {
 				// 🔎 Proceed to create park
@@ -106,15 +220,37 @@ module.exports = (app, config) => {
 				const inputResult = await mongo.insertOne(mongoClient, 'parks', inputPark);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
-					return res.status(200).json({
+					res.status(200).json({
 						message: 'Park created successfully',
 						_id: inputResult.insertedId,
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Park created successfully',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				} else {
 					console.error('❌ failed to create.');
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating park.',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Error creating park.',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -124,6 +260,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -139,14 +285,28 @@ module.exports = (app, config) => {
 		} = req.body;
 
 		const apiName = 'Update Parks API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const requiredFields = [
 				'parkId',
 			];
-			
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -173,12 +333,34 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'Park not updated'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Park not updated',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Park updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Park updated successfully.',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				}
 			}
@@ -189,6 +371,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -197,13 +389,28 @@ module.exports = (app, config) => {
 		const { parkId } = req.params;
 
 		const apiName = 'Delete Parks API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const requiredFields = [
 				'parkId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
@@ -216,11 +423,33 @@ module.exports = (app, config) => {
 							adminUser: deleteResult
 						},
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Park deleted successfully.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.error(`❌ ${apiName} failed to delete.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Park not deleted'
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Park not deleted',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -230,6 +459,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});

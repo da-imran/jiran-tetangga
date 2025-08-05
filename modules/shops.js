@@ -1,17 +1,34 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
+const { logger, LOG_LEVELS } = require('../utilities/logger');
+const { MODULES } = require('../utilities/constants');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
+	const SERVICE_NAME = process.env.SERVICE_NAME;
+	const MODULE = MODULES.DISRUPTIONS;
+
+	const traceId = uuidv4();
+
 
 	// Get All Shops API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
 		const apiName = 'Get All Shops API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+		try {
 			const shopResult = await mongo.find(mongoClient, 'shops');
 
 			if (shopResult) {
@@ -20,11 +37,33 @@ module.exports = (app, config) => {
 					status: 200,
 					data: shopResult
 				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 200,
+					message: 'Response Success.',
+					data: shopResult,
+					traceId,
+					level: LOG_LEVELS.INFO,
+				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
 					message: 'Shops not found',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 404,
+					message: 'Shops not found',
+					data: shopResult,
+					traceId,
+					level: LOG_LEVELS.ERROR,
 				});
 			}
 		} catch (err) {
@@ -34,6 +73,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -41,12 +90,28 @@ module.exports = (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
 		const apiName = 'Get Shop API';
 		const { shopId } = req.params;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const shopResult = await mongo.find(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
@@ -56,11 +121,33 @@ module.exports = (app, config) => {
 						status: 200,
 						data: shopResult
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success.',
+						data: shopResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Shop not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Shops not found',
+						data: shopResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -70,6 +157,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -83,14 +180,30 @@ module.exports = (app, config) => {
 			openingHours,
 			status,
 		} = req.body;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'name',
 				'description',
 				'openingHours',
 			];
-			if (!requiredCheck(req.body, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.body, requiredFields, res, config)) {
 				return;
 			} else {
 				// 🔎 Proceed to create shop
@@ -107,15 +220,37 @@ module.exports = (app, config) => {
 				const inputResult = await mongo.insertOne(mongoClient, 'shops', inputShop);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
-					return res.status(200).json({
+					res.status(200).json({
 						message: 'Shop created successfully',
 						_id: inputResult.insertedId,
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Shop created successfully',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				} else {
 					console.error('❌ Error creating shop.');
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating shop.',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Error creating shop.',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -125,6 +260,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -140,13 +285,28 @@ module.exports = (app, config) => {
 		} = req.body;
 
 		const apiName = 'Update Shops API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+		
+		try {
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -172,11 +332,33 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'Shop not updated'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Shop not updated',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					res.status(200).send({
 						status: 200,
 						message: 'Shop updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Shop updated successfully.',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				}
 			}
@@ -187,6 +369,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -195,13 +387,28 @@ module.exports = (app, config) => {
 		const { shopId } = req.params;
 
 		const apiName = 'Delete Shops API';
-		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
+		try {
 			const requiredFields = [
 				'shopId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
@@ -213,10 +420,32 @@ module.exports = (app, config) => {
 							adminUser: deleteResult
 						},
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Shop deleted successfully.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					res.status(404).send({
 						status: 404,
 						message: 'Shop not deleted'
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Shop not deleted',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -226,6 +455,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});

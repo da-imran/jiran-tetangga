@@ -1,16 +1,34 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
+const { logger, LOG_LEVELS } = require('../utilities/logger');
+const { MODULES } = require('../utilities/constants');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
 	const { mongoClient } = config;
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
+	const SERVICE_NAME = process.env.SERVICE_NAME;
+	const MODULE = MODULES.DISRUPTIONS;
+
+	const traceId = uuidv4();
 
 	// Get all Events
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Get All Events API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const eventsResult = await mongo.find(mongoClient, 'events');
 
 			if (eventsResult) {
@@ -19,11 +37,33 @@ module.exports = (app, config) => {
 					status: 200,
 					data: eventsResult
 				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 200,
+					message: 'Response Success',
+					data: eventsResult,
+					traceId,
+					level: LOG_LEVELS.INFO,
+				});
 			} else {
 				console.log(`❌ ${apiName} Response Failed.`);
 				res.status(404).send({
 					status: 404,
 					message: 'Events not found',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 404,
+					message: 'Events not found',
+					data: eventsResult,
+					traceId,
+					level: LOG_LEVELS.ERROR,
 				});
 			}
 		} catch (err) {
@@ -33,6 +73,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -40,12 +90,28 @@ module.exports = (app, config) => {
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
 		const apiName = 'Get Event API';
 		const { eventId } = req.params;
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const eventsResult = await mongo.findOne(mongoClient, 'events', {_id: mongo.getObjectId(eventId)});
@@ -55,11 +121,33 @@ module.exports = (app, config) => {
 						status: 200,
 						data: eventsResult
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success',
+						data: eventsResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Events not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Events not found',
+						data: eventsResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -70,32 +158,58 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
 		const apiName = 'Create Events API';
-		const input = req.body?.inputObj ?? req.body;
-		const title = input?.eventName ?? input?.title;
-		const organizerName = input?.organizerName ?? null; // null if created by admin
-		const organizerEmail = input?.organizerEmail ?? null; // null if created by admin
-	
-		const {
-			description,
-			eventDate,
-			location,
-		} = input;
+		
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
 
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
+			const input = req.body?.inputObj ?? req.body;
+			const title = input?.eventName ?? input?.title;
+			const organizerName = input?.organizerName ?? null; // null if created by admin
+			const organizerEmail = input?.organizerEmail ?? null; // null if created by admin
+	
+			const {
+				description,
+				eventDate,
+				location,
+			} = input;
+
 			const requiredFields = [
 				'title',
 				'description',
 				'eventDate',
 				'location',
 			];
-			if (!requiredCheck(input, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(input, requiredFields, res, config)) {
 				return;
 			} else {
 				// 🔎 Proceed to create event
@@ -112,16 +226,38 @@ module.exports = (app, config) => {
 				const inputResult = await mongo.insertOne(mongoClient, 'events', inputEvents);
 				if (inputResult) {
 					console.log(`${apiName} MongoDB Success.`);
-					return res.status(200).json({
+					res.status(200).json({
 						status: 200,
 						message: 'Event created successfully',
 						_id: inputResult.insertedId,
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Event created successfully',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				} else {
 					console.error(`❌ ${apiName} failed to create.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Error creating event.',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Error creating event.',
+						data: inputResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -131,6 +267,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -147,13 +293,28 @@ module.exports = (app, config) => {
 		} = req.body;
 
 		const apiName = 'Update Events API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
-			
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const updateObj = {};
@@ -171,12 +332,34 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'Event not updated'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Event not updated',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					console.log(`${apiName} MongoDB Success.`);
 					res.status(200).send({
 						status: 200,
 						message: 'Event updated successfully.',
 						data: JSON.parse(JSON.stringify(updateResult)),
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Event updated successfully.',
+						data: updateResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
 					});
 				}
 			}
@@ -187,6 +370,16 @@ module.exports = (app, config) => {
 				message: `${apiName} error`,
 				error,
 			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
+			});
 		}
 	});
 
@@ -195,12 +388,28 @@ module.exports = (app, config) => {
 		const { eventId } = req.params;
 
 		const apiName = 'Delete Event API';
+
+		console.log(`${apiName} is called at ${new Date()}`);
+		logger.log({
+			service: SERVICE_NAME,
+			module: MODULE,
+			apiName,
+			status: 200,
+			message: `${apiName} is called at ${new Date()}`,
+			traceId,
+			level: LOG_LEVELS.INFO,
+		});
+
 		try {
-			console.log(`${apiName} is called at ${new Date()}}`);
 			const requiredFields = [
 				'eventId',
 			];
-			if (!requiredCheck(req.params, requiredFields, res)) {
+			const config = {
+				traceId,
+				MODULE,
+				apiName,
+			};
+			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
 				const deleteResult = await mongo.deleteOne(mongoClient, 'events', { _id: mongo.getObjectId(eventId) });
@@ -213,11 +422,33 @@ module.exports = (app, config) => {
 							adminUser: deleteResult
 						},
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Event deleted successfully.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.error(`❌ ${apiName} failed to delete.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Event not deleted'
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Event not deleted.',
+						data: deleteResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -227,6 +458,16 @@ module.exports = (app, config) => {
 				status: 500,
 				message: `${apiName} error`,
 				error,
+			});
+
+			logger.log({
+				service: SERVICE_NAME,
+				module: MODULE,
+				apiName,
+				status: 500,
+				message: error,
+				traceId,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
