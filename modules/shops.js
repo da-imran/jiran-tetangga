@@ -11,11 +11,9 @@ module.exports = (app, config) => {
 	const SERVICE_NAME = process.env.SERVICE_NAME;
 	const MODULE = MODULES.DISRUPTIONS;
 
-	const traceId = uuidv4();
-
-
 	// Get All Shops API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Shops API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -88,6 +86,7 @@ module.exports = (app, config) => {
 
 	// Get Shop by shopId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get Shop API';
 		const { shopId } = req.params;
 
@@ -173,6 +172,7 @@ module.exports = (app, config) => {
 
 	// Create Shops API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Create Shops API';
 		const {
 			name,
@@ -276,6 +276,8 @@ module.exports = (app, config) => {
 
 	// Update Shops API by shopId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Update Shops API';
 		const { shopId } = req.params;
 		const {
 			name,
@@ -283,8 +285,6 @@ module.exports = (app, config) => {
 			status,
 			openingHours,
 		} = req.body;
-
-		const apiName = 'Update Shops API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -384,9 +384,9 @@ module.exports = (app, config) => {
 
 	// Delete Shops API by shopId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
-		const { shopId } = req.params;
-
+		const traceId = uuidv4();
 		const apiName = 'Delete Shops API';
+		const { shopId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({

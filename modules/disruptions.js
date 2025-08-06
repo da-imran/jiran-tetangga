@@ -11,10 +11,9 @@ module.exports = (app, config) => {
 	const SERVICE_NAME = process.env.SERVICE_NAME;
 	const MODULE = MODULES.DISRUPTIONS;
 
-	const traceId = uuidv4();
-
 	// Get All Disruptions API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Disruptions API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -88,6 +87,7 @@ module.exports = (app, config) => {
 
 	// Get Disruption by disruptionId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get Disruption API';
 		const { disruptionId } = req.params;
 
@@ -172,6 +172,7 @@ module.exports = (app, config) => {
 
 	// Create Disruptions API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Create Disruption API';
 		const {
 			title,
@@ -267,14 +268,14 @@ module.exports = (app, config) => {
 
 	// Update Disruptions by shopId 
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Update Disruption API';
 		const { disruptionId } = req.params;
 		const {
 			title,
 			description,
 			status,
 		} = req.body;
-
-		const apiName = 'Update Disruption API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -362,9 +363,9 @@ module.exports = (app, config) => {
 
 	// Delete Disruptions API by shopId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
-		const { disruptionId } = req.params;
-
+		const traceId = uuidv4();
 		const apiName = 'Delete Disruptions API';
+		const { disruptionId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({

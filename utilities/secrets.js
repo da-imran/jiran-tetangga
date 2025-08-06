@@ -11,7 +11,9 @@ const secrets = {
 	MONGO_URI: { name: 'MONGO_URI', value: null },
 	ENCRYPTION_KEY: { name: 'ENCRYPTION_KEY', value: null },
 	API_KEY: { name: 'API_KEY', value: null },
-	JWT_KEY: { name: 'JWT_KEY', value: null }
+	JWT_KEY: { name: 'JWT_KEY', value: null },
+	LOKI_HOST: { name: 'LOKI_HOST', value: null },
+	LOKI_TOKEN: { name: 'LOKI_TOKEN', value: null }
 };
 
 let client;
@@ -53,6 +55,7 @@ const getSecrets = async (secretsObj) => {
 const checkSecretObjectNull = async () => {
 	await getSecrets(secrets);
 	let valid = true;
+
 	for (const key in secrets) {
 		if (secrets[key].value === null) {
 			console.warn(`⚠️ Missing secret: ${key}`);

@@ -24,6 +24,7 @@ module.exports = async () => {
 		console.error('❌ Critical secrets could not be loaded from Infisical. Exiting...');
 		process.exit(1);
 	}
+	
 	const mongoUri = ENVIRONMENT === 'local' ? process.env.MONGO_URI : secrets.MONGO_URI.value;
 	const mongoClient = await mongodb.clientConnect(mongoUri);
 	const config = { mongoClient };

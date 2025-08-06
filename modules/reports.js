@@ -17,11 +17,9 @@ module.exports = (app, config) => {
 	const SERVICE_NAME = process.env.SERVICE_NAME;
 	const MODULE = MODULES.DISRUPTIONS;
 
-	const traceId = uuidv4();
-
-
 	// Get All Reports API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Reports API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -73,6 +71,7 @@ module.exports = (app, config) => {
 
 	// Get Report by reportId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get Report API';
 		const { reportId } = req.params;
 
@@ -136,6 +135,7 @@ module.exports = (app, config) => {
 
 	// Create Reports API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Create Reports API';
 		const {
 			email,
@@ -240,6 +240,8 @@ module.exports = (app, config) => {
 
 	// Update Reports API by reportId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Update Reports API';
 		const { reportId } = req.params;
 		const {
 			email,
@@ -249,8 +251,6 @@ module.exports = (app, config) => {
 			images,
 			status,
 		} = req.body;
-
-		const apiName = 'Update Reports API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -345,9 +345,9 @@ module.exports = (app, config) => {
 
 	// Delete Reports API by reportId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
-		const { reportId } = req.params;
-
+		const traceId = uuidv4();
 		const apiName = 'Delete Reports API';
+		const { reportId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({

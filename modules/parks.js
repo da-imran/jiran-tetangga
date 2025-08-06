@@ -11,11 +11,9 @@ module.exports = (app, config) => {
 	const SERVICE_NAME = process.env.SERVICE_NAME;
 	const MODULE = MODULES.DISRUPTIONS;
 
-	const traceId = uuidv4();
-
-
 	// Get All Parks API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Parks API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -89,8 +87,9 @@ module.exports = (app, config) => {
 
 	// Get Park by parkId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
-		const { parkId } = req.params;
+		const traceId = uuidv4();
 		const apiName = 'Get Park API';
+		const { parkId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -174,6 +173,7 @@ module.exports = (app, config) => {
 
 	// Create Parks API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Create Parks API';
 		const {
 			name,
@@ -276,6 +276,8 @@ module.exports = (app, config) => {
 
 	// Update Parks API by parkId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Update Parks API';
 		const { parkId } = req.params;
 		const {
 			name,
@@ -283,8 +285,6 @@ module.exports = (app, config) => {
 			location,
 			openingHours,
 		} = req.body;
-
-		const apiName = 'Update Parks API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -386,9 +386,9 @@ module.exports = (app, config) => {
 
 	// Delete Parks API by parkId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
-		const { parkId } = req.params;
-
+		const traceId = uuidv4();
 		const apiName = 'Delete Parks API';
+		const { parkId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({

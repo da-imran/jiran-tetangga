@@ -11,10 +11,9 @@ module.exports = (app, config) => {
 	const SERVICE_NAME = process.env.SERVICE_NAME;
 	const MODULE = MODULES.DISRUPTIONS;
 
-	const traceId = uuidv4();
-
 	// Get all Events
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Events API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -88,6 +87,7 @@ module.exports = (app, config) => {
 
 	// Get Event by eventId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get Event API';
 		const { eventId } = req.params;
 
@@ -173,6 +173,7 @@ module.exports = (app, config) => {
 
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Create Events API';
 		
 		console.log(`${apiName} is called at ${new Date()}`);
@@ -283,6 +284,8 @@ module.exports = (app, config) => {
 
 	// Update Events API by eventId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Update Events API';
 		const { eventId } = req.params;
 		const { 
 			title,
@@ -291,8 +294,6 @@ module.exports = (app, config) => {
 			status,
 			eventDate,
 		} = req.body;
-
-		const apiName = 'Update Events API';
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
@@ -385,9 +386,9 @@ module.exports = (app, config) => {
 
 	// Delete Event by eventId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
-		const { eventId } = req.params;
-
+		const traceId = uuidv4();
 		const apiName = 'Delete Event API';
+		const { eventId } = req.params;
 
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({

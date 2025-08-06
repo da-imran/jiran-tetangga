@@ -15,11 +15,11 @@ module.exports = (app, config) => {
 
 	const ENCRYPTION_KEY = secrets.ENCRYPTION_KEY.value;
 
-	const traceId = uuidv4();
-
 	// Get all Administrator user details
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		const traceId = uuidv4();
 		const apiName = 'Get All Admin Users API';
+
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
 			service: SERVICE_NAME,
@@ -93,8 +93,10 @@ module.exports = (app, config) => {
 
 	// Get Administrator user details by UserId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
+		const traceId = uuidv4();
 		const { adminUserId } = req.params;
 		const apiName = 'Get Admin User API';
+
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
 			service: SERVICE_NAME,
@@ -178,6 +180,8 @@ module.exports = (app, config) => {
 
 	// Create Administrator user details by the UserId
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		const traceId = uuidv4();
+		const apiName = 'Get Admin User by UserId API';
 		const {
 			firstName,
 			lastName,
@@ -185,7 +189,7 @@ module.exports = (app, config) => {
 			password,
 			phone,
 		} = req.body;
-		const apiName = 'Get Admin User by UserId API';
+
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
 			service: SERVICE_NAME,
@@ -301,8 +305,9 @@ module.exports = (app, config) => {
 
 	// Update Administrator user by UserId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.params;
+		const traceId = uuidv4();
 		const apiName = 'Update Admin User by UserId API';
+		const { adminUserId } = req.params;
 		const { 
 			firstName,
 			lastName,
@@ -374,8 +379,10 @@ module.exports = (app, config) => {
 
 	// Delete Administrator user by UserId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
-		const { adminUserId } = req.params;
+		const traceId = uuidv4();
 		const apiName = 'Delete Admin User by UserId API';
+		const { adminUserId } = req.params;
+		
 		console.log(`${apiName} is called at ${new Date()}`);
 		logger.log({
 			service: SERVICE_NAME,
