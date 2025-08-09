@@ -31,14 +31,12 @@ jobs:
   
       - name: GitHub Actions Discord Webhook
         if: success()
-        uses: niranjanshk27/discord-announcement@main
+        uses: appleboy/discord-action@v1.2.0
         with:
-          WEBHOOK: ${{ secrets.WEBHOOK_URL }}
-          TITLE: "Build Status"
-          EMBEDS: "false"
-          CONTENT: |
-            - 🏗️ Build: ${{ steps.test-build.outcome }}
-          RESULT: ${{ steps.test-build.outcome }}
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          color: "#48f442"
+          username: "GitHub Bot"
+          message: "Build success"
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -82,14 +80,12 @@ jobs:
 
       - name: GitHub Actions Discord Webhook
         if: success()
-        uses: niranjanshk27/discord-announcement@main
+        uses: appleboy/discord-action@v1.2.0
         with:
-          WEBHOOK: ${{ secrets.WEBHOOK_URL }}
-          TITLE: "Test Status"
-          EMBEDS: "false"
-          CONTENT: |
-            - 🧪 Test: ${{ steps.test-result.outcome }}
-          RESULT: ${{ steps.test-result.outcome }}
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          color: "#48f442"
+          username: "GitHub Bot"
+          message: "Test success"
 
       - name: Done
         run: echo "CI pipeline test stage completed."
