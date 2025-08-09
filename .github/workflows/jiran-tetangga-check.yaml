@@ -30,10 +30,10 @@ jobs:
           tags: jiran-tetangga:latest
   
       - name: Discord Webhook Action
-        uses: tsickert/divscord-webhook@v7.0.0
+        uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
-          content: "Github CI Build Success"
+          content: "Github Action Build Success"
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -76,10 +76,10 @@ jobs:
           CI: true
       
       - name: Discord Webhook Action
-        uses: tsickert/divscord-webhook@v7.0.0
+        uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
-          content: "Github CI Build Success"
+          content: "Github Action Test Success"
 
       - name: Done
         run: echo "CI pipeline test stage completed."
