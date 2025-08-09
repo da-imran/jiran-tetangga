@@ -34,12 +34,6 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
-          content: "GitHub Actions Build Success"
-          title: "build"
-          url: "https://github.com/da-imran/jiran-tetangga"
-          username: GitHub Actions
-          ack_no_webhook: true
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -86,12 +80,6 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
-          content: "GitHub Actions Test Success"
-          title: "test"
-          url: "https://github.com/da-imran/jiran-tetangga"
-          username: GitHub Actions
-          ack_no_webhook: true
 
       - name: Done
         run: echo "CI pipeline test stage completed."
