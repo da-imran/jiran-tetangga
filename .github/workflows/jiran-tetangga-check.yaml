@@ -30,16 +30,9 @@ jobs:
           tags: jiran-tetangga:latest
   
       - name: GitHub Actions Discord Webhook
-        uses: sarisia/actions-status-discord@v1
-        if: always()
+        uses: johnnyhuy/actions-discord-git-webhook@main
         with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          status: ${{ job.status }}
-          content: "GitHub Actions Build Success"
-          title: "build"
-          url: "https://github.com/da-imran/jiran-tetangga"
-          username: GitHub Actions
-          ack_no_webhook: true
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -82,16 +75,9 @@ jobs:
           CI: true
 
       - name: GitHub Actions Discord Webhook
-        uses: sarisia/actions-status-discord@v1
-        if: always()
+        uses: johnnyhuy/actions-discord-git-webhook@main
         with:
-          webhook: ${{ secrets.WEBHOOK_URL }}
-          status: ${{ job.status }}
-          content: "GitHub Actions Test Success"
-          title: "test"
-          url: "https://github.com/da-imran/jiran-tetangga"
-          username: GitHub Actions
-          ack_no_webhook: true
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
 
       - name: Done
         run: echo "CI pipeline test stage completed."
