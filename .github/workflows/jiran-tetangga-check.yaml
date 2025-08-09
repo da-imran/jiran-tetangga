@@ -28,11 +28,13 @@ jobs:
           context: .
           push: false
           tags: jiran-tetangga:latest
+  
       - name: Discord Webhook Action
-        uses: tsickert/discord-webhook@v7.0.0
+        run: echo "MY_TIMESTAMP=$(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
+        uses: tsickert/divscord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
-          content: "Github CI Build Success - $(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')"
+          content: "Github CI Build Success - **${{ env.MY_TIMESTAMP }}**"
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -75,10 +77,11 @@ jobs:
           CI: true
       
       - name: Discord Webhook Action
-        uses: tsickert/discord-webhook@v7.0.0
+        run: echo "MY_TIMESTAMP=$(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
+        uses: tsickert/divscord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
-          content: "Github CI Test Success - $(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')"
+          content: "Github CI Build Success - **${{ env.MY_TIMESTAMP }}**"
 
       - name: Done
         run: echo "CI pipeline test stage completed."
