@@ -28,15 +28,6 @@ jobs:
           context: .
           push: false
           tags: jiran-tetangga:latest
-  
-      - name: GitHub Actions Discord Webhook
-        if: success()
-        uses: appleboy/discord-action@v1.2.0
-        with:
-          webhook_url: ${{ secrets.WEBHOOK_URL }}
-          color: "#48f442"
-          username: "GitHub Bot"
-          message: "Build success"
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -77,15 +68,6 @@ jobs:
           npm test || echo "No tests defined yet. Skipping."
         env:
           CI: true
-
-      - name: GitHub Actions Discord Webhook
-        if: success()
-        uses: appleboy/discord-action@v1.2.0
-        with:
-          webhook_url: ${{ secrets.WEBHOOK_URL }}
-          color: "#48f442"
-          username: "GitHub Bot"
-          message: "Test success"
 
       - name: Done
         run: echo "CI pipeline test stage completed."
