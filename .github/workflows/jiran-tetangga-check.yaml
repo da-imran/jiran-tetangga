@@ -28,6 +28,11 @@ jobs:
           context: .
           push: false
           tags: jiran-tetangga:latest
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          content: "Github CI Build Success - $(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')"
 
       - name: Done
         run: echo "CI pipeline build stage completed."
@@ -68,6 +73,12 @@ jobs:
           npm test || echo "No tests defined yet. Skipping."
         env:
           CI: true
+      
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          content: "Github CI Test Success - $(TZ='Asia/Kuala_Lumpur' date +'%Y-%m-%d %H:%M:%S %Z')"
 
       - name: Done
         run: echo "CI pipeline test stage completed."
