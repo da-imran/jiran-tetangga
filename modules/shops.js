@@ -1,7 +1,7 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 const { logger, LOG_LEVELS } = require('../utilities/logger');
-const { MODULES } = require('../utilities/constants');
+const { MODULES, METHODS } = require('../utilities/constants');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
@@ -9,7 +9,7 @@ module.exports = (app, config) => {
 	const ROUTE_PREPEND = process.env.ROUTE_PREPEND;
 	const VERSION = process.env.VERSION;
 	const SERVICE_NAME = process.env.SERVICE_NAME;
-	const MODULE = MODULES.DISRUPTIONS;
+	const MODULE = MODULES.SHOPS;
 
 	// Get All Shops API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
@@ -21,6 +21,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.GET,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -95,6 +96,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.GET,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -186,6 +188,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.POST,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -291,6 +294,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.PATCH,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -393,6 +397,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.DELETE,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,

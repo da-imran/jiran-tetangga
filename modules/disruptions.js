@@ -1,7 +1,7 @@
 const mongo = require('../utilities/mongodb');
 const { requiredCheck } = require('../utilities/validation');
 const { logger, LOG_LEVELS } = require('../utilities/logger');
-const { MODULES } = require('../utilities/constants');
+const { MODULES, METHODS } = require('../utilities/constants');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = (app, config) => {
@@ -21,6 +21,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.get,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -96,6 +97,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.GET,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -184,6 +186,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.POST,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -282,6 +285,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: 'PATCH',
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -372,6 +376,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
+			method: METHODS.DELETE,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,

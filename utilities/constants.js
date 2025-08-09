@@ -8,4 +8,11 @@ const MODULES = {
 	SHOPS: 'shops',
 };
 
-module.exports = { MODULES };
+const METHODS = {
+	GET: 'GET',
+	PATCH: 'PATCH',
+	POST: 'POST',
+	DELETE: 'DELETE',
+};
+
+module.exports = { METHODS, MODULES };
