@@ -28,42 +28,112 @@ module.exports = (app, config) => {
 			level: LOG_LEVELS.INFO,
 		});
 		try {
-			const shopResult = await mongo.find(mongoClient, 'shops');
+			// Pagination
+			const {
+				pageNumber = 1,
+				dataPerPage = 20,
+			} = req.query;
 
-			if (shopResult) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: shopResult
+			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 				});
 
 				logger.log({
 					service: SERVICE_NAME,
 					module: MODULE,
 					apiName,
-					status: 200,
-					message: 'Response Success.',
-					data: shopResult,
-					traceId,
-					level: LOG_LEVELS.INFO,
-				});
-			} else {
-				console.log(`❌ ${apiName} Response Failed.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Shops not found',
-				});
-
-				logger.log({
-					service: SERVICE_NAME,
-					module: MODULE,
-					apiName,
-					status: 404,
-					message: 'Shops not found',
-					data: shopResult,
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
+			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+					traceId,
+					level: LOG_LEVELS.ERROR,
+				});
+			} else {
+				const aggregation = [
+					// Sort
+					{
+						$sort: { createdAt : -1 },
+					},
+					// Pagination
+					{
+						$skip: (+pageNumber - 1) * (+dataPerPage),
+					},
+					{
+						$limit: +dataPerPage,
+					},
+					// Projection
+					{
+						$project: {
+							name: 1,
+							description: 1,
+							status: 1,
+							openingHours: 1,
+							createdAt: 1,
+						},
+					}
+				];
+
+				const [allDocs, shopResult] = await Promise.all([
+					mongo.find(mongoClient, 'shops'),
+					mongo.aggregate(mongoClient, 'shops', aggregation)
+				]);
+
+				if (shopResult) {
+					const totalCount = allDocs.length;
+
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: shopResult,
+						total: totalCount
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success.',
+						data: shopResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
+				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Shops not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Shops not found',
+						data: shopResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };

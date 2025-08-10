@@ -29,42 +29,111 @@ module.exports = (app, config) => {
 		});
 
 		try {
-			const mongoResult = await mongo.find(mongoClient, 'disruptions');
+			// Pagination
+			const {
+				pageNumber = 1,
+				dataPerPage = 20,
+			} = req.query;
 
-			if (mongoResult) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: mongoResult
+			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 				});
 
 				logger.log({
 					service: SERVICE_NAME,
 					module: MODULE,
 					apiName,
-					status: 200,
-					message: 'Response Success',
-					data: mongoResult,
-					traceId,
-					level: LOG_LEVELS.INFO,
-				});
-			} else {
-				console.log(`❌ ${apiName} Response Failed.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Disruptions not found',
-				});
-
-				logger.log({
-					service: SERVICE_NAME,
-					module: MODULE,
-					apiName,
-					status: 404,
-					message: 'Disruptions not found',
-					data: mongoResult,
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
+			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+					traceId,
+					level: LOG_LEVELS.ERROR,
+				});
+			} else {
+				const aggregation = [
+					// Sort
+					{
+						$sort: { createdAt : -1 },
+					},
+					// Pagination
+					{
+						$skip: (+pageNumber - 1) * (+dataPerPage),
+					},
+					{
+						$limit: +dataPerPage,
+					},
+					// Projection
+					{
+						$project: {
+							title: 1,
+							description: 1,
+							status: 1,
+							createdAt: 1,
+						},
+					}
+				];
+
+				const [allDocs, mongoResult] = await Promise.all([
+					mongo.find(mongoClient, 'disruptions'),
+					mongo.aggregate(mongoClient, 'disruptions', aggregation)
+				]);
+
+				if (mongoResult) {
+					const totalCount = allDocs.length;
+
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: mongoResult,
+						total: totalCount
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success',
+						data: mongoResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
+				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Disruptions not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Disruptions not found',
+						data: mongoResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };

@@ -29,42 +29,115 @@ module.exports = (app, config) => {
 		});
 
 		try {
-			const eventsResult = await mongo.find(mongoClient, 'events');
+			// Pagination
+			const {
+				pageNumber = 1,
+				dataPerPage = 20,
+			} = req.query;
 
-			if (eventsResult) {
-				console.log(`${apiName} Response Success.`);
-				res.status(200).send({
-					status: 200,
-					data: eventsResult
+			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 				});
 
 				logger.log({
 					service: SERVICE_NAME,
 					module: MODULE,
 					apiName,
-					status: 200,
-					message: 'Response Success',
-					data: eventsResult,
-					traceId,
-					level: LOG_LEVELS.INFO,
-				});
-			} else {
-				console.log(`❌ ${apiName} Response Failed.`);
-				res.status(404).send({
-					status: 404,
-					message: 'Events not found',
-				});
-
-				logger.log({
-					service: SERVICE_NAME,
-					module: MODULE,
-					apiName,
-					status: 404,
-					message: 'Events not found',
-					data: eventsResult,
+					status: 400,
+					message: 'Bad Request: Invalid page number',
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
+			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
+				res.status(400).send({
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+				});
+
+				logger.log({
+					service: SERVICE_NAME,
+					module: MODULE,
+					apiName,
+					status: 400,
+					message: 'Bad Request: Invalid number of data per page',
+					traceId,
+					level: LOG_LEVELS.ERROR,
+				});
+			} else {
+				const aggregation = [
+					// Sort
+					{
+						$sort: { createdAt : -1 },
+					},
+					// Pagination
+					{
+						$skip: (+pageNumber - 1) * (+dataPerPage),
+					},
+					{
+						$limit: +dataPerPage,
+					},
+					// Projection
+					{
+						$project: {
+							title: 1,
+							description: 1,
+							organizerName: 1,
+							organizerEmail: 1,
+							eventDate: 1,
+							location: 1,
+							status: 1,
+							createdAt: 1,
+						},
+					}
+				];
+
+				const [allDocs, eventsResult] = await Promise.all([
+					mongo.find(mongoClient, 'events'),
+					mongo.aggregate(mongoClient, 'events', aggregation)
+				]);
+
+				if (eventsResult) {
+					const totalCount = allDocs.length;
+
+					console.log(`${apiName} Response Success.`);
+					res.status(200).send({
+						status: 200,
+						data: eventsResult,
+						total: totalCount
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success',
+						data: eventsResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
+				} else {
+					console.log(`❌ ${apiName} Response Failed.`);
+					res.status(404).send({
+						status: 404,
+						message: 'Events not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Events not found',
+						data: eventsResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
+				}
 			}
 		} catch (err) {
 			const error = { message: err.message, stack: err.stack };
