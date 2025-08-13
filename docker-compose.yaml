@@ -1,12 +1,3 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
-
-# Here the instructions define your application as a service called "app".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For exampleshttps://github.com/da-imran/jiran-tetangga/security, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   backend:
     build:
@@ -23,9 +14,9 @@ services:
       MONGO_DB_NAME: ${MONGO_DB_NAME}
       PORT: ${PORT}
       INFISICAL_URI: http://infisical-backend:8080
-      INFISICAL_PROJECT_ID: '6010d8b2-a186-422f-b0ba-d977e3a8d1a3'
-      INFISICAL_CLIENT_ID: 'dfd4658e-8ccb-4814-94ba-d548fa52dfc8'
-      INFISICAL_CLIENT_SECRET: 'ed38e448d86fa6fe0d8ae83a744712fb37261974b77eb1eb0c3cec12c3df9f56'
+      INFISICAL_PROJECT_ID: 'fda68948-69af-413d-8c54-e96c4c9822df'
+      INFISICAL_CLIENT_ID: 'bd1ac894-87d1-4fda-88a7-c68f21a87582'
+      INFISICAL_CLIENT_SECRET: '73a23d6683f14ac1444c230b7e72be42c247373cc4ed331be7605d2b1f2dd7b7'
       INFISICAL_ENV: dev
     command: ["npm", "start"]
     ports:
