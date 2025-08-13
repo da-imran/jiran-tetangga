@@ -26,7 +26,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 | Auth         | AES / JWT |
 | Notification | Discord Webhook	|
 | Container    | Docker, Docker Compose |
-| CI Pipeline  | Github Action     |
+| CI/CD Pipeline  | Github Action     |
 | Testing      | Chai / Sinon / Mocha	|
 
 ---
@@ -122,7 +122,7 @@ npm start
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
-[x] CI pipeline with Github Action </br>
+[x] CI/CD pipeline with Github Action </br>
 [] Discord webhook notification </br>
 
 ## 🤝 Contributing
