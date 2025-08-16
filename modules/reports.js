@@ -82,7 +82,8 @@ module.exports = (app, config) => {
 				}
 
 				if (filters && filters.trim() !== '') {
-					matchStage.status = filters;
+					const filterArray = filters.split(',').map(f => f.trim());
+  					matchStage.status = { $in: filterArray };
 				}
 				const aggregation = [
 					{ $match: matchStage }, // Match
