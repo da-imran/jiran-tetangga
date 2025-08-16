@@ -33,6 +33,7 @@ module.exports = (app, config) => {
 			const {
 				pageNumber = 1,
 				dataPerPage = 20,
+				search,
 			} = req.query;
 
 			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
@@ -68,18 +69,16 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
+				let matchStage = {};
+				if (search && search.trim() !== '') {
+					matchStage = { title: { $regex: search, $options: 'i' } };
+				}
+
 				const aggregation = [
-					// Sort
-					{
-						$sort: { createdAt : -1 },
-					},
-					// Pagination
-					{
-						$skip: (+pageNumber - 1) * (+dataPerPage),
-					},
-					{
-						$limit: +dataPerPage,
-					},
+					{ $match: matchStage }, // Match
+					{ $sort: { createdAt : -1 } }, // Sort
+					{ $skip: (+pageNumber - 1) * (+dataPerPage) }, // Pagination
+					{ $limit: +dataPerPage },
 					// Projection
 					{
 						$project: {
@@ -96,7 +95,7 @@ module.exports = (app, config) => {
 					mongo.aggregate(mongoClient, 'disruptions', aggregation)
 				]);
 
-				if (mongoResult) {
+				if (mongoResult && mongoResult.length > 0) {
 					const totalCount = allDocs.length;
 
 					console.log(`${apiName} Response Success.`);

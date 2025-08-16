@@ -32,6 +32,8 @@ module.exports = (app, config) => {
 			const {
 				pageNumber = 1,
 				dataPerPage = 20,
+				search,
+				filters,
 			} = req.query;
 
 			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
@@ -67,18 +69,19 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
+				let matchStage = {};
+				if (search && search.trim() !== '') {
+					matchStage.name = { $regex: search, $options: 'i' };
+				}
+
+				if (filters && filters.trim() !== '') {
+					matchStage.status = filters;
+				}
 				const aggregation = [
-					// Sort
-					{
-						$sort: { createdAt : -1 },
-					},
-					// Pagination
-					{
-						$skip: (+pageNumber - 1) * (+dataPerPage),
-					},
-					{
-						$limit: +dataPerPage,
-					},
+					{ $match: matchStage }, // Match
+					{ $sort: { createdAt : -1 } }, // Sort
+					{ $skip: (+pageNumber - 1) * (+dataPerPage) }, // Pagination
+					{ $limit: +dataPerPage },
 					// Projection
 					{
 						$project: {
