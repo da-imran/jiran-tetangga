@@ -279,8 +279,10 @@ module.exports = (app, config) => {
 			} = input;
 
 			const requiredFields = [
-				'title',
+				'eventName',
 				'description',
+				'organizerName',
+				'organizerEmail',
 				'eventDate',
 				'location',
 			];
