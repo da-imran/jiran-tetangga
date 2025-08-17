@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Initial service build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,6 +34,7 @@ jobs:
         run: echo "CI pipeline build stage completed."
   
   test:
+    name: Testing the build
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -71,4 +73,31 @@ jobs:
 
       - name: Done
         run: echo "CI pipeline test stage completed."
+
+  deploy:
+    name: Deploy to AWS EC2
+    needs:
+      - test
+      - build
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup SHH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: SSH into EC2 and deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd jiran-tetangga
+            git pull origin master
+            docker-compose up --build -d
+            exit
+          EOF
 

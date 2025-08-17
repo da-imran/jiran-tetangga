@@ -27,6 +27,10 @@ services:
       mongodb:
         condition: service_healthy
     restart: on-failure
+    volumes:
+      - .:/usr/src/app
+      - /usr/ssrc/app/node_modules
+    command: ["npm", "start"]
     
   mongodb:
     image: mongo:noble
