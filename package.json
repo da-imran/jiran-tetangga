@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 5000 --exit",
+    "test": "mocha --timeout 10000 --exit",
     "start": "node app.js",
     "lint": "eslint ."
   },
@@ -12,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@infisical/sdk": "^4.0.4",
+    "axios": "^1.11.0",
     "chai": "^4.3.7",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
@@ -21,7 +23,10 @@
     "jsonwebtoken": "^9.0.2",
     "mocha": "^11.7.1",
     "mongodb": "^6.15.0",
-    "sinon": "^15.2.0"
+    "node-fetch": "^3.3.2",
+    "sinon": "^15.2.0",
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

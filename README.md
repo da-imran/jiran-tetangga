@@ -1,6 +1,6 @@
 # 🏡 JiranTetangga
 
-A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.
+A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates and report issues.
 
 ## 🚀 Features
 
@@ -11,7 +11,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
   - Park conditions
 - 📬 Residents can report damages or concerns
 - 🧠 Admin system for managing updates and users
-- 🤖 WhatsApp bot integration
+- 🤖 Discord Webhook Notifications
 - 🐳 Docker support + local and cloud deployment ready
 
 ---
@@ -24,9 +24,9 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 | Backend      | Node.js + Express    |
 | Database     | MongoDB              |
 | Auth         | AES / JWT |
-| Messaging    | WhatsApp Bot	|
+| Notification | Discord Webhook	|
 | Container    | Docker, Docker Compose |
-| CI Pipeline  | Github Action     |
+| CI/CD Pipeline  | Github Action     |
 | Testing      | Chai / Sinon / Mocha	|
 
 ---
@@ -34,29 +34,35 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 ## 📂 Backend Project Structure
 ```bash
 jiran-tetangga/
-├── middleware/                 # Middleware
-│   ├── authentication.js       # Authentication controller
-├── modules/                    # All feature-based route controllers
-│   ├── adminUser.js            # Admin auth, create/read admins
-│   ├── reports.js              # Issues reporting (e.g. pothole, accidents)
-│   ├── disruptions.js          # Road disruptions
-│   ├── events.js               # Family events, ceremonies
-│   ├── shops.js                # Shop status, new openings/closures
-│   └── parks.js                # Park conditions, usage
+├── middleware/        # Middleware
+│   ├── authentication.js   # Authentication controller
+│   └── apiCheck.js   # Api key check for protected routes
+├── modules/           # All feature-based route controllers
+│   ├── adminUser.js   # Admin auth, create/read admins
+│   ├── reports.js     # Issues reporting (e.g. pothole, accidents)
+│   ├── disruptions.js # Road disruptions
+│   ├── events.js      # Family events, ceremonies
+│   ├── shops.js       # Shop status, new openings/closures
+│   └── parks.js       # Park conditions, usage
+├── nginx/
+│   └── nginx.conf     # Nginx configuration
 ├── utilities/
-│   ├── jwt.js                  # JWT setup
-│   ├── mongodb.js              # Central DB connection logic
-│   └── validation.js           # Parameters check function
+│   ├── jwt.js         # JWT setup
+│   ├── mongodb.js     # Central DB connection logic
+│   ├── validation.js  # Parameters check function
+│   └── secrets.js     # Secrets functions with Infisical
 ├── test/
-│   └── test.js                 # Central place for backend API tests
-├── .env                        # Sensitive config (PORT, DB_URL)
-├── app.js                      # Express app, middleware, routes entry
-├── server.js                   # Separate boot file
-├── index.js                    # Index file
-├── package.json                # Package JSON file
-├── Dockerfile                  # Docker configuration
-├── docker-compose.yaml         # Docker yaml configuration
-├── .postaman_collection.json   # Postman collection
+│   ├── test.js        # Central place for backend API tests
+│   ├── testIndex.js   # Serve as the index file for backend API tests
+│   └── testServer.js  # Serve as the server for backend API tests
+├── .env               # Sensitive config (PORT, DB_URL)
+├── app.js             # Express app, middleware, routes entry
+├── server.js          # Separate boot file
+├── index.js           # Index file
+├── package.json       # Package JSON file
+├── Dockerfile         # Docker configuration
+├── docker-compose.yaml   # Docker yaml configuration
+├── .postman_collection.json   # Postman collection
 ```
 
 ---
@@ -78,18 +84,26 @@ npm install
 ### 3. Environment Setup
 Create a .env file
 ```bash
-PORT=your_port_number
-MONGODB_URI=mongodb_db_connection_uri
-MONGODB_DBNAME=mongodb_name
+HOSTNAME='localhost'
 ROUTE_PREPEND = 'jiran-tetangga'
 API_VERSION = '1.0.0'
 APP_VERSION = '1.0.0'
 VERSION = 'v1'
+PORT=your_port_number
+MONGODB_URI=mongodb_db_connection_uri
+MONGODB_DBNAME=mongodb_name
 ENCRYPTION_KEY=any random strings
 API_KEY =any random strings
 JWT_KEY = any random strings
-RUN_ENV='local'
+NODE_ENV='local' # For env when running npm run dev / npm start
+MONGO_URI='mongodb://localhost:27017/' # Default MongoDB localhost URI
+INFISICAL_URI=http://localhost:85 # Set to 85 due to my port 80 being used
+INFISICAL_PROJECT_ID='your infisical project id'
+INFISICAL_CLIENT_ID='your infisical client id'
+INFISICAL_CLIENT_SECRET='your infisical client secret'
+INFISICAL_ENV=dev
 ```
+<i>Sensitive information such as API_KEY, ENCRYPTION_KEY can be store using the Infisical secrets tools or you can just use any string for testing purposes</i>
 
 ### 4. Run Locally
 ```bash
@@ -108,8 +122,8 @@ npm start
 [x] Reversible password encryption </br>
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
-[] WhatsApp bot notification </br>
-[x] CI pipeline with Github Action </br>
+[x] CI/CD pipeline with Github Action </br>
+[] Discord webhook notification </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.

@@ -1,12 +1,3 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
-
-# Here the instructions define your application as a service called "app".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For exampleshttps://github.com/da-imran/jiran-tetangga/security, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   backend:
     build:
@@ -14,17 +5,20 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      NODE_ENV: ${NODE_ENV}
-      MONGO_URI: ${MONGO_URI}
-      ROUTE_PREPEND: ${ROUTE_PREPEND}
+      NODE_ENV: development
+      ROUTE_PREPEND: jiran-tetangga
+      HOSTNAME: apidev
       API_VERSION: ${API_VERSION}
       APP_VERSION: ${APP_VERSION}
       VERSION: ${VERSION}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
       PORT: ${PORT}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      API_KEY: ${API_KEY}
-      JWT_KEY: ${JWT_KEY}
+      INFISICAL_URI: http://infisical-backend:8080
+      INFISICAL_PROJECT_ID: 'fda68948-69af-413d-8c54-e96c4c9822df'
+      INFISICAL_CLIENT_ID: 'bd1ac894-87d1-4fda-88a7-c68f21a87582'
+      INFISICAL_CLIENT_SECRET: '73a23d6683f14ac1444c230b7e72be42c247373cc4ed331be7605d2b1f2dd7b7'
+      INFISICAL_ENV: dev
+    command: ["npm", "start"]
     ports:
       - "3500:3500"
     networks:
@@ -39,13 +33,13 @@ services:
     command: ["npm", "start"]
     
   mongodb:
-    image: mongo:latest
+    image: mongo:noble
     container_name: mongodb
     restart: always
     volumes:
       - db_data:/data/db
     ports:
-      - "27018:27017"
+      - "27019:27017"
     networks:
       - jiran-tetangga-networks
     healthcheck:
@@ -55,6 +49,18 @@ services:
       retries: 3
       start_period: 5s
 
+  nginx:
+    container_name: nginx
+    image: nginx:stable-perl
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+    networks:
+      - jiran-tetangga-networks
+
 networks:
   jiran-tetangga-networks:
     external: true
@@ -62,38 +68,3 @@ networks:
 
 volumes:
   db_data:
-
-
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker-compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-# volumes:
-#   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
-
