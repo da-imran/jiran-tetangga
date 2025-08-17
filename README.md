@@ -1,6 +1,6 @@
 # 🏡 JiranTetangga
 
-A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates and report issues.
+A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates and report issues. This repository is the backend part of the whole project and built with Node.js.
 
 ## 🚀 Features
 
