@@ -123,7 +123,7 @@ npm start
 [x] Modular Express routing </br>
 [x] NextJS frontend dashboard </br>
 [x] CI/CD pipeline with Github Action </br>
-[] Discord webhook notification </br>
+[x] Discord webhook notification </br>
 
 ## 🤝 Contributing
 This project is currently my second personal hobby project. Contributions and suggestions are welcome! Feel free to fork or open issues.
