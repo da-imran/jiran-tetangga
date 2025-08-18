@@ -3,7 +3,7 @@
 		"_postman_id": "59766c22-5df1-4102-9f33-beadc5d0dcb3",
 		"name": "Jiran Tetangga System",
 		"description": "A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates, report issues, and stay connected through a WhatsApp-integrated system.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32506303"
 	},
 	"item": [
@@ -14,8 +14,46 @@
 					"name": "Get All Admin Users",
 					"request": {
 						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "XpnbsxWH6hrnwtbHjr9gTwKFFUj",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/adminUsers",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"adminUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PROD] Get All Admin Users",
+					"request": {
+						"method": "GET",
 						"header": [],
-						"url": "{{DEV_URL}}/adminUsers"
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/adminUsers",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"adminUsers"
+							]
+						}
 					},
 					"response": []
 				},
@@ -36,7 +74,8 @@
 							"variable": [
 								{
 									"key": "adminUserId",
-									"value": "685fbecb335bdc41ca63fa4a"
+									"value": "685fbecb335bdc41ca63fa4a",
+									"description": "685fbecb335bdc41ca63fa4a"
 								}
 							]
 						}
@@ -47,17 +86,64 @@
 					"name": "Create Admin User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "XpnbsxWH6hrnwtbHjr9gTwKFFUj",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"firstName\": \"Muhammad Ehsan Imran\",\r\n   \"lastName\": \"Ehsan Imran\",\r\n   \"email\": \"ios.imrn@gmail.com\",\r\n   \"password\": \"Ehsan123\",\r\n   \"phone\": \"0123456789\"\r\n}",
+							"raw": "{\r\n   \"firstName\": \"Muhammad Ehsan\",\r\n   \"lastName\": \"Imran\",\r\n   \"email\": \"ehsan123@gmail.com\",\r\n   \"password\": \"Ehsan123\",\r\n   \"phone\": \"0123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/adminUsers"
+						"url": {
+							"raw": "{{DEV_URL}}/adminUsers",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"adminUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PROD] Create Admin User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"firstName\": \"Muhammad Ehsan Imran\",\r\n   \"lastName\": \"Ehsan Imran\",\r\n   \"email\": \"ios.imran@gmail.com\",\r\n   \"password\": \"Ehsan123\",\r\n   \"phone\": \"0123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/adminUsers",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"adminUsers"
+							]
+						}
 					},
 					"response": []
 				},
@@ -111,7 +197,7 @@
 							"variable": [
 								{
 									"key": "adminUserId",
-									"value": "687b41140c904220de6681a9"
+									"value": "685fbecb335bdc41ca63fa4a"
 								}
 							]
 						}
@@ -128,7 +214,25 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{DEV_URL}}/disruptions"
+						"url": {
+							"raw": "{{DEV_URL}}/disruptions?pageNumber=1&dataPerPage=2",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"disruptions"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "dataPerPage",
+									"value": "2"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -190,6 +294,46 @@
 					"response": []
 				},
 				{
+					"name": "Update Disruption Copy",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"title\": \"Jalan Cenderai Water Pipe Burst\",,\r\n    // \"description\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"status\": true,\r\n    \"adminId\": \"687fa2b1aa6b190d36a4b64b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/disruptions/:disruptionId",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"disruptions",
+								":disruptionId"
+							],
+							"variable": [
+								{
+									"key": "disruptionId",
+									"value": "687fa5c9aa6b190d36a4b64c"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Disruption",
 					"request": {
 						"method": "POST",
@@ -203,7 +347,48 @@
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/disruptions"
+						"url": {
+							"raw": "{{DEV_URL}}/disruptions",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"disruptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PROD] Create Disruption",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"category\": \"informational\",\r\n    \"description\": \"Jalan Cenderai Water Pipe Burst\",\r\n    \"adminId\": \"687fa2b1aa6b190d36a4b64b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/disruptions",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"disruptions"
+							]
+						}
 					},
 					"response": []
 				},
@@ -224,7 +409,8 @@
 							"variable": [
 								{
 									"key": "disruptionId",
-									"value": "687b425570b7a9722c456d36"
+									"value": "",
+									"description": "687b425570b7a9722c456d36"
 								}
 							]
 						}
@@ -241,7 +427,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{DEV_URL}}/parks"
+						"url": {
+							"raw": "{{DEV_URL}}/parks",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"parks"
+							]
+						}
 					},
 					"response": []
 				},
@@ -294,7 +488,7 @@
 							"variable": [
 								{
 									"key": "parkId",
-									"value": "6877bfa2135bca0d4868fc60"
+									"value": "686a81a642dfc8c72a77d5c6"
 								}
 							]
 						}
@@ -315,7 +509,48 @@
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/parks"
+						"url": {
+							"raw": "{{DEV_URL}}/parks",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"parks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PROD] Create Park",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Taman Permainan Sg Tiram\",\r\n    \"description\": \"The park is closed until further notice\",\r\n    \"openingHours\": {\r\n        \"opening\": \"0000\",\r\n        \"closing\": \"0000\"\r\n    },\r\n    \"adminId\": \"687fa2b1aa6b190d36a4b64b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/parks",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"parks"
+							]
+						}
 					},
 					"response": []
 				},
@@ -325,17 +560,19 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{DEV_URL}}/parks?parkId=686809def0819de87c48a848",
+							"raw": "{{DEV_URL}}/parks/:parkId",
 							"host": [
 								"{{DEV_URL}}"
 							],
 							"path": [
-								"parks"
+								"parks",
+								":parkId"
 							],
-							"query": [
+							"variable": [
 								{
 									"key": "parkId",
-									"value": "686809def0819de87c48a848"
+									"value": "",
+									"description": "686809def0819de87c48a848"
 								}
 							]
 						}
@@ -352,7 +589,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{DEV_URL}}/events"
+						"url": {
+							"raw": "{{DEV_URL}}/events",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"events"
+							]
+						}
 					},
 					"response": []
 				},
@@ -394,18 +639,58 @@
 							}
 						},
 						"url": {
-							"raw": "{{DEV_URL}}/events/?eventId=686a8a13c4383d5683602e04",
+							"raw": "{{DEV_URL}}/events/:eventId",
 							"host": [
 								"{{DEV_URL}}"
 							],
 							"path": [
 								"events",
-								""
+								":eventId"
 							],
-							"query": [
+							"variable": [
 								{
 									"key": "eventId",
 									"value": "686a8a13c4383d5683602e04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event Copy",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Let's Zumba!\",\r\n    \"description\": \"There is a Zumba class at the park. Come join us!\",\r\n    \"location\": \"Taman Rekreasi Sungai Tiram\",\r\n    \"adminId\": \"685fbecb335bdc41ca63fa4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/events/:eventId",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"events",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "687fa63aaa6b190d36a4b64e"
 								}
 							]
 						}
@@ -426,7 +711,48 @@
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/events"
+						"url": {
+							"raw": "{{DEV_URL}}/events",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Let's Zumba!\",\r\n    \"description\": \"There is a Zumba class at the park. Come join us!\",\r\n    \"organizerName\": \"Ehsan\",\r\n    \"organizerEmail\": \"ios.imran@gmail.com\",\r\n    \"eventDate\": \"2025-07-15T00:00:00.000Z\",\r\n    \"location\": \"Taman Rekreasi Sungai Tiram\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/events",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"events"
+							]
+						}
 					},
 					"response": []
 				},
@@ -436,17 +762,18 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{DEV_URL}}/events?eventId=686809def0819de87c48a848",
+							"raw": "{{DEV_URL}}/events/:eventId",
 							"host": [
 								"{{DEV_URL}}"
 							],
 							"path": [
-								"events"
+								"events",
+								":eventId"
 							],
-							"query": [
+							"variable": [
 								{
 									"key": "eventId",
-									"value": "686809def0819de87c48a848"
+									"value": ""
 								}
 							]
 						}
@@ -469,7 +796,15 @@
 								"type": "text"
 							}
 						],
-						"url": "{{DEV_URL}}/shops"
+						"url": {
+							"raw": "{{DEV_URL}}/shops",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
 					},
 					"response": []
 				},
@@ -517,18 +852,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{DEV_URL}}/shops/?shopId=686bd20eef8c17f8253d22ce",
+							"raw": "{{DEV_URL}}/shops/:shopId",
 							"host": [
 								"{{DEV_URL}}"
 							],
 							"path": [
 								"shops",
-								""
+								":shopId"
 							],
-							"query": [
+							"variable": [
 								{
 									"key": "shopId",
-									"value": "686bd20eef8c17f8253d22ce"
+									"value": "686a919bceb4106abf205036"
 								}
 							]
 						}
@@ -542,6 +877,32 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Coffe Bean & Tea Leaf\",\r\n    \"description\": \"Your favorite local coffee shop\",\r\n    \"location\": \"Lot 1/1A, Jalan Sungai Tiram 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DEV_URL}}/shops",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Shop Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
 							"raw": "{\r\n    \"name\": \"Coffe Bean & Tea Leaf\",\r\n    \"description\": \"Your favorite local coffee shop\",\r\n    \"location\": \"Lot 1/1A, Jalan Sungai Tiram 1\",\r\n    \"openingHours\": {\r\n        \"opening\": \"900\",\r\n        \"closing\": \"2330\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
@@ -549,7 +910,22 @@
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/shops"
+						"url": {
+							"raw": "http://54.179.126.73:3500/jiran-tetangga/v1/shops",
+							"protocol": "http",
+							"host": [
+								"54",
+								"179",
+								"126",
+								"73"
+							],
+							"port": "3500",
+							"path": [
+								"jiran-tetangga",
+								"v1",
+								"shops"
+							]
+						}
 					},
 					"response": []
 				},
@@ -559,17 +935,18 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{DEV_URL}}/shops?shopId=686a9049dfa89afa013d2a60",
+							"raw": "{{DEV_URL}}/shops/:shopId",
 							"host": [
 								"{{DEV_URL}}"
 							],
 							"path": [
-								"shops"
+								"shops",
+								":shopId"
 							],
-							"query": [
+							"variable": [
 								{
 									"key": "shopId",
-									"value": "686a9049dfa89afa013d2a60"
+									"value": ""
 								}
 							]
 						}
@@ -592,7 +969,15 @@
 								"type": "text"
 							}
 						],
-						"url": "{{DEV_URL}}/reports"
+						"url": {
+							"raw": "{{DEV_URL}}/reports",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"reports"
+							]
+						}
 					},
 					"response": []
 				},
@@ -633,7 +1018,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"pending\",\r\n    \"category\": \"road-disruption\"\r\n}",
+							"raw": "{\r\n    \"status\": \"pending\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -652,7 +1037,7 @@
 							"variable": [
 								{
 									"key": "reportId",
-									"value": "6879072035f79d4cdfa10ebb"
+									"value": "687ccc7fea2ed5439fabe61f"
 								}
 							]
 						}
@@ -673,7 +1058,15 @@
 								}
 							}
 						},
-						"url": "{{DEV_URL}}/reports"
+						"url": {
+							"raw": "{{DEV_URL}}/reports",
+							"host": [
+								"{{DEV_URL}}"
+							],
+							"path": [
+								"reports"
+							]
+						}
 					},
 					"response": []
 				},
@@ -708,7 +1101,35 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "{{DEV_URL}}"
+				"url": {
+					"raw": "{{URL}}",
+					"host": [
+						"{{URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[PROD] Default endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://54.255.154.13:3500/jiran-tetangga/v1",
+					"protocol": "http",
+					"host": [
+						"54",
+						"255",
+						"154",
+						"13"
+					],
+					"port": "3500",
+					"path": [
+						"jiran-tetangga",
+						"v1"
+					]
+				}
 			},
 			"response": []
 		}
