@@ -27,6 +27,7 @@ A full-stack project designed to help residents of a dense neighbourhood in **Su
 | Notification | Discord Webhook	|
 | Container    | Docker, Docker Compose |
 | CI/CD Pipeline  | Github Action     |
+| Secrets Management  | Infisical     |
 | Testing      | Chai / Sinon / Mocha	|
 
 ---
