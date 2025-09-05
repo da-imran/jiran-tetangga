@@ -21,20 +21,21 @@ let client;
 const setupClient = async () => {
 	if (client) return;
 
-	client = new InfisicalSDK({
-		siteUrl: INFISICAL_URI // optional if using public cloud
+	const infisicalSdk = new InfisicalSDK({
+		siteUrl: INFISICAL_URI
 	});
 
-	await client.auth().universalAuth.login({
+	await infisicalSdk.auth().universalAuth.login({
 		clientId: INFISICAL_CLIENT_ID,
 		clientSecret: INFISICAL_CLIENT_SECRET
 	});
+
+	client = infisicalSdk; // If authentication was successful, assign the client
 };
 
 // Get the secrets from the client
 const getSecrets = async (secretsObj) => {
 	await setupClient();
-
 	for (const key in secretsObj) {
 		if (Object.prototype.hasOwnProperty.call(secretsObj, key)) {
 			try {
@@ -42,7 +43,7 @@ const getSecrets = async (secretsObj) => {
 					projectId: INFISICAL_PROJECT_ID,
 					environment: INFISICAL_ENV,
 					secretName: secretsObj[key].name,
-					secretPath: '/',
+					secretPath: '/JiranTetangga',
 				});
 
 				secretsObj[key].value = result.secretValue;

@@ -13,11 +13,11 @@ services:
       VERSION: ${VERSION}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
       PORT: ${PORT}
-      INFISICAL_URI: http://infisical-backend:8080
-      INFISICAL_PROJECT_ID: 'Inifisical project ID'
-      INFISICAL_CLIENT_ID: 'Inifisical client ID'
-      INFISICAL_CLIENT_SECRET: 'Inifisical client secret'
-      INFISICAL_ENV: dev
+      INFISICAL_URI: ${INFISICAL_URI}
+      INFISICAL_PROJECT_ID: ${INFISICAL_PROJECT_ID}
+      INFISICAL_CLIENT_ID: ${INFISICAL_CLIENT_ID}
+      INFISICAL_CLIENT_SECRET: ${INFISICAL_CLIENT_SECRET}
+      INFISICAL_ENV: prod
     command: ["npm", "start"]
     ports:
       - "3500:3500"

@@ -29,7 +29,7 @@ app.use(cors({
 
 app.use((req, res, next) => {
 	// When running locally
-	if(ENVIRONMENT === 'local') return next();
+	if(ENVIRONMENT === 'local' || ENVIRONMENT === 'dev') return next();
 	
 	// When running via docker
 	const excludedPaths = ['/', '/jiran-tetangga/v1'];
