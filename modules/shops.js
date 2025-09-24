@@ -69,18 +69,18 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
-				let matchStageResult = matchStage;
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStageResult.name = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
 				if (filters && filters.trim() !== '') {
 					const filterArray = filters.split(',').map(f => f.trim());
-  					matchStageResult.status = { $in: filterArray };
+  					matchStage.status = { $in: filterArray };
 				}
 				const aggregation = [
-					{ $match: matchStageResult }, // Match
+					{ $match: matchStage }, // Match
 					{ $sort: { createdAt : -1 } }, // Sort
 					{ $skip: (+pageNumber - 1) * (+dataPerPage) }, // Pagination
 					{ $limit: +dataPerPage },
