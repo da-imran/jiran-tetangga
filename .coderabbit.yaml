@@ -20,6 +20,8 @@ reviews:
     title:
       mode: "warning"
       requirements: "Title should be concise and descriptive. Title should start with feature/Add new dockerfile or bugfix/Fix bug on shops module."
+    description:
+      mode: "warning"
   tools:
     eslint:
       enabled: true
