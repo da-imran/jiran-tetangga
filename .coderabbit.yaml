@@ -20,7 +20,6 @@ reviews:
     title:
       mode: "warning"
       requirements: "Title should be concise and descriptive. Title should start with feature/Add new dockerfile or bugfix/Fix bug on shops module."
-    custom_checks: ["Any pull request to main or master branch must include title such as [RELEASE] - DDMMYYYY - API NAME "]
   tools:
     eslint:
       enabled: true
