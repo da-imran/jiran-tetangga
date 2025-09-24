@@ -19,7 +19,7 @@ reviews:
   pre_merge_checks:
     title:
       mode: "warning"
-      requirements: "Title should be concise and descriptive. Title should start with feature/Add new dockerfile or bugfix/Fix bug on shops module."
+      requirements: "Title should be concise and descriptive. Prefer a prefix like 'feature/...', 'bugfix/...', or follow Conventional Commits (e.g., 'feat: ...', 'fix: ...')."
     description:
       mode: "warning"
   tools:
