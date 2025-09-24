@@ -7,7 +7,7 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
-    base_branches: ["master", "main", "development", "release/*"]
+    base_branches: ["master", "main", "development", "release/.*"]
     ignore_title_keywords:
       - "wip"
       - "draft"
