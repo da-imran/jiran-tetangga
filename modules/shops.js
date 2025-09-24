@@ -70,16 +70,17 @@ module.exports = (app, config) => {
 				});
 			} else {
 				let matchStage = {};
+				let matchStageResult = matchStage;
 				if (search && search.trim() !== '') {
-					matchStage.name = { $regex: search, $options: 'i' };
+					matchStageResult.name = { $regex: search, $options: 'i' };
 				}
 
 				if (filters && filters.trim() !== '') {
 					const filterArray = filters.split(',').map(f => f.trim());
-  					matchStage.status = { $in: filterArray };
+  					matchStageResult.status = { $in: filterArray };
 				}
 				const aggregation = [
-					{ $match: matchStage }, // Match
+					{ $match: matchStageResult }, // Match
 					{ $sort: { createdAt : -1 } }, // Sort
 					{ $skip: (+pageNumber - 1) * (+dataPerPage) }, // Pagination
 					{ $limit: +dataPerPage },
