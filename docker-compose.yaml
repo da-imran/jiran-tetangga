@@ -42,7 +42,7 @@ services:
     networks:
       - jiran-tetangga-networks
     healthcheck:
-      test: ["CMD", "mongosh" ,"--eval", "db.adminCommand({ping: 1})", "--quiet"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand({ping: 1})", "--quiet"]
       interval: 10s
       timeout: 5s
       retries: 3
