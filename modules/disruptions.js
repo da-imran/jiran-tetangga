@@ -21,7 +21,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
-			method: METHODS.get,
+			method: METHODS.GET,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
