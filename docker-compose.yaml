@@ -17,7 +17,7 @@ services:
       INFISICAL_PROJECT_ID: ${INFISICAL_PROJECT_ID}
       INFISICAL_CLIENT_ID: ${INFISICAL_CLIENT_ID}
       INFISICAL_CLIENT_SECRET: ${INFISICAL_CLIENT_SECRET}
-      INFISICAL_ENV: prod
+     INFISICAL_ENV: dev
     command: ["npm", "start"]
     ports:
       - "3500:3500"
