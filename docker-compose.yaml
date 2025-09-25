@@ -67,6 +67,4 @@ networks:
     name: jiran-tetangga-networks
 
 volumes:
-
   db_data:
-
