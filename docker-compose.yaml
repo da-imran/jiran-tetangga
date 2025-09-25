@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      NODE_ENV: development
+      NODE_ENV: dev
       ROUTE_PREPEND: jiran-tetangga
       HOSTNAME: apidev
       API_VERSION: ${API_VERSION}
@@ -67,4 +67,5 @@ networks:
     name: jiran-tetangga-networks
 
 volumes:
+
   db_data:
