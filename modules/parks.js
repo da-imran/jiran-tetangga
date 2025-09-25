@@ -37,7 +37,7 @@ module.exports = (app, config) => {
 				filters,
 			} = req.query;
 
-			if (Number.isInteger(+pageNumber) || +pageNumber <= 0) {
+			if (!Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -70,9 +70,10 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage.name = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
 				if (typeof filters === 'string' && filters.trim() !== '') {
@@ -124,8 +125,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Parks not found',
 					});
 
@@ -133,7 +134,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Parks not found',
 						data: parksResult,
 						traceId,
@@ -191,7 +192,7 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
-				const parksResult = await mongo.find(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
+				const parksResult = await mongo.findOne(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) });
 				if (parksResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -211,8 +212,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Parks not found',
 					});
 
@@ -220,7 +221,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Parks not found',
 						data: parksResult,
 						traceId,
@@ -314,9 +315,9 @@ module.exports = (app, config) => {
 						level: LOG_LEVELS.INFO,
 					});
 				} else {
-					console.error('❌ failed to create.');
-					res.status(404).send({
-						status: 404,
+					console.error(`❌ ${apiName} failed to create.`);
+					res.status(500).send({
+						status: 500,
 						message: 'Error creating park.',
 					});
 
@@ -324,7 +325,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating park.',
 						data: inputResult,
 						traceId,
@@ -408,8 +409,8 @@ module.exports = (app, config) => {
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'parks', { _id: mongo.getObjectId(parkId) }, updateObj);
 				if (!updateResult) {
 					console.log(`${apiName} failed to update.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Park not updated'
 					});
 
@@ -417,7 +418,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 200,
+						status: 500,
 						message: 'Park not updated',
 						data: updateResult,
 						traceId,
@@ -500,7 +501,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Park deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							park: deleteResult
 						},
 					});
 
@@ -516,8 +517,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error(`❌ ${apiName} failed to delete.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Park not deleted'
 					});
 
@@ -525,9 +526,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Park not deleted',
-						data: deleteResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});

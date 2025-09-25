@@ -5,25 +5,11 @@ const SERVICE_NAME = process.env.SERVICE_NAME;
 const requiredCheck = (input, requiredFields, res, config) => {
 	const { traceId, apiName, MODULE } = config;
 	for (const field of requiredFields) {
-		if (!input[field]) {
-			console.error(`❌ Bad request: ${field} is a required parameter.`);
-			res.status(400).send({
-				status: 400,
-				message: `Bad request: ${field} is a required parameter.`,
-			});
-			logger.log({
-				service: SERVICE_NAME,
-				module: MODULE,
-				apiName,
-				status: 400,
-				traceId,
-				message: `Bad request: ${field} is a required parameter.`,
-				level: LOG_LEVELS.ERROR,
-			});
-			return false;
-		} 
-		
-		if (input[field] === null || input[field] === undefined) {
+		const hasField = Object.prototype.hasOwnProperty.call(input, field);
+		const value = input[field];
+		const isEmptyString = typeof value === 'string' && value.trim() === '';
+
+		if (!hasField || value === null || value === undefined || isEmptyString) {
 			console.error(`❌ Bad request: ${field} is a required parameter.`);
 			res.status(400).send({
 				status: 400,

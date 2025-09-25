@@ -39,7 +39,7 @@ module.exports = {
 			return result;
 		} catch (error) {
 			console.error('❌ MongoDB Failed to get ObjectId:', error);
-			return 0;
+			return null;
 		}
 	},
 	findOne: async (client, collectionName, parameters, projection) => new Promise(async (resolve) => {
@@ -160,7 +160,11 @@ module.exports = {
 			const db = client.db(dbName);
 			const collection = db.collection(collectionName);
 			const filter = { ...input };
-			if (input?._id) filter._id = new mongo.ObjectId(input._id);
+			if (input && (input._id === null || input._id === undefined)) {
+				delete filter._id;
+			} else if (input?._id) {
+				filter._id = new mongo.ObjectId(input._id);
+			}
 			const result = await collection.find({ ...filter }).project({ ...projection }).toArray();
 			console.log(`✅ MongoDB find result: ${JSON.stringify(result)}`);
 			resolve(result);
@@ -175,7 +179,7 @@ module.exports = {
 			const timeseriesName = collectionName;
 			const dbNames = await db.listCollections({ name: timeseriesName, type: 'timeseries' }).toArray();
 			if (!dbNames.length) {
-				db.createCollection(timeseriesName, {
+				await db.createCollection(timeseriesName, {
 					timeseries: {
 						timeField: 'timeStamp',
 						metaField,

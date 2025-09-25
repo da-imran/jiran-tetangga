@@ -37,7 +37,7 @@ module.exports = (app, config) => {
 				filters,
 			} = req.query;
 
-			if (Number.isInteger(+pageNumber) || +pageNumber <= 0) {
+			if (!Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -70,9 +70,10 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage.title = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
 				if (typeof filters === 'string' && filters.trim() !== '') {
@@ -127,8 +128,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Events not found',
 					});
 
@@ -136,7 +137,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Events not found',
 						data: eventsResult,
 						traceId,
@@ -214,8 +215,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Events not found',
 					});
 
@@ -223,7 +224,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Events not found',
 						data: eventsResult,
 						traceId,
@@ -329,7 +330,7 @@ module.exports = (app, config) => {
 				} else {
 					console.error(`❌ ${apiName} failed to create.`);
 					res.status(404).send({
-						status: 404,
+						status: 500,
 						message: 'Error creating event.',
 					});
 
@@ -337,7 +338,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating event.',
 						data: inputResult,
 						traceId,
@@ -413,8 +414,8 @@ module.exports = (app, config) => {
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'events', { _id: mongo.getObjectId(eventId) }, updateObj);
 				if (!updateResult) {
 					console.log(`${apiName} failed to update.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Event not updated'
 					});
 
@@ -422,7 +423,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Event not updated',
 						data: updateResult,
 						traceId,
@@ -505,7 +506,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Event deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							event: deleteResult
 						},
 					});
 
@@ -521,8 +522,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error(`❌ ${apiName} failed to delete.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Event not deleted'
 					});
 
@@ -530,9 +531,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Event not deleted.',
-						data: deleteResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});

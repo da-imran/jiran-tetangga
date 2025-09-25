@@ -124,8 +124,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Shops not found',
 					});
 
@@ -133,7 +133,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Shops not found',
 						data: shopResult,
 						traceId,
@@ -191,7 +191,7 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
-				const shopResult = await mongo.find(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
+				const shopResult = await mongo.findOne(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) });
 				if (shopResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -211,8 +211,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Shop not found',
 					});
 
@@ -220,7 +220,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Shops not found',
 						data: shopResult,
 						traceId,
@@ -316,8 +316,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error('❌ Error creating shop.');
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Error creating shop.',
 					});
 
@@ -325,7 +325,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating shop.',
 						data: inputResult,
 						traceId,
@@ -408,8 +408,8 @@ module.exports = (app, config) => {
 
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'shops', { _id: mongo.getObjectId(shopId) }, updateObj);
 				if (!updateResult) {
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Shop not updated'
 					});
 
@@ -417,7 +417,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Shop not updated',
 						data: updateResult,
 						traceId,
@@ -498,7 +498,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Shop deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							shop: deleteResult
 						},
 					});
 
@@ -513,8 +513,8 @@ module.exports = (app, config) => {
 						level: LOG_LEVELS.INFO,
 					});
 				} else {
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Shop not deleted'
 					});
 
@@ -522,9 +522,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Shop not deleted',
-						data: deleteResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});
