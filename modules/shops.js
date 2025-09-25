@@ -69,9 +69,10 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage.name = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
 				if (filters && filters.trim() !== '') {
