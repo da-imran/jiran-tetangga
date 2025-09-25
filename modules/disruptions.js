@@ -236,7 +236,7 @@ module.exports = (app, config) => {
 				status: 500,
 				message: error,
 				traceId,
-				level: LOG_LEVELS.INFO,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
