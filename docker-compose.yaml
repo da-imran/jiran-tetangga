@@ -18,7 +18,6 @@ services:
       INFISICAL_CLIENT_ID: ${INFISICAL_CLIENT_ID}
       INFISICAL_CLIENT_SECRET: ${INFISICAL_CLIENT_SECRET}
       INFISICAL_ENV: dev
-    command: ["npm", "start"]
     ports:
       - "3500:3500"
     networks:
@@ -68,3 +67,4 @@ networks:
 
 volumes:
   db_data:
+
