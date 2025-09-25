@@ -36,8 +36,8 @@ const setupClient = async () => {
 // Get the secrets from the client
 const getSecrets = async (secretsObj) => {
 	await setupClient();
-	for (const key in secretsObj) {
-		if (Object.prototype.hasOwnProperty.call(secretsObj, key)) {
+	await Promise.all(
+		Object.keys(secretsObj).map(async (key) => {
 			try {
 				const result = await client.secrets().getSecret({
 					projectId: INFISICAL_PROJECT_ID,
@@ -45,13 +45,12 @@ const getSecrets = async (secretsObj) => {
 					secretName: secretsObj[key].name,
 					secretPath: '/JiranTetangga',
 				});
-
 				secretsObj[key].value = result.secretValue;
 			} catch (err) {
 				console.error(`❌ Failed to fetch secret "${key}": ${err.message}`);
 			}
-		}
-	}
+		})
+	);
 };
 const checkSecretObjectNull = async () => {
 	await getSecrets(secrets);

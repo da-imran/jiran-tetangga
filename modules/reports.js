@@ -43,7 +43,7 @@ module.exports = (app, config) => {
 				filters,
 			} = req.query;
 
-			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+			if (Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -59,7 +59,7 @@ module.exports = (app, config) => {
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
-			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+			} else if (!Number.isInteger(+dataPerPage) || +dataPerPage || 0 && +dataPerPage > 100) {
 				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
 				res.status(400).send({
 					status: 400,
@@ -81,7 +81,7 @@ module.exports = (app, config) => {
 					matchStage.description = { $regex: search, $options: 'i' };
 				}
 
-				if (filters && filters.trim() !== '') {
+				if (typeof filters === 'string' && filters.trim() !== '') {
 					const filterArray = filters.split(',').map(f => f.trim());
   					matchStage.status = { $in: filterArray };
 				}
@@ -103,13 +103,14 @@ module.exports = (app, config) => {
 					}
 				];
 
-				const [allDocs, reportsResult] = await Promise.all([
-					mongo.find(mongoClient, 'reports'),
+				const countPipeline = [{ $match: matchStage }, { $count: 'total' }];
+				const [countResult, reportsResult] = await Promise.all([
+					mongo.aggregate(mongoClient, 'reports', countPipeline),
 					mongo.aggregate(mongoClient, 'reports', aggregation)
 				]);
 
 				if (reportsResult) {
-					const totalCount = allDocs.length;
+					const totalCount = (countResult && countResult[0] && countResult[0].total) ? countResult[0].total : 0;
 
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({

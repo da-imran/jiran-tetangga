@@ -36,7 +36,7 @@ module.exports = (app, config) => {
 				search,
 			} = req.query;
 
-			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+			if (Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -52,7 +52,7 @@ module.exports = (app, config) => {
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
-			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+			} else if (!Number.isInteger(+dataPerPage) || +dataPerPage || 0 && +dataPerPage > 100) {
 				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
 				res.status(400).send({
 					status: 400,
@@ -90,18 +90,19 @@ module.exports = (app, config) => {
 					}
 				];
 
-				const [allDocs, mongoResult] = await Promise.all([
-					mongo.find(mongoClient, 'disruptions'),
+				const countPipeline = [{ $match: matchStage }, { $count: 'total' }];
+				const [countResult, disruptionResult] = await Promise.all([
+					mongo.aggregate(mongoClient, 'disruptions', countPipeline),
 					mongo.aggregate(mongoClient, 'disruptions', aggregation)
 				]);
 
-				if (mongoResult && mongoResult.length > 0) {
-					const totalCount = allDocs.length;
+				if (disruptionResult && disruptionResult.length > 0) {
+					const totalCount = (countResult && countResult[0] && countResult[0].total) ? countResult[0].total : 0;
 
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						data: mongoResult,
+						data: disruptionResult,
 						total: totalCount
 					});
 
@@ -111,7 +112,7 @@ module.exports = (app, config) => {
 						apiName,
 						status: 200,
 						message: 'Response Success',
-						data: mongoResult,
+						data: disruptionResult,
 						traceId,
 						level: LOG_LEVELS.INFO,
 					});
@@ -128,7 +129,7 @@ module.exports = (app, config) => {
 						apiName,
 						status: 404,
 						message: 'Disruptions not found',
-						data: mongoResult,
+						data: disruptionResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});
