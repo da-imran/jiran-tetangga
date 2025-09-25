@@ -471,7 +471,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Disruption deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							disruption: deleteResult
 						},
 					});
 
