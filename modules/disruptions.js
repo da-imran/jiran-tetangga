@@ -119,8 +119,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(500).send({
-						status: 500,
+					res.status(404).send({
+						status: 404,
 						message: 'Disruptions not found',
 					});
 
@@ -128,7 +128,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 500,
+						status: 404,
 						message: 'Disruptions not found',
 						data: disruptionResult,
 						traceId,
@@ -206,8 +206,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(500).send({
-						status: 500,
+					res.status(404).send({
+						status: 404,
 						message: 'Disruption not found',
 					});
 
@@ -215,7 +215,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 500,
+						status: 404,
 						message: 'Disruption not found',
 						traceId,
 						level: LOG_LEVELS.ERROR,
