@@ -73,7 +73,7 @@ module.exports = (app, config) => {
 				const matchStage = {};
 				if (search && search.trim() !== '') {
 					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-					matchStage.name = { $regex: safeSearch, $options: 'i' };
+					matchStage.title = { $regex: safeSearch, $options: 'i' };
 				}
 
 				if (typeof filters === 'string' && filters.trim() !== '') {
