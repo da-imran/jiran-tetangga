@@ -43,7 +43,7 @@ module.exports = (app, config) => {
 				filters,
 			} = req.query;
 
-			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+			if (!Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -59,7 +59,7 @@ module.exports = (app, config) => {
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
-			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+			} else if (!Number.isInteger(+dataPerPage) || +dataPerPage || 0 && +dataPerPage > 100) {
 				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
 				res.status(400).send({
 					status: 400,
@@ -76,12 +76,13 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage.description = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
-				if (filters && filters.trim() !== '') {
+				if (typeof filters === 'string' && filters.trim() !== '') {
 					const filterArray = filters.split(',').map(f => f.trim());
   					matchStage.status = { $in: filterArray };
 				}
@@ -103,13 +104,14 @@ module.exports = (app, config) => {
 					}
 				];
 
-				const [allDocs, reportsResult] = await Promise.all([
-					mongo.find(mongoClient, 'reports'),
+				const countPipeline = [{ $match: matchStage }, { $count: 'total' }];
+				const [countResult, reportsResult] = await Promise.all([
+					mongo.aggregate(mongoClient, 'reports', countPipeline),
 					mongo.aggregate(mongoClient, 'reports', aggregation)
 				]);
 
 				if (reportsResult) {
-					const totalCount = allDocs.length;
+					const totalCount = (countResult && countResult[0] && countResult[0].total) ? countResult[0].total : 0;
 
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -205,11 +207,33 @@ module.exports = (app, config) => {
 						status: 200,
 						data: reportsResult
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 200,
+						message: 'Response Success',
+						data: reportsResult,
+						traceId,
+						level: LOG_LEVELS.INFO,
+					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
 					res.status(404).send({
 						status: 404,
 						message: 'Report not found',
+					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'Reports not found',
+						data: reportsResult,
+						traceId,
+						level: LOG_LEVELS.ERROR,
 					});
 				}
 			}
@@ -302,8 +326,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error('❌ Error creating report.');
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Error creating report.',
 					});
 
@@ -311,7 +335,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating report.',
 						data: inputResult,
 						traceId,
@@ -389,8 +413,8 @@ module.exports = (app, config) => {
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'reports', { _id: mongo.getObjectId(reportId) }, updateObj);
 				if (!updateResult) {
 					console.error(`❌ ${apiName} failed!`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Update report failed!'
 					});
 
@@ -398,7 +422,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Update report failed!',
 						data: updateResult,
 						traceId,
@@ -480,7 +504,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Report deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							report: deleteResult
 						},
 					});
 
@@ -495,8 +519,8 @@ module.exports = (app, config) => {
 						level: LOG_LEVELS.INFO,
 					});
 				} else {
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Report not deleted'
 					});
 
@@ -504,9 +528,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Report not deleted.',
-						data: deleteResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});

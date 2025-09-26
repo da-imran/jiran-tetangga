@@ -29,14 +29,16 @@ app.use(cors({
 
 app.use((req, res, next) => {
 	// When running locally
-	if(ENVIRONMENT === 'local') return next();
-	
+	if (ENVIRONMENT === 'local' || ENVIRONMENT === 'dev') return next();
+
 	// When running via docker
-	const excludedPaths = ['/', '/jiran-tetangga/v1'];
+	const basePath = `/${ROUTE_PREPEND}/${VERSION}`;
+	const excludedPaths = ['/', basePath];
+
 	if (excludedPaths.includes(req.path)) return next();
-	
+
 	return apiKeyCheck(req, res, next);
-	
+
 });
 
 (async () => {
@@ -53,7 +55,7 @@ app.use((req, res, next) => {
 			process.exit(1);
 		}
 
-		const mongoUri = ENVIRONMENT === 'local' ? process.env.MONGO_URI : secrets.MONGO_URI.value;
+		const mongoUri = ['local', 'dev'].includes(ENVIRONMENT) ? process.env.MONGO_URI : secrets.MONGO_URI.value;
 		const mongoClient = await mongodb.clientConnect(mongoUri);
 		const config = { mongoClient };
 
@@ -75,7 +77,7 @@ app.use((req, res, next) => {
 		});
 		process.exit(1);
 	}
-	
+
 })();
 
 module.exports = { app };

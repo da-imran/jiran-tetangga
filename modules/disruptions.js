@@ -21,7 +21,7 @@ module.exports = (app, config) => {
 			service: SERVICE_NAME,
 			module: MODULE,
 			apiName,
-			method: METHODS.get,
+			method: METHODS.GET,
 			status: 200,
 			message: `${apiName} is called at ${new Date()}`,
 			traceId,
@@ -36,7 +36,7 @@ module.exports = (app, config) => {
 				search,
 			} = req.query;
 
-			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+			if (!Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -52,7 +52,7 @@ module.exports = (app, config) => {
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
-			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+			} else if (!Number.isInteger(+dataPerPage) || +dataPerPage || 0 && +dataPerPage > 100) {
 				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
 				res.status(400).send({
 					status: 400,
@@ -69,9 +69,10 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage = { title: { $regex: search, $options: 'i' } };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.name = { $regex: safeSearch, $options: 'i' };
 				}
 
 				const aggregation = [
@@ -90,18 +91,19 @@ module.exports = (app, config) => {
 					}
 				];
 
-				const [allDocs, mongoResult] = await Promise.all([
-					mongo.find(mongoClient, 'disruptions'),
+				const countPipeline = [{ $match: matchStage }, { $count: 'total' }];
+				const [countResult, disruptionResult] = await Promise.all([
+					mongo.aggregate(mongoClient, 'disruptions', countPipeline),
 					mongo.aggregate(mongoClient, 'disruptions', aggregation)
 				]);
 
-				if (mongoResult && mongoResult.length > 0) {
-					const totalCount = allDocs.length;
+				if (disruptionResult && disruptionResult.length > 0) {
+					const totalCount = (countResult && countResult[0] && countResult[0].total) ? countResult[0].total : 0;
 
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
 						status: 200,
-						data: mongoResult,
+						data: disruptionResult,
 						total: totalCount
 					});
 
@@ -111,7 +113,7 @@ module.exports = (app, config) => {
 						apiName,
 						status: 200,
 						message: 'Response Success',
-						data: mongoResult,
+						data: disruptionResult,
 						traceId,
 						level: LOG_LEVELS.INFO,
 					});
@@ -128,7 +130,7 @@ module.exports = (app, config) => {
 						apiName,
 						status: 404,
 						message: 'Disruptions not found',
-						data: mongoResult,
+						data: disruptionResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});
@@ -184,7 +186,7 @@ module.exports = (app, config) => {
 			if (!requiredCheck(req.params, requiredFields, res, config)) {
 				return;
 			} else {
-				const mongoResult = await mongo.find(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
+				const mongoResult = await mongo.findOne(mongoClient, 'disruptions', {_id: mongo.getObjectId(disruptionId)});
 				if (mongoResult) {
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -235,7 +237,7 @@ module.exports = (app, config) => {
 				status: 500,
 				message: error,
 				traceId,
-				level: LOG_LEVELS.INFO,
+				level: LOG_LEVELS.ERROR,
 			});
 		}
 	});
@@ -301,8 +303,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error('❌ Error creating disruption.');
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Error creating disruption.',
 					});
 
@@ -310,7 +312,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating disruption.',
 						traceId,
 						level: LOG_LEVELS.ERROR,
@@ -380,8 +382,8 @@ module.exports = (app, config) => {
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'disruptions', { _id: mongo.getObjectId(disruptionId) }, updateObj);
 				if (!updateResult) {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Disruption not updated'
 					});
 
@@ -389,7 +391,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Disruption not updated',
 						traceId,
 						level: LOG_LEVELS.ERROR,
@@ -470,7 +472,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Disruption deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							disruption: deleteResult
 						},
 					});
 
@@ -486,8 +488,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} Response Failed.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Disruption not deleted'
 					});
 
@@ -495,7 +497,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Disruption not deleted',
 						traceId,
 						level: LOG_LEVELS.ERROR,

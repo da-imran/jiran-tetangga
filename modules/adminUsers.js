@@ -70,7 +70,7 @@ module.exports = (app, config) => {
 					message: 'Admin user not found',
 					data: adminUser,
 					traceId,
-					level: LOG_LEVELS.INFO,
+					level: LOG_LEVELS.ERROR,
 				});
 			}
 		} catch (err) {
@@ -268,8 +268,8 @@ module.exports = (app, config) => {
 						});
 					} else {
 						console.error('❌ Error creating admin user.');
-						res.status(404).send({
-							status: 404,
+						res.status(500).send({
+							status: 500,
 							message: 'Error creating admin user.',
 						});
 
@@ -277,7 +277,7 @@ module.exports = (app, config) => {
 							service: SERVICE_NAME,
 							module: MODULE,
 							apiName,
-							status: 404,
+							status: 500,
 							message: 'Error creating admin user.',
 							data: inputResult,
 							traceId,
@@ -353,13 +353,33 @@ module.exports = (app, config) => {
 						status: 404,
 						message: 'User not found'
 					});
+
+					logger.log({
+						service: SERVICE_NAME,
+						module: MODULE,
+						apiName,
+						status: 404,
+						message: 'User not found',
+						traceId,
+						level: LOG_LEVELS.ERROR,
+					});
 				} else {
 					const updateResult = await mongo.findOneAndUpdate(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) }, updateObj);
 					if (!updateResult) {
 						console.log(`❌ ${apiName} Admin user not updates.`);
-						res.status(404).send({
-							status: 404,
+						res.status(500).send({
+							status: 500,
 							message: 'Admin user not updated'
+						});
+
+						logger.log({
+							service: SERVICE_NAME,
+							module: MODULE,
+							apiName,
+							status: 500,
+							message: 'Admin user not updated',
+							traceId,
+							level: LOG_LEVELS.ERROR,
 						});
 					} else {
 						console.log(`${apiName} Response Success.`);
@@ -367,6 +387,17 @@ module.exports = (app, config) => {
 							status: 200,
 							message: 'Admin user updated successfully.',
 							data: JSON.parse(JSON.stringify(updateResult)),
+						});
+
+						logger.log({
+							service: SERVICE_NAME,
+							module: MODULE,
+							apiName,
+							status: 200,
+							message: 'Response Success.',
+							data: updateResult,
+							traceId,
+							level: LOG_LEVELS.INFO,
 						});
 					}
 				}
@@ -431,8 +462,8 @@ module.exports = (app, config) => {
 						level: LOG_LEVELS.INFO,
 					});
 				} else {
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Admin user not deleted'
 					});
 
@@ -440,8 +471,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
-						message: 'Admin user not deteled',
+						status: 500,
+						message: 'Admin user not deleted',
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});

@@ -37,7 +37,7 @@ module.exports = (app, config) => {
 				filters,
 			} = req.query;
 
-			if (!Number.isInteger(+pageNumber) && +pageNumber > 0) {
+			if (!Number.isInteger(+pageNumber) || +pageNumber <= 0) {
 				console.log(`❌ ${apiName} Bad Request: Invalid page number`);
 				res.status(400).send({
 					status: 400,
@@ -53,7 +53,7 @@ module.exports = (app, config) => {
 					traceId,
 					level: LOG_LEVELS.ERROR,
 				});
-			} else if (!Number.isInteger(+dataPerPage) && +dataPerPage > 0 && dataPerPage <= 100) {
+			} else if (!Number.isInteger(+dataPerPage) || +dataPerPage || 0 && +dataPerPage > 100) {
 				console.log(`❌ ${apiName} Bad Request: Invalid number of data per page`);
 				res.status(400).send({
 					status: 400,
@@ -70,12 +70,13 @@ module.exports = (app, config) => {
 					level: LOG_LEVELS.ERROR,
 				});
 			} else {
-				let matchStage = {};
+				const matchStage = {};
 				if (search && search.trim() !== '') {
-					matchStage.title = { $regex: search, $options: 'i' };
+					const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+					matchStage.title = { $regex: safeSearch, $options: 'i' };
 				}
 
-				if (filters && filters.trim() !== '') {
+				if (typeof filters === 'string' && filters.trim() !== '') {
 					const filterArray = filters.split(',').map(f => f.trim());
   					matchStage.status = { $in: filterArray };
 				}
@@ -99,13 +100,14 @@ module.exports = (app, config) => {
 					}
 				];
 
-				const [allDocs, eventsResult] = await Promise.all([
-					mongo.find(mongoClient, 'events'),
+				const countPipeline = [{ $match: matchStage }, { $count: 'total' }];
+				const [countResult, eventsResult] = await Promise.all([
+					mongo.aggregate(mongoClient, 'events', countPipeline),
 					mongo.aggregate(mongoClient, 'events', aggregation)
 				]);
 
 				if (eventsResult) {
-					const totalCount = allDocs.length;
+					const totalCount = (countResult && countResult[0] && countResult[0].total) ? countResult[0].total : 0;
 
 					console.log(`${apiName} Response Success.`);
 					res.status(200).send({
@@ -327,8 +329,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error(`❌ ${apiName} failed to create.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Error creating event.',
 					});
 
@@ -336,7 +338,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Error creating event.',
 						data: inputResult,
 						traceId,
@@ -412,8 +414,8 @@ module.exports = (app, config) => {
 				const updateResult = await mongo.findOneAndUpdate(mongoClient, 'events', { _id: mongo.getObjectId(eventId) }, updateObj);
 				if (!updateResult) {
 					console.log(`${apiName} failed to update.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Event not updated'
 					});
 
@@ -421,7 +423,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Event not updated',
 						data: updateResult,
 						traceId,
@@ -504,7 +506,7 @@ module.exports = (app, config) => {
 						status: 200,
 						message: 'Event deleted successfully.',
 						data: {
-							adminUser: deleteResult
+							event: deleteResult
 						},
 					});
 
@@ -520,8 +522,8 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.error(`❌ ${apiName} failed to delete.`);
-					res.status(404).send({
-						status: 404,
+					res.status(500).send({
+						status: 500,
 						message: 'Event not deleted'
 					});
 
@@ -529,9 +531,8 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 404,
+						status: 500,
 						message: 'Event not deleted.',
-						data: deleteResult,
 						traceId,
 						level: LOG_LEVELS.ERROR,
 					});

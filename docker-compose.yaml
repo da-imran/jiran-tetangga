@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      NODE_ENV: development
+      NODE_ENV: dev
       ROUTE_PREPEND: jiran-tetangga
       HOSTNAME: apidev
       API_VERSION: ${API_VERSION}
@@ -13,12 +13,11 @@ services:
       VERSION: ${VERSION}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
       PORT: ${PORT}
-      INFISICAL_URI: http://infisical-backend:8080
-      INFISICAL_PROJECT_ID: 'Inifisical project ID'
-      INFISICAL_CLIENT_ID: 'Inifisical client ID'
-      INFISICAL_CLIENT_SECRET: 'Inifisical client secret'
+      INFISICAL_URI: ${INFISICAL_URI}
+      INFISICAL_PROJECT_ID: ${INFISICAL_PROJECT_ID}
+      INFISICAL_CLIENT_ID: ${INFISICAL_CLIENT_ID}
+      INFISICAL_CLIENT_SECRET: ${INFISICAL_CLIENT_SECRET}
       INFISICAL_ENV: dev
-    command: ["npm", "start"]
     ports:
       - "3500:3500"
     networks:
@@ -29,7 +28,7 @@ services:
     restart: on-failure
     volumes:
       - .:/usr/src/app
-      - /usr/ssrc/app/node_modules
+      - /usr/src/app/node_modules
     command: ["npm", "start"]
     
   mongodb:
@@ -43,7 +42,7 @@ services:
     networks:
       - jiran-tetangga-networks
     healthcheck:
-      test: ["CMD", "mongosh" ,"--eval", "db.adminCommand({ping: 1})", "--quiet"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand({ping: 1})", "--quiet"]
       interval: 10s
       timeout: 5s
       retries: 3
