@@ -58,15 +58,15 @@ module.exports = (app, config) => {
 				});
 			} else {
 				console.log(`❌ ${apiName} failed to fetch the admin user. Admin User not found.`);
-				res.status(500).send({
-					status: 500,
+				res.status(404).send({
+					status: 404,
 					message: 'Admin user not found',
 				});
 				logger.log({
 					service: SERVICE_NAME,
 					module: MODULE,
 					apiName,
-					status: 500,
+					status: 404,
 					message: 'Admin user not found',
 					data: adminUser,
 					traceId,
@@ -146,15 +146,15 @@ module.exports = (app, config) => {
 					});
 				} else {
 					console.log(`❌ ${apiName} failed to fetch the admin user. Admin user not found.`);
-					res.status(500).send({
-						status: 500,
+					res.status(404).send({
+						status: 404,
 						message: 'Admin user not found',
 					});
 					logger.log({
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 500,
+						status: 404,
 						message: 'Admin user not found',
 						traceId,
 						level: LOG_LEVELS.ERROR,
@@ -349,8 +349,8 @@ module.exports = (app, config) => {
 				const adminUser = await mongo.findOne(mongoClient, 'admin_user', { _id: mongo.getObjectId(adminUserId) });
 				if(!adminUser) {
 					console.log(`❌ ${apiName} User not found!`);
-					res.status(500).send({
-						status: 500,
+					res.status(404).send({
+						status: 404,
 						message: 'User not found'
 					});
 
@@ -358,7 +358,7 @@ module.exports = (app, config) => {
 						service: SERVICE_NAME,
 						module: MODULE,
 						apiName,
-						status: 500,
+						status: 404,
 						message: 'User not found',
 						traceId,
 						level: LOG_LEVELS.ERROR,
