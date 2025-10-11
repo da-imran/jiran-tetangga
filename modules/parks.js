@@ -13,6 +13,9 @@ module.exports = (app, config) => {
 
 	// Get All Parks API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		// #swagger.tags = ['parks']
+		// #swagger.summary = 'Get all parks'
+		// #swagger.description = 'Retrieve all parks with pagination and search support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Parks API';
 
@@ -164,6 +167,9 @@ module.exports = (app, config) => {
 
 	// Get Park by parkId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		// #swagger.tags = ['parks']
+		// #swagger.summary = 'Get park by ID'
+		// #swagger.description = 'Retrieve a specific park by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Get Park API';
 		const { parkId } = req.params;
@@ -251,6 +257,9 @@ module.exports = (app, config) => {
 
 	// Create Parks API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/parks`, async (req, res) => {
+		// #swagger.tags = ['parks']
+		// #swagger.summary = 'Create a new park'
+		// #swagger.description = 'Create a new park with name, description and opening hours'
 		const traceId = uuidv4();
 		const apiName = 'Create Parks API';
 		const {
@@ -355,6 +364,9 @@ module.exports = (app, config) => {
 
 	// Update Parks API by parkId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		// #swagger.tags = ['parks']
+		// #swagger.summary = 'Update a park'
+		// #swagger.description = 'Update an existing park details by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Parks API';
 		const { parkId } = req.params;
@@ -466,6 +478,9 @@ module.exports = (app, config) => {
 
 	// Delete Parks API by parkId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/parks/:parkId`, async (req, res) => {
+		// #swagger.tags = ['parks']
+		// #swagger.summary = 'Delete a park'
+		// #swagger.description = 'Delete an existing park by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Parks API';
 		const { parkId } = req.params;
