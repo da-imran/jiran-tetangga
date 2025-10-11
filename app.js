@@ -67,11 +67,10 @@ app.use((req, res, next) => {
 		// Load routes/modules after MongoDB is ready
 		require('./index')(app, config);
 
-		if (['local', 'dev'].includes(ENVIRONMENT)) {
-			app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-			console.log(`📖 Swagger docs available at http://${HOSTNAME}:${PORT}/api-docs`);
-		}
-
+		// Swagger setup
+		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+		console.log(`📖 Swagger docs available at http://${HOSTNAME}:${PORT}/api-docs`);
+		
 		app.listen(PORT, '0.0.0.0', () => {
 			console.log(`🚀 Backend running in ${ENVIRONMENT} mode on http://${HOSTNAME}:${PORT}/${ROUTE_PREPEND}/${VERSION}`);
 		});
