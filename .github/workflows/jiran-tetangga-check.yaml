@@ -23,9 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Swagger doc
-        run: npm run build
-
       - name: Build Docker Image
         uses: docker/build-push-action@v6
         with:
