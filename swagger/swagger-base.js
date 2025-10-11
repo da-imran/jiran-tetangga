@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 const HOSTNAME = process.env.HOSTNAME || 'localhost';
-const PORT = process.env.PORT || 3500;
+const PORT = process.env.PORT || '3500';
 const ROUTE_PREPEND = process.env.ROUTE_PREPEND || 'jiran-tetangga';
 const VERSION = process.env.VERSION || 'v1';
 
