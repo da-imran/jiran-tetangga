@@ -6,6 +6,8 @@ module.exports = (req, res, next) => {
 
 	if (!clientApiKey || clientApiKey !== API_KEY) {
 		console.warn('⚠️ Invalid or missing API key');
+
+		// For API requests, return JSON response
 		return res.status(401).json({ message: 'Unauthorized: Invalid API Key' });
 	}
 

@@ -17,6 +17,9 @@ module.exports = (app, config) => {
 
 	// Get all Administrator user details
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		// #swagger.tags = ['adminUsers']
+		// #swagger.summary = 'Get all admin users'
+		// #swagger.description = 'Returns all available admin with pagination support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Admin Users API';
 
@@ -94,6 +97,9 @@ module.exports = (app, config) => {
 
 	// Get Administrator user details by UserId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/adminUser/:adminUserId`, async (req, res) => {
+		// #swagger.tags = ['adminUsers']
+		// #swagger.summary = 'Get an admin user by ID'
+		// #swagger.description = 'Retrieve a specific admin user by its ID'
 		const traceId = uuidv4();
 		const { adminUserId } = req.params;
 		const apiName = 'Get Admin User API';
@@ -182,6 +188,9 @@ module.exports = (app, config) => {
 
 	// Create Administrator user details by the UserId
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/adminUsers`, async (req, res) => {
+		// #swagger.tags = ['adminUsers']
+		// #swagger.summary = 'Create a new admin user'
+		// #swagger.description = 'Create a new admin user with firstName, lastName, email, password and phone'
 		const traceId = uuidv4();
 		const apiName = 'Get Admin User by UserId API';
 		const {
@@ -308,6 +317,9 @@ module.exports = (app, config) => {
 
 	// Update Administrator user by UserId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
+		// #swagger.tags = ['adminUsers']
+		// #swagger.summary = 'Update an admin user'
+		// #swagger.description = 'Update an existing admin user by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Admin User by UserId API';
 		const { adminUserId } = req.params;
@@ -414,6 +426,9 @@ module.exports = (app, config) => {
 
 	// Delete Administrator user by UserId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/adminUsers/:adminUserId`, async (req, res) => {
+		// #swagger.tags = ['adminUsers']
+		// #swagger.summary = 'Delete an admin user'
+		// #swagger.description = 'Delete an existing admin user by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Admin User by UserId API';
 		const { adminUserId } = req.params;

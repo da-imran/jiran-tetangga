@@ -13,6 +13,9 @@ module.exports = (app, config) => {
 
 	// Get All Disruptions API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		// #swagger.tags = ['disruptions']
+		// #swagger.summary = 'Get all disruptions'
+		// #swagger.description = 'Retrieve all disruptions with pagination support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Disruptions API';
 
@@ -158,6 +161,9 @@ module.exports = (app, config) => {
 
 	// Get Disruption by disruptionId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		// #swagger.tags = ['disruptions']
+		// #swagger.summary = 'Get disruption by ID'
+		// #swagger.description = 'Retrieve a specific disruption by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Get Disruption API';
 		const { disruptionId } = req.params;
@@ -244,6 +250,9 @@ module.exports = (app, config) => {
 
 	// Create Disruptions API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/disruptions`, async (req, res) => {
+		// #swagger.tags = ['disruptions']
+		// #swagger.summary = 'Create a new disruption'
+		// #swagger.description = 'Create a new disruption with title and description'
 		const traceId = uuidv4();
 		const apiName = 'Create Disruption API';
 		const {
@@ -341,6 +350,9 @@ module.exports = (app, config) => {
 
 	// Update Disruptions by shopId 
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		// #swagger.tags = ['disruptions']
+		// #swagger.summary = 'Update a disruption'
+		// #swagger.description = 'Update an existing disruption by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Disruption API';
 		const { disruptionId } = req.params;
@@ -437,6 +449,9 @@ module.exports = (app, config) => {
 
 	// Delete Disruptions API by shopId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/disruptions/:disruptionId`, async (req, res) => {
+		// #swagger.tags = ['disruptions']
+		// #swagger.summary = 'Delete a disruption'
+		// #swagger.description = 'Delete an existing disruption by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Disruptions API';
 		const { disruptionId } = req.params;

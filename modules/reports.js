@@ -19,6 +19,9 @@ module.exports = (app, config) => {
 
 	// Get All Reports API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		// #swagger.tags = ['reports']
+		// #swagger.summary = 'Get all reports'
+		// #swagger.description = 'Retrieve all reports with pagination and search support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Reports API';
 
@@ -172,6 +175,9 @@ module.exports = (app, config) => {
 
 	// Get Report by reportId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		// #swagger.tags = ['reports']
+		// #swagger.summary = 'Get report by ID'
+		// #swagger.description = 'Retrieve a specific report by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Get Report API';
 		const { reportId } = req.params;
@@ -259,6 +265,9 @@ module.exports = (app, config) => {
 
 	// Create Reports API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/reports`, async (req, res) => {
+		// #swagger.tags = ['reports']
+		// #swagger.summary = 'Create a new report'
+		// #swagger.description = 'Create a new report with email, description, location, and category'
 		const traceId = uuidv4();
 		const apiName = 'Create Reports API';
 		const {
@@ -365,6 +374,9 @@ module.exports = (app, config) => {
 
 	// Update Reports API by reportId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		// #swagger.tags = ['reports']
+		// #swagger.summary = 'Update a report'
+		// #swagger.description = 'Update an existing report details by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Reports API';
 		const { reportId } = req.params;
@@ -471,6 +483,9 @@ module.exports = (app, config) => {
 
 	// Delete Reports API by reportId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/reports/:reportId`, async (req, res) => {
+		// #swagger.tags = ['reports']
+		// #swagger.summary = 'Delete a report'
+		// #swagger.description = 'Delete an existing report by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Reports API';
 		const { reportId } = req.params;
