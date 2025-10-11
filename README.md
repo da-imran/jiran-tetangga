@@ -110,6 +110,33 @@ INFISICAL_ENV=dev
 npm start
 ```
 
+### 5. Access API Documentation
+The API documentation is available through Swagger UI. After starting the server:
+
+1. For local development:
+   ```
+   http://localhost:{your_port_number}/{ROUTE_PREPEND}/{VERSION}/api-docs
+   ```
+   Example: `http://localhost:3000/jiran-tetangga/v1/api-docs`
+
+2. Features in the API documentation:
+   - Detailed endpoint descriptions
+   - Request/response schemas
+   - Try-out functionality
+   - Grouped endpoints by:
+     - Admin Users
+     - Events
+     - Disruptions
+     - Parks
+     - Shops
+     - Reports
+
+3. Development Mode
+   ```bash
+   npm run dev
+   ```
+   Run in development mode to automatically update the API documentation when changes are made.
+
 ## 📦 Docker Support 
 1.  Docker support has been built into the project
 2.  Contains `Dockerfile` and `docker-compose.yaml` for the Docker configurations
