@@ -4,9 +4,11 @@
   "main": "index.js",
   "scripts": {
     "swagger": "node swagger/swagger.js",
+    "build": "npm run swagger",
     "test": "mocha --timeout 10000 --exit",
-    "start": "npm run swagger && node app.js",
-    "dev": "nodemon --watch '**/*.js' --ignore 'test/**' --exec 'npm run swagger && node' app.js",
+    "start": "node app.js",
+    "start:dev": "npm run swagger && node app.js",
+    "dev": "nodemon --watch '**/*.js' --ignore 'test/**' --exec 'npm run start:dev'",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -27,6 +29,8 @@
     "mongodb": "^6.15.0",
     "node-fetch": "^3.3.2",
     "sinon": "^15.2.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
@@ -34,8 +38,6 @@
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",
-    "nodemon": "^3.1.10",
-    "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.1"
+    "nodemon": "^3.1.10"
   }
 }

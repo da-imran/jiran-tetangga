@@ -55,6 +55,10 @@ jiran-tetangga/
 │   ├── test.js        # Central place for backend API tests
 │   ├── testIndex.js   # Serve as the index file for backend API tests
 │   └── testServer.js  # Serve as the server for backend API tests
+├── swagger/
+│   ├── swagger-base.js     # Base configuration for Swagger
+│   ├── swagger-output.js   # Swagger output documentation
+│   └── swagger.js          # Main Swagger configuration file
 ├── .env               # Sensitive config (PORT, DB_URL)
 ├── app.js             # Express app, middleware, routes entry
 ├── server.js          # Separate boot file
@@ -62,7 +66,7 @@ jiran-tetangga/
 ├── package.json       # Package JSON file
 ├── Dockerfile         # Docker configuration
 ├── docker-compose.yaml   # Docker yaml configuration
-├── .postman_collection.json   # Postman collection
+└── introduction.html   # Github HTML preview
 ```
 
 ---
@@ -118,6 +122,14 @@ The API documentation is available through Swagger UI. After starting the server
    http://localhost:{your_port_number}/{ROUTE_PREPEND}/{VERSION}/api-docs
    ```
    Example: `http://localhost:3000/jiran-tetangga/v1/api-docs`
+
+2. Authentication Required:
+   - Add the `x-api-key` header with your API key
+   - API key should match the `API_KEY` in your environment variables
+   - Example using cURL:
+     ```bash
+     curl -H "x-api-key: your_api_key" http://localhost:3000/jiran-tetangga/v1/api-docs
+     ```
 
 2. Features in the API documentation:
    - Detailed endpoint descriptions

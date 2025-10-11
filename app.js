@@ -7,7 +7,6 @@ const apiKeyCheck = require('./middleware/apiCheck');
 const { checkSecretObjectNull, secrets } = require('./utilities/secrets');
 const { logger, LOG_LEVELS } = require('./utilities/logger');
 
-const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger/swagger-output.json');
 
 dotenv.config();
@@ -68,9 +67,22 @@ app.use((req, res, next) => {
 		require('./index')(app, config);
 
 		// Swagger setup
-		app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-		console.log(`📖 Swagger docs available at http://${HOSTNAME}:${PORT}/api-docs`);
-		
+		if (swaggerFile) {
+			const swaggerPath = `/${ROUTE_PREPEND}/${VERSION}/api-docs`;
+			const swaggerUi = require('swagger-ui-express');
+			
+			app.use(swaggerPath, swaggerUi.serve, swaggerUi.setup(swaggerFile, {
+				explorer: true,
+				swaggerOptions: {
+					docExpansion: 'list',
+					filter: true,
+					showRequestDuration: true,
+				}
+			}));
+
+			console.log(`📖 Swagger docs available at http://${HOSTNAME}:${PORT}${swaggerPath}`);
+		}
+
 		app.listen(PORT, '0.0.0.0', () => {
 			console.log(`🚀 Backend running in ${ENVIRONMENT} mode on http://${HOSTNAME}:${PORT}/${ROUTE_PREPEND}/${VERSION}`);
 		});

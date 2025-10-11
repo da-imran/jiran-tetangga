@@ -20,9 +20,14 @@ module.exports = {
 	securityDefinitions: {
 		apiKeyAuth: {
 			type: 'apiKey',
-			name: 'x-api-key',
 			in: 'header',
-			description: 'Internal API key for gateway access'
+			name: 'x-api-key',
+			description: 'API Key required to access the documentation'
 		}
-	}
+	},
+	security: [
+		{
+			apiKeyAuth: []
+		}
+	],
 };
