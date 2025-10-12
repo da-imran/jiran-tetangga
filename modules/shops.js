@@ -13,6 +13,9 @@ module.exports = (app, config) => {
 
 	// Get All Shops API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		// #swagger.tags = ['shops']
+		// #swagger.summary = 'Get all shops'
+		// #swagger.description = 'Retrieve all shops with pagination and search support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Shops API';
 
@@ -163,6 +166,9 @@ module.exports = (app, config) => {
 
 	// Get Shop by shopId API
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		// #swagger.tags = ['shops']
+		// #swagger.summary = 'Get shop by ID'
+		// #swagger.description = 'Retrieve a specific shop by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Get Shop API';
 		const { shopId } = req.params;
@@ -250,6 +256,9 @@ module.exports = (app, config) => {
 
 	// Create Shops API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/shops`, async (req, res) => {
+		// #swagger.tags = ['shops']
+		// #swagger.summary = 'Create a new shop'
+		// #swagger.description = 'Create a new shop with name, description and opening hours'
 		const traceId = uuidv4();
 		const apiName = 'Create Shops API';
 		const {
@@ -355,6 +364,9 @@ module.exports = (app, config) => {
 
 	// Update Shops API by shopId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		// #swagger.tags = ['shops']
+		// #swagger.summary = 'Update a shop'
+		// #swagger.description = 'Update an existing shop details by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Shops API';
 		const { shopId } = req.params;
@@ -464,6 +476,9 @@ module.exports = (app, config) => {
 
 	// Delete Shops API by shopId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/shops/:shopId`, async (req, res) => {
+		// #swagger.tags = ['shops']
+		// #swagger.summary = 'Delete a shop'
+		// #swagger.description = 'Delete an existing shop by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Shops API';
 		const { shopId } = req.params;

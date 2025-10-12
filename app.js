@@ -6,8 +6,10 @@ const authentication = require('./middleware/authentication');
 const apiKeyCheck = require('./middleware/apiCheck');
 const { checkSecretObjectNull, secrets } = require('./utilities/secrets');
 const { logger, LOG_LEVELS } = require('./utilities/logger');
-dotenv.config();
 
+const swaggerFile = require('./swagger/swagger-output.json');
+
+dotenv.config();
 const app = express();
 
 // Global for all routes
@@ -63,6 +65,23 @@ app.use((req, res, next) => {
 
 		// Load routes/modules after MongoDB is ready
 		require('./index')(app, config);
+
+		// Swagger setup
+		if (swaggerFile) {
+			const swaggerPath = `/${ROUTE_PREPEND}/${VERSION}/api-docs`;
+			const swaggerUi = require('swagger-ui-express');
+			
+			app.use(swaggerPath, swaggerUi.serve, swaggerUi.setup(swaggerFile, {
+				explorer: true,
+				swaggerOptions: {
+					docExpansion: 'list',
+					filter: true,
+					showRequestDuration: true,
+				}
+			}));
+
+			console.log(`📖 Swagger docs available at http://${HOSTNAME}:${PORT}${swaggerPath}`);
+		}
 
 		app.listen(PORT, '0.0.0.0', () => {
 			console.log(`🚀 Backend running in ${ENVIRONMENT} mode on http://${HOSTNAME}:${PORT}/${ROUTE_PREPEND}/${VERSION}`);
