@@ -13,6 +13,9 @@ module.exports = (app, config) => {
 
 	// Get all Events
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		// #swagger.tags = ['events']
+		// #swagger.summary = 'Get all events'
+		// #swagger.description = 'Retrieve all events with pagination and search support'
 		const traceId = uuidv4();
 		const apiName = 'Get All Events API';
 
@@ -167,6 +170,9 @@ module.exports = (app, config) => {
 
 	// Get Event by eventId
 	app.get(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		// #swagger.tags = ['events']
+		// #swagger.summary = 'Get event by ID'
+		// #swagger.description = 'Retrieve a specific event by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Get Event API';
 		const { eventId } = req.params;
@@ -254,6 +260,9 @@ module.exports = (app, config) => {
 
 	// Create Events API
 	app.post(`/${ROUTE_PREPEND}/${VERSION}/events`, async (req, res) => {
+		// #swagger.tags = ['events']
+		// #swagger.summary = 'Create a new event'
+		// #swagger.description = 'Create a new event with title, description, organizer details, date and location'
 		const traceId = uuidv4();
 		const apiName = 'Create Events API';
 		
@@ -368,6 +377,9 @@ module.exports = (app, config) => {
 
 	// Update Events API by eventId
 	app.patch(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		// #swagger.tags = ['events']
+		// #swagger.summary = 'Update an event'
+		// #swagger.description = 'Update an existing event details by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Update Events API';
 		const { eventId } = req.params;
@@ -471,6 +483,9 @@ module.exports = (app, config) => {
 
 	// Delete Event by eventId
 	app.delete(`/${ROUTE_PREPEND}/${VERSION}/events/:eventId`, async (req, res) => {
+		// #swagger.tags = ['events']
+		// #swagger.summary = 'Delete an event'
+		// #swagger.description = 'Delete an existing event by its ID'
 		const traceId = uuidv4();
 		const apiName = 'Delete Event API';
 		const { eventId } = req.params;
