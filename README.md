@@ -1,5 +1,9 @@
 # 🏡 JiranTetangga
 
+# 🏡 JiranTetangga
+
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/da-imran/jiran-tetangga?utm_source=oss&utm_medium=github&utm_campaign=da-imran%2Fjiran-tetangga&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 A full-stack project designed to help residents of a dense neighbourhood in **Sungai Tiram, Penang** stay informed about local updates and report issues. This repository is the backend part of the whole project and built with Node.js.
 
 ## 🚀 Features

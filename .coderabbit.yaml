@@ -4,6 +4,7 @@ language: "en-US"
 reviews:
   profile: "assertive"
   high_level_summary: true
+  poem: false
   auto_review:
     enabled: true
     drafts: false
@@ -13,13 +14,13 @@ reviews:
       - "draft"
   finishing_touches:
     docstrings:
-      enabled: true
+      enabled: false
     unit_tests:
-      enabled: true
+      enabled: false
   pre_merge_checks:
     title:
       mode: "warning"
-      requirements: "Title should be concise and descriptive. Prefer a prefix like 'feature/...', 'bugfix/...', or follow Conventional Commits (e.g., 'feat: ...', 'fix: ...')."
+      requirements: "Title should be concise and descriptive. Prefer a prefix with JIRA ticket follow up with the branch typ and a title '[TICKET01]-[FEATURE] - SUMMARY' for feature branch, '[TICKET02]-[HOTFIX] - SUMMARY' for hot or bug fix branch."
     description:
       mode: "warning"
   tools:
@@ -33,14 +34,11 @@ reviews:
       enabled: true
     yamllint:
       enabled: true
-
 chat:
   art: true
   auto_reply: true
-
 knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - "**/.cursorrules"
-      - "**/CODING_STANDARDS.md"
+      - "**/CODE_GUIDELINES.md"
