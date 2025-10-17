@@ -14,9 +14,9 @@ reviews:
       - "draft"
   finishing_touches:
     docstrings:
-      enabled: true
+      enabled: false
     unit_tests:
-      enabled: true
+      enabled: false
   pre_merge_checks:
     title:
       mode: "warning"
